@@ -1,0 +1,12 @@
+## Interface: 110007
+## Title: Earthen Master's Hammer
+## Notes: A WoW Addon to simplify the use of the blacksmithing item 'Earthen Master's Hammer'.
+## Author: Iryon
+## Version: 1.0.0
+## RequiredDeps:
+## X-Curse-Project-ID: 999999
+## SavedVariables:
+## SavedVariablesPerCharacter:
+
+# Main files
+EMH.lua
