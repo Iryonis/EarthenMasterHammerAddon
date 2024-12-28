@@ -6,7 +6,8 @@
 ## RequiredDeps:
 ## X-Curse-Project-ID: 999999
 ## SavedVariables:
-## SavedVariablesPerCharacter:
+## SavedVariablesPerCharacter: EMHDB
 
 # Main files
 EMH.lua
+EMHSettings.lua
