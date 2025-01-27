@@ -1,58 +1,59 @@
+--------------------------------------------------------------------------------
+--- Local variables
+--------------------------------------------------------------------------------
+
+local _, L = ...;
+
 local settings = {
     {
-        settingText = "Tête",
+        settingText = L["head"],
         settingKey = "head",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de tête.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["head_node"]),
     },
     {
-        settingText = "Épaule",
+        settingText = L["shoulder"],
         settingKey = "shoulder",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement d'épaule.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["shoulder_node"]),
     },
     {
-        settingText = "Torse",
+        settingText = L["chest"],
         settingKey = "chest",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de torse.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["chest_node"]),
     },
     {
-        settingText = "Taille",
+        settingText = L["waist"],
         settingKey = "waist",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de taille.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["waist_node"]),
     },
     {
-        settingText = "Jambes",
+        settingText = L["legs"],
         settingKey = "legs",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de jambes.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["legs_node"]),
     },
     {
-        settingText = "Pieds",
+        settingText = L["feet"],
         settingKey = "feet",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de pieds.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["feet_node"]),
     },
     {
-        settingText = "Poignets",
+        settingText = L["wrists"],
         settingKey = "wrists",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de poignets.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["wrists_node"]),
     },
     {
-        settingText = "Mains",
+        settingText = L["hands"],
         settingKey = "hands",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de mains.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["hands_node"]),
     },
     {
-        settingText = "Main droite",
+        settingText = L["mainHand"],
         settingKey = "mainHand",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de main droite.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["mainHand_node"]),
     },
     {
-        settingText = "Main gauche",
+        settingText = L["offHand"],
         settingKey = "offHand",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement de main gauche.",
-    },
-    {
-        settingText = "À distance",
-        settingKey = "ranged",
-        settingTooltip = "Si c'est activé, l'addon va utiliser le marteau pour réparer votre équipement à distance.",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["offHand_node"]),
     },
 }
 
@@ -69,6 +70,12 @@ local nameToId = {
     offHand = 17,
     ranged = 18,
 }
+
+local checkboxes, secondColumn = 0, 0
+
+--------------------------------------------------------------------------------
+--- Miscellaneous functions
+--------------------------------------------------------------------------------
 
 function RemoveByName(name)
     print("Trying to remove name '" .. name .. "' from EMHDB.keys.")
@@ -107,46 +114,51 @@ function AddByName(name)
     print("Ligne avec id '" .. id .. "' et name '" .. name .. "' a été ajoutée à EMHDB.keys.")
 end
 
-SettingsFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset");
+--------------------------------------------------------------------------------
+--- Main
+--------------------------------------------------------------------------------
 
-SettingsFrame:SetSize(500, 300);
+--- Create checkboxes for each settings and finish initialization
+
+
+--- Create frame
+
+SettingsFrame = CreateFrame("Frame", "EMHSettingsFrame", UIParent, "BasicFrameTemplateWithInset");
+
+SettingsFrame:SetSize(520, 320);
 SettingsFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
 SettingsFrame.TitleBg:SetHeight(30);
 SettingsFrame.title = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 SettingsFrame.title:SetPoint("TOPLEFT", SettingsFrame.TitleBg, "TOPLEFT", 5, -3);
-SettingsFrame.title:SetText("Earthen Masters's Hammer - Settings");
+SettingsFrame.title:SetText(L["SETTINGS_FRAME_TITLE"]);
+
 SettingsFrame.subTitle = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 local font, _, flags = SettingsFrame.subTitle:GetFont()
 if font then
     SettingsFrame.subTitle:SetFont(font, 16, flags)
 end
 SettingsFrame.subTitle:SetPoint("TOPLEFT", SettingsFrame, "TOPLEFT", 15, -35);
-SettingsFrame.subTitle:SetText(
-    "Check the items you can repair with the hammer:");
-SettingsFrame.subTitleNote = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-SettingsFrame.subTitleNote:SetPoint("TOPLEFT", SettingsFrame.subTitle, "BOTTOMLEFT", 0, -10);
-SettingsFrame.subTitleNote:SetText(
-    "(Note: You can only repair items with a max level specialization node.)");
-
--- local MacroButton = CreateFrame("Button", "MyMacroButton", UIParent, "SecureActionButtonTemplate");
--- MacroButton:RegisterForClicks("AnyUp");                              --   Respond to all buttons
--- MacroButton:SetAttribute("type", "macro");                           -- Set type to "macro"
--- MacroButton:SetAttribute("macrotext", "/say Using my Hearthstone."); -- Set our macro text
--- SetBindingClick("ALT-CTRL-F", "MyMacroButton", "MyMacroButton");
+SettingsFrame.subTitle:SetText(L["SETTINGS_SUB_TITLE"]);
+SettingsFrame.subTitleNote1 = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+SettingsFrame.subTitleNote1:SetPoint("TOPLEFT", SettingsFrame.subTitle, "BOTTOMLEFT", 0, -12);
+SettingsFrame.subTitleNote1:SetText(L["SETTINGS_SUB_TITLE_NOTE_1"]);
+SettingsFrame.subTitleNote2 = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+SettingsFrame.subTitleNote2:SetPoint("TOPLEFT", SettingsFrame.subTitleNote1, "BOTTOMLEFT", 0, -8);
+SettingsFrame.subTitleNote2:SetText(L["SETTINGS_SUB_TITLE_NOTE_2"]);
 
 -- Button to go back to main frame
 local goToMainButton = CreateFrame("Button", "goToMainButton", SettingsFrame, "UIPanelButtonTemplate")
 goToMainButton:SetPoint("TOPRIGHT", SettingsFrame, "TOPRIGHT", -25, 0)
-goToMainButton:SetSize(150, 20)
-goToMainButton:SetText("Switch to main frame")
+goToMainButton:SetSize(160, 20)
+goToMainButton:SetText(L["SETTINGS_TO_MAIN_BUTTON"])
 goToMainButton:SetScript("OnClick", function(self, button, down)
     MainFrame:Show()
     SettingsFrame:Hide()
 end)
 
--- mainFrame interactions
+-- Settings frame interactions
 
--- mainFrame:Hide();
+-- SettingsFrame:Hide();
 SettingsFrame:EnableMouse(true);
 SettingsFrame:SetMovable(true);
 SettingsFrame:RegisterForDrag("LeftButton");
@@ -156,28 +168,17 @@ end);
 SettingsFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing();
 end);
+-- Allow escap key to close the frame
+table.insert(UISpecialFrames, "EMHSettingsFrame");
 
-local checkboxes = 0
+--------------------------------------------------------------------------------
+--- Initialize data
+--------------------------------------------------------------------------------
 
-
-
-
-
-SLASH_EMHSettings1 = "/emhsettings";
-SlashCmdList.EMHSettings = function()
-    if SettingsFrame:IsShown() then
-        SettingsFrame:Hide();
-    else
-        SettingsFrame:Show();
-    end;
-end;
-
-local secondColumn = 0
-
-local function CreateCheckbox(checkboxText, key, checkboxTooltip)
-    local checkbox = CreateFrame("CheckButton", "MyAddonCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
-    checkbox.Text:SetText(checkboxText)
-    checkbox:SetPoint("TOPLEFT", SettingsFrame.subTitleNote, "TOPLEFT", (10 + secondColumn), -30 + (checkboxes * -30))
+function CreateCheckbox(checkboxText, key, checkboxTooltip)
+    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
+    checkbox.Text:SetText(" - " .. checkboxText)
+    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote2, "TOP", (30 + secondColumn), -30 + (checkboxes * -30))
 
 
     if EMHDB.settingsKeys[key] == nil then
@@ -209,14 +210,16 @@ local function CreateCheckbox(checkboxText, key, checkboxTooltip)
 
     checkboxes = checkboxes + 1
     if (checkboxes == 6) then
-        secondColumn = 100
+        secondColumn = 200
         checkboxes = 0
     end
 
     return checkbox
 end
 
-local eventListenerFrame = CreateFrame("Frame", "MyAddonSettingsEventListenerFrame", UIParent)
+--- On login
+
+local eventListenerFrame = CreateFrame("Frame", "EMHSettingsEventListenerFrame", UIParent)
 
 eventListenerFrame:RegisterEvent("PLAYER_LOGIN")
 
@@ -234,6 +237,10 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
             EMHDB.keys = {}
         end
 
+        if not EMHDB.goldSaved then
+            EMHDB.goldSaved = 0
+        end
+
         for _, setting in pairs(settings) do
             CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
@@ -241,7 +248,3 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
         EMHDB.to_repair = #EMHDB.keys
     end
 end)
-
-table.insert(UISpecialFrames, "MyAddonMainFrame");
-
-SettingsFrame:Hide();
