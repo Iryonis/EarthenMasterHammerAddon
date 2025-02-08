@@ -15,7 +15,7 @@ L["SUB_TITLE"] = "By repairing your gear with EMH, you have saved:";
 L["MAIN_TO_SETTINGS_BUTTON"] = "Switch to settings";
 L["LOADING"] = "Loading...";
 L["NO_EMH"] =
-"Oops, it seems that you currently don't have the Earthen Master's Hammer in your inventory. Please make sure to get it before using the addon.";
+"Warnings: It seems that you currently don't have the Earthen Master's Hammer in your inventory. Please make sure to get it before using the addon.";
 L["NO_REPAIR"] = "No repair needed"
 L["SAVED_MONEY_PRINT"] = "You just saved %s using EMH."
 L["REPAIR_BUTTON"] = "Repair %s (%d/%d)";

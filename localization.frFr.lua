@@ -7,7 +7,7 @@ if GetLocale() == "frFR" then
     L["MAIN_TO_SETTINGS_BUTTON"] = "Ouvrir les paramètres";
     L["LOADING"] = "Chargement...";
     L["NO_EMH"] =
-    "Il semblerait que vous n'ayez pas le Marteau de maître terrestre dans votre inventaire. Soyez sûr de l'avoir avant d'essayer d'utiliser l'addon EMH.";
+    "Attention : Il semblerait que vous n'ayez pas le Marteau de maître terrestre dans votre inventaire. Soyez sûr de l'avoir avant d'essayer d'utiliser l'addon EMH.";
     L["NO_REPAIR"] = "Aucune réparation nécessaire"
     L["SAVED_MONEY_PRINT"] = "Vous venez d'économiser %s grâce à EMH."
     L["REPAIR_BUTTON"] = "Réparer %s (%d/%d)";

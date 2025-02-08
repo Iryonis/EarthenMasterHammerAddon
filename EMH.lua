@@ -1,63 +1,67 @@
--- Active l'addon uniquement si le personnage a la profession de forge
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+---------- Initialization of the addon, the database and the settings ----------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Initialization
+--------------------------------------------------------------------------------
 
--- Récupérer les professions du personnage
-local prof1, prof2, _, _, _ = GetProfessions()
+-- Initialize the database and the settings
+local eventListenerFrame = CreateFrame("Frame", "EMHSettingsEventListenerFrame", UIParent)
 
--- Fonction pour obtenir les informations de la profession
-local function GetProfessionName(professionIndex)
-    if professionIndex then
-        local name, _, _, _, _, _, _, _, _, _ =
-            GetProfessionInfo(professionIndex)
-        return name
+eventListenerFrame:RegisterEvent("PLAYER_LOGIN")
+
+eventListenerFrame:SetScript("OnEvent", function(self, event)
+    if event == "PLAYER_LOGIN" then
+        CheckProfession()
+        if not EMHDB then
+            EMHDB = {}
+        end
+        if not EMHDB.settingsKeys then
+            EMHDB.settingsKeys = {}
+        end
+
+        if not EMHDB.to_repair then
+            EMHDB.to_repair = 0
+        end
+
+        if not EMHDB.keys then
+            EMHDB.keys = {}
+        end
+
+        if not EMHDB.goldSaved then
+            EMHDB.goldSaved = 0
+        end
+
+        if not EMHDB.framePos then
+            EMHDB.framePos = {}
+            SaveFramePosition(MainFrame) -- Initializing the frame position
+        end
+
+        for _, setting in pairs(SETTINGS) do
+            CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
+        end
+
+        EMHDB.to_repair = #EMHDB.keys
     end
-    return "None"
-end
-
--- Obtenir les noms des professions
-local name1 = GetProfessionName(prof1)
-local name2 = GetProfessionName(prof2)
-
-if (name1 ~= "Forge" and name2 ~= "Forge") then -- vérifier blacksmithing
-    return
-end
-
-print("EMH loaded.")
-
-
+end)
 
 --------------------------------------------------------------------------------
---- Global variables
 --------------------------------------------------------------------------------
-if not EMHDB then
-    EMHDB = {}
-end
-
+-------------------- Variables and misceallenous functions ---------------------
 --------------------------------------------------------------------------------
---- Local variables
+--------------------------------------------------------------------------------
+--- Local variables and constants
 --------------------------------------------------------------------------------
 
-local _, L = ...;
-local hammerId = 225660 -- ID of the Earthen Master's Hammer
 local itemName, repairAllCost, currentRepairCost, current, maximum
 local testTicker = {}
-
-local idToName = {
-    [1] = "head",
-    [3] = "shoulder",
-    [5] = "chest",
-    [6] = "waist",
-    [7] = "legs",
-    [8] = "feet",
-    [9] = "wrists",
-    [10] = "hands",
-    [16] = "mainHand",
-    [17] = "offHand",
-}
 
 --------------------------------------------------------------------------------
 --- Miscellaneous functions
 --------------------------------------------------------------------------------
 
+-- Format money in gold, silver and copper: 155425 -> "15 gold, 54 silver, 25 copper"
 local function FormatMoney(copper)
     if copper == 0 then
         return string.format(L["FORMAT_MONEY"], 0, 0, 0)
@@ -69,7 +73,11 @@ local function FormatMoney(copper)
 end
 
 --------------------------------------------------------------------------------
---- Main
+--------------------------------------------------------------------------------
+---------------------------- Create the MainFrame ------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Main Frame
 --------------------------------------------------------------------------------
 
 -- Create the main frame
@@ -77,7 +85,7 @@ end
 MainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset");
 
 MainFrame:SetSize(520, 320);
-MainFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
+SetFramePosition(MainFrame);
 MainFrame.TitleBg:SetHeight(30);
 MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
 MainFrame.title:SetPoint("TOPLEFT", MainFrame.TitleBg, "TOPLEFT", 5, -3);
@@ -98,7 +106,9 @@ goToSettingsButton:SetSize(150, 20)
 goToSettingsButton:SetText(L["MAIN_TO_SETTINGS_BUTTON"])
 
 goToSettingsButton:SetScript("OnClick", function(self, button, down)
+    SaveFramePosition(MainFrame)
     MainFrame:Hide()
+    SetFramePosition(SettingsFrame)
     SettingsFrame:Show()
 end)
 
@@ -112,11 +122,16 @@ MainFrame:SetScript("OnDragStart", function(self)
 end);
 MainFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing();
+    SaveFramePosition(MainFrame)
 end);
+
 -- Allow escap key to close the frame
+
 table.insert(UISpecialFrames, "EMHMainFrame");
 
--- Button "Repair equipment"
+--------------------------------------------------------------------------------
+--- Button to repair the items
+--------------------------------------------------------------------------------
 
 local useItemButton = CreateFrame("Button", "UseItemButton", MainFrame,
     "SecureActionButtonTemplate, UIPanelButtonTemplate")
@@ -126,14 +141,23 @@ useItemButton:SetText(L["LOADING"])
 useItemButton:RegisterForClicks("AnyUp", "AnyDown")
 useItemButton:SetAttribute("type1", "macro")
 
+--------------------------------------------------------------------------------
+--- Button repair's functions
+--------------------------------------------------------------------------------
 
--- Function to check the durability of the items
-local function PerformTest(i)
+--[[
+Check the durability of the items and update the button if a repair is needed
+Start the ticker to check durability every second until the item is repaired
+
+@param i: the index of the item to check
+@return true if the item has full durability or isn't checked in the settings, false otherwise
+]] --
+local function performTest(i)
     current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
     if current and maximum then
         if current < maximum then
             -- Update the repair button and wait for the users to click on it
-            useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[idToName[EMHDB.keys[i]]], i, EMHDB.to_repair))
+            useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], i, EMHDB.to_repair))
             useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], EMHDB.keys[i]))
             return false
         else
@@ -146,8 +170,11 @@ local function PerformTest(i)
     end
 end
 
--- Function to update the variables and interface when the repairs are finished
-local function EndRepairs()
+--[[
+Once the repairs are finished, update the button, the gold saved and print a message
+to tell the user how much gold he saved
+]] --
+local function endRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
     currentRepairCost, _ = GetRepairAllCost()
 
@@ -159,14 +186,17 @@ local function EndRepairs()
     end
 end
 
--- Fonction that starts the ticker to check durability every second
-local function StartTicker(i)
-    testTicker = C_Timer.NewTicker(0.1, function()
-        local continue = PerformTest(i)
+--[[
+Start the ticker to check durability every {TICKER} seconds until all the items are repaired,
+then stop the ticker and update the button
+]] --
+local function startTicker(i)
+    testTicker = C_Timer.NewTicker(TICKER, function()
+        local continue = performTest(i)
         if continue then
             i = i + 1
             if i > #EMHDB.keys then
-                EndRepairs()
+                endRepairs()
                 testTicker:Cancel()
                 testTicker = nil
             end
@@ -174,30 +204,42 @@ local function StartTicker(i)
     end)
 end
 
--- Function that runs all tests instantly
--- If a repair is needed, start the ticker to check durability every second until the item is repaired
-local function RunTestsInstantly(i)
+
+--[[
+Run all tests instantly to check if any items need to be repaired
+If a repair is needed, start the ticker to check durability every second until the item is repaired
+]] --
+
+local function runTestsInstantly(i)
     repairAllCost, _ = GetRepairAllCost()
     while i <= #EMHDB.keys do
-        local continue = PerformTest(i)
+        local continue = performTest(i)
         if not continue then
             -- If a repair is needed, start the ticker
-            StartTicker(i)
+            startTicker(i)
             return
         end
         i = i + 1
     end
-    -- If no repair is needed, update the button, the gold saved and print a message
-    EndRepairs()
+    -- If no repair is needed, call the end function
+    endRepairs()
 end
 
---- Main frame scripts - OnShow / OnHide
--- When the main frame is shown, run the tests
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+---------------------------- Scripts and command -------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Scripts
+--------------------------------------------------------------------------------
+
+-- When the Main Frame is shown, run the tests
 MainFrame:SetScript("OnShow", function()
-    RunTestsInstantly(1)
+    runTestsInstantly(1)
 end)
 
--- When the main frame is hidden, stop the tests
+-- When the Main Frame is hidden, stop the tests
 MainFrame:SetScript("OnHide", function()
     if testTicker then
         testTicker:Cancel()
@@ -212,22 +254,32 @@ end)
 
 SLASH_EMH1 = "/emh";
 SlashCmdList.EMH = function()
+    -- Check if the player has the right profession: Blacksmithing
+    if BadProfession then
+        return
+    end
+
+    -- Check if the player has the hammer in his inventory
     itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ =
-        C_Item.GetItemInfo(hammerId)
+        C_Item.GetItemInfo(HAMMER_ID)
 
     if not itemName then
         print(L["NO_EMH"])
         return
     end
 
+    -- Hide both frames and save the position of the Main Frame
     if MainFrame:IsShown() then
+        SaveFramePosition(MainFrame)
         MainFrame:Hide();
         SettingsFrame:Hide();
-    else
+        -- Set the Main Frame position, update the gold saved, show the Main Frame and hide the Settings Frame
+    elseif not MainFrame:IsShown() then
         MainFrame.goldSaved:SetText(FormatMoney(EMHDB.goldSaved))
-        MainFrame:Show();
+        SetFramePosition(MainFrame)
         SettingsFrame:Hide();
-    end;
+        MainFrame:Show();
+    end
 end;
 
 --------------------------------------------------------------------------------

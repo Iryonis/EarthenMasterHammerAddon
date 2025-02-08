@@ -1,10 +1,19 @@
 --------------------------------------------------------------------------------
---- Local variables
+--------------------------------------------------------------------------------
+-------------------- Variables and misceallenous functions ---------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Variables and constants
 --------------------------------------------------------------------------------
 
-local _, L = ...;
+BadProfession = false -- True if the player doesn't have the right profession (Blacksmithing)
+HAMMER_ID = 225660    -- ID of the Earthen Master's Hammer
+_, L = ...;           -- Localization
+TICKER = 0.1          -- Ticker duration in seconds
 
-local settings = {
+local checkboxes, secondColumn = 0, 0
+
+SETTINGS = {
     {
         settingText = L["head"],
         settingKey = "head",
@@ -57,7 +66,20 @@ local settings = {
     },
 }
 
-local nameToId = {
+ID_TO_NAME = {
+    [1] = "head",
+    [3] = "shoulder",
+    [5] = "chest",
+    [6] = "waist",
+    [7] = "legs",
+    [8] = "feet",
+    [9] = "wrists",
+    [10] = "hands",
+    [16] = "mainHand",
+    [17] = "offHand",
+}
+
+NAME_TO_ID = {
     head = 1,
     shoulder = 3,
     chest = 5,
@@ -71,18 +93,73 @@ local nameToId = {
     ranged = 18,
 }
 
-local checkboxes, secondColumn = 0, 0
-
 --------------------------------------------------------------------------------
 --- Miscellaneous functions
 --------------------------------------------------------------------------------
 
+--- Profession functions
+
+--- Get the name of the profession at the given index
+local function getProfessionName(professionIndex)
+    if professionIndex then
+        local name, _, _, _, _, _, _, _, _, _ =
+            GetProfessionInfo(professionIndex)
+        return name
+    end
+    return "None"
+end
+
+-- Check if the player has the right profession: Blacksmithing
+function CheckProfession()
+    local prof1, prof2, _, _, _ = GetProfessions()
+
+    local name1 = getProfessionName(prof1)
+    local name2 = getProfessionName(prof2)
+
+    if (name1 ~= "Forge" and name2 ~= "Forge") then -- vérifier blacksmithing
+        BadProfession = true
+        return
+    end
+
+    BadProfession = false
+end
+
+--- Frame position functions
+
+-- Save the given frame position in the database
+function SaveFramePosition(frame)
+    local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint()
+    EMHDB.framePos = {
+        point = point,
+        relativeTo = relativeTo and relativeTo:GetName() or "UIParent",
+        relativePoint = relativePoint,
+        xOfs = xOfs,
+        yOfs = yOfs
+    }
+end
+
+-- Set the given frame position from the database (or center it if no position is saved)
+function SetFramePosition(frame)
+    if EMHDB and EMHDB.framePos then
+        frame:ClearAllPoints()
+        frame:SetPoint(EMHDB.framePos.point, EMHDB.framePos.relativeTo, EMHDB.framePos.relativePoint, EMHDB.framePos
+            .xOfs, EMHDB.framePos.yOfs)
+    else
+        frame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+    end
+end
+
+--- EMHDB.keys functions
+
+--[[
+Remove an item from EMHDB.keys by its name.
+]] --
 function RemoveByName(name)
     print("Trying to remove name '" .. name .. "' from EMHDB.keys.")
-    local id = nameToId[name]
+    local id = NAME_TO_ID[name]
     print(name, id)
     if not id then
-        print("Aucune ligne trouvée avec name '" .. name .. "' dans nameToId.")
+        print("Aucune ligne trouvée avec name '" .. name .. "' dans NAME_TO_ID.")
         return
     end
 
@@ -96,10 +173,13 @@ function RemoveByName(name)
     print("Aucune ligne trouvée avec id '" .. id .. "' dans EMHDB.keys.")
 end
 
+--[[
+Add an item to EMHDB.keys by its name.
+]] --
 function AddByName(name)
-    local id = nameToId[name]
+    local id = NAME_TO_ID[name]
     if not id then
-        print("Aucune ligne trouvée avec name '" .. name .. "' dans nameToId.")
+        print("Aucune ligne trouvée avec name '" .. name .. "' dans NAME_TO_ID.")
         return
     end
 
@@ -114,67 +194,11 @@ function AddByName(name)
     print("Ligne avec id '" .. id .. "' et name '" .. name .. "' a été ajoutée à EMHDB.keys.")
 end
 
---------------------------------------------------------------------------------
---- Main
---------------------------------------------------------------------------------
+--- Initialize checkbox
 
---- Create checkboxes for each settings and finish initialization
-
-
---- Create frame
-
-SettingsFrame = CreateFrame("Frame", "EMHSettingsFrame", UIParent, "BasicFrameTemplateWithInset");
-
-SettingsFrame:SetSize(520, 320);
-SettingsFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
-SettingsFrame.TitleBg:SetHeight(30);
-SettingsFrame.title = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-SettingsFrame.title:SetPoint("TOPLEFT", SettingsFrame.TitleBg, "TOPLEFT", 5, -3);
-SettingsFrame.title:SetText(L["SETTINGS_FRAME_TITLE"]);
-
-SettingsFrame.subTitle = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-local font, _, flags = SettingsFrame.subTitle:GetFont()
-if font then
-    SettingsFrame.subTitle:SetFont(font, 16, flags)
-end
-SettingsFrame.subTitle:SetPoint("TOPLEFT", SettingsFrame, "TOPLEFT", 15, -35);
-SettingsFrame.subTitle:SetText(L["SETTINGS_SUB_TITLE"]);
-SettingsFrame.subTitleNote1 = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-SettingsFrame.subTitleNote1:SetPoint("TOPLEFT", SettingsFrame.subTitle, "BOTTOMLEFT", 0, -12);
-SettingsFrame.subTitleNote1:SetText(L["SETTINGS_SUB_TITLE_NOTE_1"]);
-SettingsFrame.subTitleNote2 = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-SettingsFrame.subTitleNote2:SetPoint("TOPLEFT", SettingsFrame.subTitleNote1, "BOTTOMLEFT", 0, -8);
-SettingsFrame.subTitleNote2:SetText(L["SETTINGS_SUB_TITLE_NOTE_2"]);
-
--- Button to go back to main frame
-local goToMainButton = CreateFrame("Button", "goToMainButton", SettingsFrame, "UIPanelButtonTemplate")
-goToMainButton:SetPoint("TOPRIGHT", SettingsFrame, "TOPRIGHT", -25, 0)
-goToMainButton:SetSize(160, 20)
-goToMainButton:SetText(L["SETTINGS_TO_MAIN_BUTTON"])
-goToMainButton:SetScript("OnClick", function(self, button, down)
-    MainFrame:Show()
-    SettingsFrame:Hide()
-end)
-
--- Settings frame interactions
-
--- SettingsFrame:Hide();
-SettingsFrame:EnableMouse(true);
-SettingsFrame:SetMovable(true);
-SettingsFrame:RegisterForDrag("LeftButton");
-SettingsFrame:SetScript("OnDragStart", function(self)
-    self:StartMoving();
-end);
-SettingsFrame:SetScript("OnDragStop", function(self)
-    self:StopMovingOrSizing();
-end);
--- Allow escap key to close the frame
-table.insert(UISpecialFrames, "EMHSettingsFrame");
-
---------------------------------------------------------------------------------
---- Initialize data
---------------------------------------------------------------------------------
-
+--[[
+Create a checkbox with the given text, key and tooltip, and add it to the SettingsFrame.
+]] --
 function CreateCheckbox(checkboxText, key, checkboxTooltip)
     local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
     checkbox.Text:SetText(" - " .. checkboxText)
@@ -216,35 +240,3 @@ function CreateCheckbox(checkboxText, key, checkboxTooltip)
 
     return checkbox
 end
-
---- On login
-
-local eventListenerFrame = CreateFrame("Frame", "EMHSettingsEventListenerFrame", UIParent)
-
-eventListenerFrame:RegisterEvent("PLAYER_LOGIN")
-
-eventListenerFrame:SetScript("OnEvent", function(self, event)
-    if event == "PLAYER_LOGIN" then
-        if not EMHDB.settingsKeys then
-            EMHDB.settingsKeys = {}
-        end
-
-        if not EMHDB.to_repair then
-            EMHDB.to_repair = 0
-        end
-
-        if not EMHDB.keys then
-            EMHDB.keys = {}
-        end
-
-        if not EMHDB.goldSaved then
-            EMHDB.goldSaved = 0
-        end
-
-        for _, setting in pairs(settings) do
-            CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
-        end
-
-        EMHDB.to_repair = #EMHDB.keys
-    end
-end)

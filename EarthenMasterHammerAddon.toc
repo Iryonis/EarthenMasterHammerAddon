@@ -15,6 +15,7 @@ Localization.enUS.lua
 Localization.frFR.lua
 
 # Main files
+Common.lua
 EMH.lua
-EMHSettings.lua
+Settings.lua
 
