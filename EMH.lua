@@ -85,6 +85,7 @@ end
 MainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset");
 
 MainFrame:SetSize(520, 320);
+MainFrame:SetFrameStrata("DIALOG");
 SetFramePosition(MainFrame);
 MainFrame.TitleBg:SetHeight(30);
 MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
@@ -96,6 +97,17 @@ MainFrame.subTitle1:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 15, -35);
 MainFrame.subTitle1:SetText(L["SUB_TITLE"]);
 MainFrame.goldSaved = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 30, -15);
+
+-- Tooltip gold
+
+local tooltipButton = CreateFrame("Button", nil, MainFrame, "UIPanelButtonTemplate")
+tooltipButton:SetSize(24, 24)
+tooltipButton:SetPoint("TOPRIGHT", MainFrame.subTitle1, "TOPRIGHT", 50, 5)
+
+-- Create a font string for the "?"
+local fontString = tooltipButton:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+fontString:SetPoint("CENTER", tooltipButton, "CENTER", 0, 0)
+fontString:SetText("?")
 
 
 -- Button "Go to settings frame"
@@ -124,6 +136,18 @@ MainFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing();
     SaveFramePosition(MainFrame)
 end);
+
+-- Add tooltip to the button
+
+tooltipButton:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(L["GOLD_TOOLTIP"], nil, nil, nil, nil, true)
+    GameTooltip:Show()
+end)
+
+tooltipButton:SetScript("OnLeave", function(self)
+    GameTooltip:Hide()
+end)
 
 -- Allow escap key to close the frame
 

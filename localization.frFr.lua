@@ -12,7 +12,8 @@ if GetLocale() == "frFR" then
     L["SAVED_MONEY_PRINT"] = "Vous venez d'économiser %s grâce à EMH."
     L["REPAIR_BUTTON"] = "Réparer %s (%d/%d)";
     L["MACRO"] = "/use Marteau de maître terrestre\n/use %d";
-
+    L["GOLD_TOOLTIP"] =
+    "En raison des limitations de l'API de Blizzard, le montant affiché ne prend en compte que les économies réalisées lors de l'utilisation d'EMH en parlant à un réparateur.";
     -- Items names
     L["head"] = "le casque";
     L["shoulder"] = "les épaulières";
@@ -31,7 +32,7 @@ if GetLocale() == "frFR" then
     L["SETTINGS_SUB_TITLE"] = "Veuillez cocher les objets que vous pouvez réparer :";
     L["SETTINGS_SUB_TITLE_NOTE_1"] =
     "(Note : Vous ne pouvez réparer que les objets dont le noeud de spécialisation";
-    L["SETTINGS_SUB_TITLE_NOTE_2"] = "est au niveau maximal.)";
+    L["SETTINGS_SUB_TITLE_NOTE_2"] = "est au niveau maximal)";
     L["SETTINGS_TOOLTIP"] = "Cochez l'option si vous avez le noeud de spécialisation %s au niveau maximal.";
     -- Nodes
     L["head_node"] = "'Heaumes'";
@@ -43,6 +44,7 @@ if GetLocale() == "frFR" then
     L["wrists_node"] = "'Protège-bras'";
     L["hands_node"] = "'Gantelets'";
     L["mainHand_node"] =
-    "de votre arme équipée en main droite ('Haches et armes d'hast' / 'Masse' / 'Lames longues' / 'Lames courtes')";
-    L["offHand_node"] = "de votre objet équipé en main gauche ('Boucliers' / 'Lames courtes')";
+    "de votre arme équipée en main droite ('Haches et armes d'hast' / 'Lames longues' / 'Lames courtes' / 'Masse' )";
+    L["offHand_node"] =
+    "de votre objet équipé en main gauche ('Boucliers' / 'Lames courtes' / 'Lames longues' / 'Masse')";
 end

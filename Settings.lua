@@ -9,6 +9,7 @@
 SettingsFrame = CreateFrame("Frame", "EMHSettingsFrame", UIParent, "BasicFrameTemplateWithInset");
 
 SettingsFrame:SetSize(520, 320);
+SettingsFrame:SetFrameStrata("DIALOG")
 SetFramePosition(SettingsFrame);
 SettingsFrame.TitleBg:SetHeight(30);
 SettingsFrame.title = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
