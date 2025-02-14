@@ -2,6 +2,104 @@
 --------------------------------------------------------------------------------
 ---------- Initialization of the addon, the database and the settings ----------
 --------------------------------------------------------------------------------
+--- Function and variables needed at initialization
+--------------------------------------------------------------------------------
+
+local repairOpen = false              -- True if the frame of a merchant who can repair is open
+local checkboxes, secondColumn = 0, 0 -- Variables to place the checkboxes
+local RIGHT_OF_MERCHANT_FRAME = 298   -- Position of the MainFrame relative to the MerchantFrame
+
+
+--[[
+Check if the player needs to repair his items
+
+@return true if the player needs to repair his items, false otherwise
+]]
+local function checkRepairNeeded()
+    local repairCost, _ = GetRepairAllCost()
+    if repairCost > 0 then
+        return true
+    end
+    return false
+end
+
+--[[
+Open the EMH frame (to the right of the merchant frame) if:
+- the merchant can repair
+- the player needs to repair his items
+]]
+local function openEMHMerchant()
+    if (CanMerchantRepair() and checkRepairNeeded()) then
+        repairOpen = true
+        SettingsFrame:Hide()
+
+        -- Set the position of the MainFrame
+        MainFrame:ClearAllPoints()
+        MainFrame:SetPoint("TOP", MerchantFrame, "TOPRIGHT", RIGHT_OF_MERCHANT_FRAME, 0)
+        MainFrame:Show()
+    end
+end
+
+--[[
+Close the EMH frame if the merchant frame that was opened could repair
+]]
+local function closeEMHMerchant()
+    if (repairOpen) then
+        repairOpen = false
+        MainFrame:Hide()
+        SettingsFrame:Hide()
+    end
+end
+
+
+--- Initialize checkbox
+
+--[[
+Create a checkbox with the given text, key and tooltip, and add it to the SettingsFrame.
+]]
+local function createCheckbox(checkboxText, key, checkboxTooltip)
+    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
+    checkbox.Text:SetText(" - " .. checkboxText)
+    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote2, "TOP", (30 + secondColumn), -30 + (checkboxes * -30))
+
+
+    if EMHDB.settingsKeys[key] == nil then
+        EMHDB.settingsKeys[key] = true
+        AddByName(key)
+    end
+
+    checkbox:SetChecked(EMHDB.settingsKeys[key])
+
+    checkbox:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(checkboxTooltip, nil, nil, nil, nil, true)
+    end)
+
+    checkbox:SetScript("OnLeave", function(self)
+        GameTooltip:Hide()
+    end)
+
+    checkbox:SetScript("OnClick", function(self)
+        EMHDB.settingsKeys[key] = self:GetChecked()
+        if (EMHDB.settingsKeys[key]) then
+            AddByName(key)
+            EMHDB.to_repair = EMHDB.to_repair + 1
+        else
+            RemoveByName(key)
+            EMHDB.to_repair = EMHDB.to_repair - 1
+        end
+    end)
+
+    checkboxes = checkboxes + 1
+    if (checkboxes == 6) then
+        secondColumn = 200
+        checkboxes = 0
+    end
+
+    return checkbox
+end
+
+
 --------------------------------------------------------------------------------
 --- Initialization
 --------------------------------------------------------------------------------
@@ -10,6 +108,8 @@
 local eventListenerFrame = CreateFrame("Frame", "EMHSettingsEventListenerFrame", UIParent)
 
 eventListenerFrame:RegisterEvent("PLAYER_LOGIN")
+eventListenerFrame:RegisterEvent("MERCHANT_SHOW")
+eventListenerFrame:RegisterEvent("MERCHANT_CLOSED")
 
 eventListenerFrame:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_LOGIN" then
@@ -39,10 +139,14 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
         end
 
         for _, setting in pairs(SETTINGS) do
-            CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
+            createCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
 
         EMHDB.to_repair = #EMHDB.keys
+    elseif (event == "MERCHANT_SHOW" and not BadProfession) then
+        openEMHMerchant()
+    elseif (event == "MERCHANT_CLOSED" and not BadProfession) then
+        closeEMHMerchant()
     end
 end)
 
@@ -62,7 +166,7 @@ local testTicker = {}
 --------------------------------------------------------------------------------
 
 -- Format money in gold, silver and copper: 155425 -> "15 gold, 54 silver, 25 copper"
-local function FormatMoney(copper)
+local function formatMoney(copper)
     if copper == 0 then
         return string.format(L["FORMAT_MONEY"], 0, 0, 0)
     end
@@ -175,7 +279,7 @@ Start the ticker to check durability every second until the item is repaired
 
 @param i: the index of the item to check
 @return true if the item has full durability or isn't checked in the settings, false otherwise
-]] --
+]]
 local function performTest(i)
     current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
     if current and maximum then
@@ -197,23 +301,23 @@ end
 --[[
 Once the repairs are finished, update the button, the gold saved and print a message
 to tell the user how much gold he saved
-]] --
+]]
 local function endRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
     currentRepairCost, _ = GetRepairAllCost()
 
     local gold_saved = repairAllCost - currentRepairCost
     EMHDB.goldSaved = EMHDB.goldSaved + gold_saved
-    MainFrame.goldSaved:SetText(FormatMoney(EMHDB.goldSaved))
+    MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
     if (gold_saved > 0) then
-        print(string.format(L["SAVED_MONEY_PRINT"], FormatMoney(gold_saved)))
+        print(string.format(L["SAVED_MONEY_PRINT"], formatMoney(gold_saved)))
     end
 end
 
 --[[
 Start the ticker to check durability every {TICKER} seconds until all the items are repaired,
 then stop the ticker and update the button
-]] --
+]]
 local function startTicker(i)
     testTicker = C_Timer.NewTicker(TICKER, function()
         local continue = performTest(i)
@@ -299,7 +403,7 @@ SlashCmdList.EMH = function()
         SettingsFrame:Hide();
         -- Set the Main Frame position, update the gold saved, show the Main Frame and hide the Settings Frame
     elseif not MainFrame:IsShown() then
-        MainFrame.goldSaved:SetText(FormatMoney(EMHDB.goldSaved))
+        MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
         SetFramePosition(MainFrame)
         SettingsFrame:Hide();
         MainFrame:Show();

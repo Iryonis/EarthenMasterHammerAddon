@@ -11,8 +11,6 @@ HAMMER_ID = 225660    -- ID of the Earthen Master's Hammer
 _, L = ...;           -- Localization
 TICKER = 0.1          -- Ticker duration in seconds
 
-local checkboxes, secondColumn = 0, 0
-
 SETTINGS = {
     {
         settingText = L["head"],
@@ -153,7 +151,7 @@ end
 
 --[[
 Remove an item from EMHDB.keys by its name.
-]] --
+]]
 function RemoveByName(name)
     print("Trying to remove name '" .. name .. "' from EMHDB.keys.")
     local id = NAME_TO_ID[name]
@@ -175,7 +173,7 @@ end
 
 --[[
 Add an item to EMHDB.keys by its name.
-]] --
+]]
 function AddByName(name)
     local id = NAME_TO_ID[name]
     if not id then
@@ -192,51 +190,4 @@ function AddByName(name)
 
     table.insert(EMHDB.keys, id)
     print("Ligne avec id '" .. id .. "' et name '" .. name .. "' a été ajoutée à EMHDB.keys.")
-end
-
---- Initialize checkbox
-
---[[
-Create a checkbox with the given text, key and tooltip, and add it to the SettingsFrame.
-]] --
-function CreateCheckbox(checkboxText, key, checkboxTooltip)
-    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
-    checkbox.Text:SetText(" - " .. checkboxText)
-    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote2, "TOP", (30 + secondColumn), -30 + (checkboxes * -30))
-
-
-    if EMHDB.settingsKeys[key] == nil then
-        EMHDB.settingsKeys[key] = true
-        AddByName(key)
-    end
-
-    checkbox:SetChecked(EMHDB.settingsKeys[key])
-
-    checkbox:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(checkboxTooltip, nil, nil, nil, nil, true)
-    end)
-
-    checkbox:SetScript("OnLeave", function(self)
-        GameTooltip:Hide()
-    end)
-
-    checkbox:SetScript("OnClick", function(self)
-        EMHDB.settingsKeys[key] = self:GetChecked()
-        if (EMHDB.settingsKeys[key]) then
-            AddByName(key)
-            EMHDB.to_repair = EMHDB.to_repair + 1
-        else
-            RemoveByName(key)
-            EMHDB.to_repair = EMHDB.to_repair - 1
-        end
-    end)
-
-    checkboxes = checkboxes + 1
-    if (checkboxes == 6) then
-        secondColumn = 200
-        checkboxes = 0
-    end
-
-    return checkbox
 end
