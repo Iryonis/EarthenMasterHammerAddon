@@ -6,10 +6,15 @@
 --- Variables and constants
 --------------------------------------------------------------------------------
 
-BadProfession = false -- True if the player doesn't have the right profession (Blacksmithing)
-HAMMER_ID = 225660    -- ID of the Earthen Master's Hammer
-_, L = ...;           -- Localization
-TICKER = 0.1          -- Ticker duration in seconds
+BadProfession = false       -- True if the player doesn't have the right profession (Blacksmithing)
+HAMMER_ID = 225660          -- ID of the Earthen Master's Hammer
+_, L = ...;                 -- Localization
+TICKER = 0.1                -- Ticker duration in seconds
+
+local VALID_PROFESSIONS = { -- Valid professions for the addon
+    ["Forge"] = true,
+    ["Blacksmithing"] = true,
+}
 
 SETTINGS = {
     {
@@ -114,7 +119,7 @@ function CheckProfession()
     local name1 = getProfessionName(prof1)
     local name2 = getProfessionName(prof2)
 
-    if (name1 ~= "Forge" and name2 ~= "Forge") then -- vérifier blacksmithing
+    if not VALID_PROFESSIONS[name1] and not VALID_PROFESSIONS[name2] then -- vérifier blacksmithing
         BadProfession = true
         return
     end

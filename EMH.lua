@@ -8,6 +8,7 @@
 local repairOpen = false              -- True if the frame of a merchant who can repair is open
 local checkboxes, secondColumn = 0, 0 -- Variables to place the checkboxes
 local RIGHT_OF_MERCHANT_FRAME = 298   -- Position of the MainFrame relative to the MerchantFrame
+local VERSION = "1.0.0"               -- Version of the addon
 
 
 --[[
@@ -28,15 +29,15 @@ Open the EMH frame (to the right of the merchant frame) if:
 - the merchant can repair
 - the player needs to repair his items
 ]]
-local function openEMHMerchant()
+local function openEMHMerchant(frame)
     if (CanMerchantRepair() and checkRepairNeeded()) then
         repairOpen = true
         SettingsFrame:Hide()
 
         -- Set the position of the MainFrame
-        MainFrame:ClearAllPoints()
-        MainFrame:SetPoint("TOP", MerchantFrame, "TOPRIGHT", RIGHT_OF_MERCHANT_FRAME, 0)
-        MainFrame:Show()
+        frame:ClearAllPoints()
+        frame:SetPoint("TOP", MerchantFrame, "TOPRIGHT", RIGHT_OF_MERCHANT_FRAME, 0)
+        frame:Show()
     end
 end
 
@@ -144,7 +145,7 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
 
         EMHDB.to_repair = #EMHDB.keys
     elseif (event == "MERCHANT_SHOW" and not BadProfession) then
-        openEMHMerchant()
+        openEMHMerchant(MainFrame)
     elseif (event == "MERCHANT_CLOSED" and not BadProfession) then
         closeEMHMerchant()
     end
@@ -176,6 +177,20 @@ local function formatMoney(copper)
     return string.format(L["FORMAT_MONEY"], gold, silver, copper)
 end
 
+-- Check if the player has the hammer in his inventory
+-- Only work the first time the player opens the MainFrame
+local function checkHammerPresence(id)
+    itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ =
+        C_Item.GetItemInfo(id)
+
+    if not itemName then
+        print(L["NO_EMH"])
+        return
+    end
+end
+
+
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 ---------------------------- Create the MainFrame ------------------------------
@@ -201,6 +216,10 @@ MainFrame.subTitle1:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 15, -35);
 MainFrame.subTitle1:SetText(L["SUB_TITLE"]);
 MainFrame.goldSaved = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 30, -15);
+-- Credits
+MainFrame.credits = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+MainFrame.credits:SetPoint("BOTTOM", MainFrame, "BOTTOM", 0, 15)
+MainFrame.credits:SetText(string.format(L["CREDITS"], VERSION))
 
 -- Tooltip gold
 
@@ -227,6 +246,8 @@ goToSettingsButton:SetScript("OnClick", function(self, button, down)
     SetFramePosition(SettingsFrame)
     SettingsFrame:Show()
 end)
+
+
 
 -- Main frame interactions
 
@@ -388,13 +409,7 @@ SlashCmdList.EMH = function()
     end
 
     -- Check if the player has the hammer in his inventory
-    itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ =
-        C_Item.GetItemInfo(HAMMER_ID)
-
-    if not itemName then
-        print(L["NO_EMH"])
-        return
-    end
+    checkHammerPresence(HAMMER_ID)
 
     -- Hide both frames and save the position of the Main Frame
     if MainFrame:IsShown() then

@@ -13,7 +13,9 @@ if GetLocale() == "frFR" then
     L["REPAIR_BUTTON"] = "Réparer %s (%d/%d)";
     L["MACRO"] = "/use Marteau de maître terrestre\n/use %d";
     L["GOLD_TOOLTIP"] =
-    "En raison des limitations de l'API de Blizzard, le montant affiché ne prend en compte que les économies réalisées lors de l'utilisation d'EMH en parlant à un réparateur.";
+    "En raison de limitations de l'API de Blizzard, le montant affiché ne prend en compte que les économies réalisées lors de l'utilisation d'EMH avec une fenêtre de réparateur ouverte.";
+    L["CREDITS"] = "EMH - version %s - par Iryon";
+
     -- Items names
     L["head"] = "le casque";
     L["shoulder"] = "les épaulières";
