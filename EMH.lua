@@ -165,21 +165,21 @@ end
 
 -- Create the main frame
 
-MainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset");
+MainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset")
 
-MainFrame:SetSize(FRAMES_WIDTH, FRAMES_HEIGHT);
-MainFrame:SetFrameStrata("DIALOG");
-SetFramePosition(MainFrame);
-MainFrame.TitleBg:SetHeight(30);
-MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
-MainFrame.title:SetPoint("TOPLEFT", MainFrame.TitleBg, "TOPLEFT", 5, -3);
-MainFrame.title:SetText(L["MAIN_FRAME_TITLE"]);
+MainFrame:SetSize(FRAMES_WIDTH, FRAMES_HEIGHT)
+MainFrame:SetFrameStrata("DIALOG")
+SetFramePosition(MainFrame)
+MainFrame.TitleBg:SetHeight(30)
+MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+MainFrame.title:SetPoint("TOPLEFT", MainFrame.TitleBg, "TOPLEFT", 5, -3)
+MainFrame.title:SetText(L["MAIN_FRAME_TITLE"])
 
-MainFrame.subTitle1 = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-MainFrame.subTitle1:SetPoint("TOP", MainFrame, "TOP", 0, -35);
-MainFrame.subTitle1:SetText(L["SUB_TITLE"]);
-MainFrame.goldSaved = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 0, -20);
+MainFrame.subTitle1 = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+MainFrame.subTitle1:SetPoint("TOP", MainFrame, "TOP", 0, -35)
+MainFrame.subTitle1:SetText(L["SUB_TITLE"])
+MainFrame.goldSaved = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 0, -20)
 
 -- Draw a horizontal line
 MainFrame.backgroundButtonRepair = MainFrame:CreateTexture(nil, "ARTWORK")
@@ -220,16 +220,16 @@ goToSettingsButton:SetScript("OnClick", function(self, button, down)
 end)
 
 -- Main frame interactions
-MainFrame:EnableMouse(true);
-MainFrame:SetMovable(true);
-MainFrame:RegisterForDrag("LeftButton");
+MainFrame:EnableMouse(true)
+MainFrame:SetMovable(true)
+MainFrame:RegisterForDrag("LeftButton")
 MainFrame:SetScript("OnDragStart", function(self)
-    self:StartMoving();
-end);
+    self:StartMoving()
+end)
 MainFrame:SetScript("OnDragStop", function(self)
-    self:StopMovingOrSizing();
+    self:StopMovingOrSizing()
     SaveFramePosition(MainFrame)
-end);
+end)
 
 -- Add tooltip to the button
 tooltipButton:SetScript("OnEnter", function(self)
@@ -243,7 +243,7 @@ tooltipButton:SetScript("OnLeave", function(self)
 end)
 
 -- Allow escap key to close the frame
-table.insert(UISpecialFrames, "EMHMainFrame");
+table.insert(UISpecialFrames, "EMHMainFrame")
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -395,7 +395,7 @@ end)
 --------------------------------------------------------------------------------
 
 
-SLASH_EMH1 = "/emh";
+SLASH_EMH1 = "/emh"
 SlashCmdList.EMH = function()
     -- Check if the player has the right profession: Blacksmithing
     if BadProfession then
@@ -408,16 +408,16 @@ SlashCmdList.EMH = function()
     -- Hide both frames and save the position of the Main Frame
     if MainFrame:IsShown() then
         SaveFramePosition(MainFrame)
-        MainFrame:Hide();
-        SettingsFrame:Hide();
+        MainFrame:Hide()
+        SettingsFrame:Hide()
         -- Set the Main Frame position, update the gold saved, show the Main Frame and hide the Settings Frame
     elseif not MainFrame:IsShown() then
         MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
         SetFramePosition(MainFrame)
-        SettingsFrame:Hide();
-        MainFrame:Show();
+        SettingsFrame:Hide()
+        MainFrame:Show()
     end
-end;
+end
 
 --------------------------------------------------------------------------------
 --- Everything is working

@@ -10,7 +10,7 @@ BadProfession = false        -- True if the player doesn't have the right profes
 FRAMES_WIDTH = 520           -- Width of the frames
 FRAMES_HEIGHT = 300          -- Height of the frames
 HAMMER_ID = 225660           -- ID of the Earthen Master's Hammer
-_, L = ...;                  -- Localization
+_, L = ...                   -- Localization
 TICKER = 0.1                 -- Ticker duration in seconds
 
 local BLACKSMITHING_ID = 164 -- ID of the Blacksmithing profession

@@ -1,6 +1,6 @@
 # EMH: Earthen Master's Hammer
 
-A 'World of Warcraft: The War Within' addon to simplify the use of the blacksmithing item "Earthen Master's Hammer".
+A 'World of Warcraft: The War Within' AddOn to simplify the use of the blacksmithing item "Earthen Master's Hammer".
 
 ## Installation
 
@@ -10,11 +10,14 @@ You can also download and install it manually from Curseforge or GitHub. Once yo
 
 ## Usage
 
-The frame will automatically open when talking to a repair merchant. You can also open it manually by typing the following command in the chat:
+The frame will automatically open when talking to a repair merchant (if repairs are needed). You can also open it manually by typing the following command in the chat:
 
 ```
 /emh
 ```
+
+In the Settings frame, you can check the items that you can repair (I did not find a way to automate that), and then, in the Main frame, you can repair any equipped item by clicking the same button.
+If you do it while talking to a repair merchant, it will also record the savings you made while using the AddOn.
 
 ## Contributing
 
@@ -25,3 +28,7 @@ Please keep in mind that this is my first WoW addon and that English is not my f
 ## License
 
 [GPL-3.0](LICENSE)
+
+## Credits
+
+I followed [this guide](https://www.reddit.com/r/wowaddondev/comments/1cc2pia/creating_a_wow_addon_part_1_a_fresh_start/?rdt=36019) to learn the basics of AddOn creation, so a big thanks to the author!
