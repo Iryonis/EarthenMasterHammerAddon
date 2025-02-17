@@ -1,4 +1,4 @@
-local addonName, L = ...; -- Let's use the private table passed to every .lua file to store our locale
+local _, L = ...; -- Let's use the private table passed to every .lua file to store our locale
 local function defaultFunc(L, key)
     -- If this function was called, we have no localization for this key.
     -- We could complain loudly to allow localizers to see the error of their ways,
@@ -34,7 +34,7 @@ L["SETTINGS_TO_MAIN_BUTTON"] = "Switch to main";
 L["SETTINGS_SUB_TITLE"] = "Please check the items you can repair:";
 L["SETTINGS_SUB_TITLE_NOTE_1"] = "(Note: You can only repair items with a max level specialization node.)";
 L["SETTINGS_SUB_TITLE_NOTE_2"] = "(Make sure to select the correct items.)";
-L["SETTINGS_TOOLTIP"] = "Check the box if you have the specialization node %s at max level.";
+L["SETTINGS_TOOLTIP"] = "Check the box if you have the Blacksmithing node %s at max level.";
 
 -- Nodes
 L["head_node"] = "'Helms'";

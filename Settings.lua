@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--------------------------- Create the checkboxes ----------------------------
+-------------------------- Create the checkboxes -------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --- Variables
@@ -18,8 +18,7 @@ Create a checkbox with the given text, key and tooltip, and add it to the Settin
 function CreateCheckbox(checkboxText, key, checkboxTooltip)
     local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
     checkbox.Text:SetText(" - " .. checkboxText)
-    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote2, "TOP", (-20 + secondColumn), -30 + (checkboxes * -30))
-
+    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote1, "TOP", (-135 + secondColumn), -50 + (checkboxes * -30))
 
     if EMHDB.settingsKeys[key] == nil then
         EMHDB.settingsKeys[key] = true

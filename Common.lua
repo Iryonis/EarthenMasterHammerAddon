@@ -6,17 +6,14 @@
 --- Variables and constants
 --------------------------------------------------------------------------------
 
-BadProfession = false       -- True if the player doesn't have the right profession (Blacksmithing)
-FRAMES_WIDTH = 520          -- Width of the frames
-FRAMES_HEIGHT = 300         -- Height of the frames
-HAMMER_ID = 225660          -- ID of the Earthen Master's Hammer
-_, L = ...;                 -- Localization
-TICKER = 0.1                -- Ticker duration in seconds
+BadProfession = false        -- True if the player doesn't have the right profession (Blacksmithing)
+FRAMES_WIDTH = 520           -- Width of the frames
+FRAMES_HEIGHT = 300          -- Height of the frames
+HAMMER_ID = 225660           -- ID of the Earthen Master's Hammer
+_, L = ...;                  -- Localization
+TICKER = 0.1                 -- Ticker duration in seconds
 
-local VALID_PROFESSIONS = { -- Valid professions for the addon
-    ["Forge"] = true,
-    ["Blacksmithing"] = true,
-}
+local BLACKSMITHING_ID = 164 -- ID of the Blacksmithing profession
 
 SETTINGS = {
     {
@@ -105,11 +102,11 @@ NAME_TO_ID = {
 --- Profession functions
 
 --- Get the name of the profession at the given index
-local function getProfessionName(professionIndex)
+local function getProfessionId(professionIndex)
     if professionIndex then
-        local name, _, _, _, _, _, _, _, _, _ =
+        local _, _, _, _, _, _, skillId, _, _, _ =
             GetProfessionInfo(professionIndex)
-        return name
+        return skillId
     end
     return "None"
 end
@@ -118,10 +115,10 @@ end
 function CheckProfession()
     local prof1, prof2, _, _, _ = GetProfessions()
 
-    local name1 = getProfessionName(prof1)
-    local name2 = getProfessionName(prof2)
+    local skill1 = getProfessionId(prof1)
+    local skill2 = getProfessionId(prof2)
 
-    if not VALID_PROFESSIONS[name1] and not VALID_PROFESSIONS[name2] then -- vérifier blacksmithing
+    if skill1 ~= BLACKSMITHING_ID and skill2 ~= BLACKSMITHING_ID then -- vérifier blacksmithing
         BadProfession = true
         return
     end

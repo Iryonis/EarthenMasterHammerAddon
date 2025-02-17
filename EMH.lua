@@ -9,7 +9,6 @@ local repairOpen = false            -- True if the frame of a merchant who can r
 local RIGHT_OF_MERCHANT_FRAME = 298 -- Position of the MainFrame relative to the MerchantFrame
 local VERSION = "1.0.0"             -- Version of the addon
 
-
 --[[
 Check if the player needs to repair his items
 
@@ -50,10 +49,6 @@ local function closeEMHMerchant()
         SettingsFrame:Hide()
     end
 end
-
-
-
-
 
 --------------------------------------------------------------------------------
 --- Initialization
@@ -160,8 +155,6 @@ local function checkHammerPresence(id)
     end
 end
 
-
-
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 ---------------------------- Create the MainFrame ------------------------------
@@ -190,9 +183,9 @@ MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 0, -20);
 
 -- Draw a horizontal line
 MainFrame.backgroundButtonRepair = MainFrame:CreateTexture(nil, "ARTWORK")
-MainFrame.backgroundButtonRepair:SetColorTexture(1, 1, 1, 0.05)                         -- Set the color to WoW yellow
-MainFrame.backgroundButtonRepair:SetSize(480, 100)                                      -- Set the size (width, height)
-MainFrame.backgroundButtonRepair:SetPoint("TOP", MainFrame.goldSaved, "BOTTOM", 0, -30) -- Set the position
+MainFrame.backgroundButtonRepair:SetColorTexture(1, 1, 1, 0.05) -- Set the color to WoW yellow
+MainFrame.backgroundButtonRepair:SetSize(480, 100)
+MainFrame.backgroundButtonRepair:SetPoint("TOP", MainFrame.goldSaved, "BOTTOM", 0, -30)
 -- Credits
 MainFrame.credits = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 MainFrame.credits:SetPoint("BOTTOM", MainFrame, "BOTTOM", 0, 15)
@@ -200,7 +193,7 @@ MainFrame.credits:SetText(string.format(L["CREDITS"], VERSION))
 
 local horizontalLineCredits = MainFrame:CreateTexture(nil, "ARTWORK")
 horizontalLineCredits:SetColorTexture(1, 0.82, 0, 1) -- Set the color to WoW yellow
-horizontalLineCredits:SetSize(240, 1)                -- Set the size (width, height)
+horizontalLineCredits:SetSize(240, 1)
 horizontalLineCredits:SetPoint("TOP", MainFrame.credits, "TOP", 0, 35)
 
 -- Tooltip gold
@@ -226,8 +219,6 @@ goToSettingsButton:SetScript("OnClick", function(self, button, down)
     SettingsFrame:Show()
 end)
 
-
-
 -- Main frame interactions
 MainFrame:EnableMouse(true);
 MainFrame:SetMovable(true);
@@ -252,12 +243,11 @@ tooltipButton:SetScript("OnLeave", function(self)
 end)
 
 -- Allow escap key to close the frame
-
 table.insert(UISpecialFrames, "EMHMainFrame");
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
----------------------------- Button repair ------------------------------
+----------------------------- Button repair ------------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --- Button to repair items
