@@ -9,15 +9,15 @@ end
 setmetatable(L, { __index = defaultFunc });
 
 --- Main
-L["FORMAT_MONEY"] = "%d gold, %d silver, %d copper";
-L["MAIN_FRAME_TITLE"] = "EMH: Earthen Masters's Hammer";
+L["FORMAT_MONEY"] = "%s gold, %d silver, %d copper";
+L["MAIN_FRAME_TITLE"] = "EMH: Earthen Master's Hammer";
 L["SUB_TITLE"] = "By repairing your gear with EMH, you have saved:";
 L["MAIN_TO_SETTINGS_BUTTON"] = "Switch to settings";
 L["LOADING"] = "Loading...";
 L["NO_EMH"] =
-"Warnings: It seems that you currently don't have the Earthen Master's Hammer in your inventory. Please make sure to get it before using the addon.";
-L["NO_REPAIR"] = "No repair needed"
-L["SAVED_MONEY_PRINT"] = "You just saved %s using EMH."
+"Warning: It seems that you currently don't have the Earthen Master's Hammer in your inventory. Please make sure to get it before using the addon.";
+L["NO_REPAIR"] = "No repair needed";
+L["SAVED_MONEY_PRINT"] = "You just saved %s using EMH.";
 L["REPAIR_BUTTON"] = "Repair %s (%d/%d)";
 L["MACRO"] = "/use Earthen Master's Hammer\n/use %d";
 L["GOLD_TOOLTIP"] =
@@ -25,32 +25,25 @@ L["GOLD_TOOLTIP"] =
 L["CREDITS"] = "EMH - v%s - by Iryon";
 
 -- Items names
-L["head"] = "head item";
-L["shoulder"] = "shoulder item";
-L["chest"] = "chest item";
-L["waist"] = "waist item";
-L["legs"] = "legs item";
-L["feet"] = "feet item";
-L["wrists"] = "wrists item";
-L["hands"] = "hands item";
-L["mainHand"] = "main hand item";
-L["offHand"] = "off hand item";
+L["mainHand"] = "Main hand item";
+L["offHand"] = "Off hand item";
 
 --- Settings
-L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Masters's Hammer - Settings";
+L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Master's Hammer - Settings";
 L["SETTINGS_TO_MAIN_BUTTON"] = "Switch to main";
 L["SETTINGS_SUB_TITLE"] = "Please check the items you can repair:";
 L["SETTINGS_SUB_TITLE_NOTE_1"] = "(Note: You can only repair items with a max level specialization node.)";
-L["SETTINGS_TOOLTIP"] = "Cochez l'option si vous avez le noeud de Forge '%s' au niveau maximum.";
+L["SETTINGS_SUB_TITLE_NOTE_2"] = "(Make sure to select the correct items.)";
+L["SETTINGS_TOOLTIP"] = "Check the box if you have the specialization node %s at max level.";
 
 -- Nodes
-L["head_node"] = "";
-L["shoulder_node"] = "";
-L["chest_node"] = "";
-L["waist_node"] = "";
-L["legs_node"] = "";
-L["feet_node"] = "";
-L["wrists_node"] = "";
-L["hands_node"] = "";
-L["mainHand_node"] = "";
-L["offHand_node"] = "";
+L["head_node"] = "'Helms'";
+L["shoulder_node"] = "'Pauldrons'";
+L["chest_node"] = "'Breastplates'";
+L["waist_node"] = "'Belts'";
+L["legs_node"] = "'Greaves'";
+L["feet_node"] = "'Sabatons'";
+L["wrists_node"] = "'Vambraces'";
+L["hands_node"] = "'Gauntlets'";
+L["mainHand_node"] = "for your main hand weapon ('Axes and Polearms' / 'Long Blades' / 'Short Blades' / 'Maces')";
+L["offHand_node"] = "for your off-hand item ('Shields' / 'Short Blades' / 'Long Blades' / 'Maces')";

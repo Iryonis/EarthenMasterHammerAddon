@@ -17,16 +17,8 @@ if GetLocale() == "frFR" then
     L["CREDITS"] = "EMH - version %s - par Iryon";
 
     -- Items names
-    L["head"] = "le casque";
-    L["shoulder"] = "les épaulières";
-    L["chest"] = "le plastron";
-    L["waist"] = "la ceinture";
-    L["legs"] = "les jambières";
-    L["feet"] = "les bottes";
-    L["wrists"] = "les brassards";
-    L["hands"] = "les gants";
-    L["mainHand"] = "l'arme principale";
-    L["offHand"] = "l'arme secondaire";
+    L["mainHand"] = "Main principale";
+    L["offHand"] = "Main secondaire";
 
     --- Settings
     L["SETTINGS_FRAME_TITLE"] = "EMH : Marteau de maître terrestre - Paramètres";

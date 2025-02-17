@@ -7,6 +7,8 @@
 --------------------------------------------------------------------------------
 
 BadProfession = false       -- True if the player doesn't have the right profession (Blacksmithing)
+FRAMES_WIDTH = 520          -- Width of the frames
+FRAMES_HEIGHT = 300         -- Height of the frames
 HAMMER_ID = 225660          -- ID of the Earthen Master's Hammer
 _, L = ...;                 -- Localization
 TICKER = 0.1                -- Ticker duration in seconds
@@ -18,42 +20,42 @@ local VALID_PROFESSIONS = { -- Valid professions for the addon
 
 SETTINGS = {
     {
-        settingText = L["head"],
+        settingText = L["head_node"],
         settingKey = "head",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["head_node"]),
     },
     {
-        settingText = L["shoulder"],
+        settingText = L["shoulder_node"],
         settingKey = "shoulder",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["shoulder_node"]),
     },
     {
-        settingText = L["chest"],
+        settingText = L["chest_node"],
         settingKey = "chest",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["chest_node"]),
     },
     {
-        settingText = L["waist"],
+        settingText = L["waist_node"],
         settingKey = "waist",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["waist_node"]),
     },
     {
-        settingText = L["legs"],
+        settingText = L["legs_node"],
         settingKey = "legs",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["legs_node"]),
     },
     {
-        settingText = L["feet"],
+        settingText = L["feet_node"],
         settingKey = "feet",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["feet_node"]),
     },
     {
-        settingText = L["wrists"],
+        settingText = L["wrists_node"],
         settingKey = "wrists",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["wrists_node"]),
     },
     {
-        settingText = L["hands"],
+        settingText = L["hands_node"],
         settingKey = "hands",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["hands_node"]),
     },

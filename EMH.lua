@@ -5,10 +5,9 @@
 --- Function and variables needed at initialization
 --------------------------------------------------------------------------------
 
-local repairOpen = false              -- True if the frame of a merchant who can repair is open
-local checkboxes, secondColumn = 0, 0 -- Variables to place the checkboxes
-local RIGHT_OF_MERCHANT_FRAME = 298   -- Position of the MainFrame relative to the MerchantFrame
-local VERSION = "1.0.0"               -- Version of the addon
+local repairOpen = false            -- True if the frame of a merchant who can repair is open
+local RIGHT_OF_MERCHANT_FRAME = 298 -- Position of the MainFrame relative to the MerchantFrame
+local VERSION = "1.0.0"             -- Version of the addon
 
 
 --[[
@@ -53,52 +52,7 @@ local function closeEMHMerchant()
 end
 
 
---- Initialize checkbox
 
---[[
-Create a checkbox with the given text, key and tooltip, and add it to the SettingsFrame.
-]]
-local function createCheckbox(checkboxText, key, checkboxTooltip)
-    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
-    checkbox.Text:SetText(" - " .. checkboxText)
-    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote2, "TOP", (30 + secondColumn), -30 + (checkboxes * -30))
-
-
-    if EMHDB.settingsKeys[key] == nil then
-        EMHDB.settingsKeys[key] = true
-        AddByName(key)
-    end
-
-    checkbox:SetChecked(EMHDB.settingsKeys[key])
-
-    checkbox:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(checkboxTooltip, nil, nil, nil, nil, true)
-    end)
-
-    checkbox:SetScript("OnLeave", function(self)
-        GameTooltip:Hide()
-    end)
-
-    checkbox:SetScript("OnClick", function(self)
-        EMHDB.settingsKeys[key] = self:GetChecked()
-        if (EMHDB.settingsKeys[key]) then
-            AddByName(key)
-            EMHDB.to_repair = EMHDB.to_repair + 1
-        else
-            RemoveByName(key)
-            EMHDB.to_repair = EMHDB.to_repair - 1
-        end
-    end)
-
-    checkboxes = checkboxes + 1
-    if (checkboxes == 6) then
-        secondColumn = 200
-        checkboxes = 0
-    end
-
-    return checkbox
-end
 
 
 --------------------------------------------------------------------------------
@@ -140,10 +94,8 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
         end
 
         for _, setting in pairs(SETTINGS) do
-            createCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
+            CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
-
-        EMHDB.to_repair = #EMHDB.keys
     elseif (event == "MERCHANT_SHOW" and not BadProfession) then
         openEMHMerchant(MainFrame)
     elseif (event == "MERCHANT_CLOSED" and not BadProfession) then
@@ -159,22 +111,41 @@ end)
 --- Local variables and constants
 --------------------------------------------------------------------------------
 
-local itemName, repairAllCost, currentRepairCost, current, maximum
+local itemName, repairAllCost, currentRepairCost
 local testTicker = {}
 
 --------------------------------------------------------------------------------
 --- Miscellaneous functions
 --------------------------------------------------------------------------------
+---
+
+-- Format a number with commas: 155425 -> "155,425"
+local function formatNumberWithCommas(number)
+    local formatted = tostring(number)
+    while true do
+        local k
+        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+        if k == 0 then
+            break
+        end
+    end
+    return formatted
+end
 
 -- Format money in gold, silver and copper: 155425 -> "15 gold, 54 silver, 25 copper"
-local function formatMoney(copper)
-    if copper == 0 then
+local function formatMoney(money)
+    if money == 0 then
         return string.format(L["FORMAT_MONEY"], 0, 0, 0)
     end
-    local gold = math.floor(copper / 10000)
-    local silver = math.floor((copper % 10000) / 100)
-    local copper = copper % 100
-    return string.format(L["FORMAT_MONEY"], gold, silver, copper)
+    local gold = math.floor(money / 10000)
+    local silver = math.floor((money % 10000) / 100)
+    local copper = money % 100
+    -- Different format depending on language
+    if GetLocale() == "enUS" then
+        return string.format(L["FORMAT_MONEY"], formatNumberWithCommas(gold), silver, copper)
+    else
+        return string.format(L["FORMAT_MONEY"], gold, silver, copper)
+    end
 end
 
 -- Check if the player has the hammer in his inventory
@@ -203,7 +174,7 @@ end
 
 MainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset");
 
-MainFrame:SetSize(520, 320);
+MainFrame:SetSize(FRAMES_WIDTH, FRAMES_HEIGHT);
 MainFrame:SetFrameStrata("DIALOG");
 SetFramePosition(MainFrame);
 MainFrame.TitleBg:SetHeight(30);
@@ -212,21 +183,30 @@ MainFrame.title:SetPoint("TOPLEFT", MainFrame.TitleBg, "TOPLEFT", 5, -3);
 MainFrame.title:SetText(L["MAIN_FRAME_TITLE"]);
 
 MainFrame.subTitle1 = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-MainFrame.subTitle1:SetPoint("TOPLEFT", MainFrame, "TOPLEFT", 15, -35);
+MainFrame.subTitle1:SetPoint("TOP", MainFrame, "TOP", 0, -35);
 MainFrame.subTitle1:SetText(L["SUB_TITLE"]);
 MainFrame.goldSaved = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 30, -15);
+MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 0, -20);
+
+-- Draw a horizontal line
+MainFrame.backgroundButtonRepair = MainFrame:CreateTexture(nil, "ARTWORK")
+MainFrame.backgroundButtonRepair:SetColorTexture(1, 1, 1, 0.05)                         -- Set the color to WoW yellow
+MainFrame.backgroundButtonRepair:SetSize(480, 100)                                      -- Set the size (width, height)
+MainFrame.backgroundButtonRepair:SetPoint("TOP", MainFrame.goldSaved, "BOTTOM", 0, -30) -- Set the position
 -- Credits
 MainFrame.credits = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 MainFrame.credits:SetPoint("BOTTOM", MainFrame, "BOTTOM", 0, 15)
 MainFrame.credits:SetText(string.format(L["CREDITS"], VERSION))
 
--- Tooltip gold
+local horizontalLineCredits = MainFrame:CreateTexture(nil, "ARTWORK")
+horizontalLineCredits:SetColorTexture(1, 0.82, 0, 1) -- Set the color to WoW yellow
+horizontalLineCredits:SetSize(240, 1)                -- Set the size (width, height)
+horizontalLineCredits:SetPoint("TOP", MainFrame.credits, "TOP", 0, 35)
 
+-- Tooltip gold
 local tooltipButton = CreateFrame("Button", nil, MainFrame, "UIPanelButtonTemplate")
 tooltipButton:SetSize(24, 24)
-tooltipButton:SetPoint("TOPRIGHT", MainFrame.subTitle1, "TOPRIGHT", 50, 5)
-
+tooltipButton:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -13, -30)
 -- Create a font string for the "?"
 local fontString = tooltipButton:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 fontString:SetPoint("CENTER", tooltipButton, "CENTER", 0, 0)
@@ -234,7 +214,6 @@ fontString:SetText("?")
 
 
 -- Button "Go to settings frame"
-
 local goToSettingsButton = CreateFrame("Button", "goToSettingsButton", MainFrame, "UIPanelButtonTemplate")
 goToSettingsButton:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -25, 0)
 goToSettingsButton:SetSize(150, 20)
@@ -250,7 +229,6 @@ end)
 
 
 -- Main frame interactions
-
 MainFrame:EnableMouse(true);
 MainFrame:SetMovable(true);
 MainFrame:RegisterForDrag("LeftButton");
@@ -263,7 +241,6 @@ MainFrame:SetScript("OnDragStop", function(self)
 end);
 
 -- Add tooltip to the button
-
 tooltipButton:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:SetText(L["GOLD_TOOLTIP"], nil, nil, nil, nil, true)
@@ -279,12 +256,16 @@ end)
 table.insert(UISpecialFrames, "EMHMainFrame");
 
 --------------------------------------------------------------------------------
---- Button to repair the items
+--------------------------------------------------------------------------------
+---------------------------- Button repair ------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Button to repair items
 --------------------------------------------------------------------------------
 
 local useItemButton = CreateFrame("Button", "UseItemButton", MainFrame,
     "SecureActionButtonTemplate, UIPanelButtonTemplate")
-useItemButton:SetPoint("CENTER", MainFrame, 0, 0)
+useItemButton:SetPoint("CENTER", MainFrame, "CENTER", 0, -10)
 useItemButton:SetSize(280, 40)
 useItemButton:SetText(L["LOADING"])
 useItemButton:RegisterForClicks("AnyUp", "AnyDown")
@@ -294,29 +275,46 @@ useItemButton:SetAttribute("type1", "macro")
 --- Button repair's functions
 --------------------------------------------------------------------------------
 
+-- Check the durability of all the items and update EMHDB.to_repair in consequence
+local function performAllTests()
+    EMHDB.to_repair = 0
+    for _, key in ipairs(EMHDB.keys) do
+        local current, maximum = GetInventoryItemDurability(key)
+        if current and maximum and current < maximum then
+            EMHDB.to_repair = EMHDB.to_repair + 1
+        end
+    end
+end
+
+-- Check the durability of the given item
+
+-- @param i: the index of the item to check
+-- @return true if the item has full durability or isn't checked in the settings, false otherwise
+local function performTest(i)
+    local current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
+    if current and maximum and current < maximum then
+        return false
+    end
+    return true
+end
+
 --[[
 Check the durability of the items and update the button if a repair is needed
-Start the ticker to check durability every second until the item is repaired
 
 @param i: the index of the item to check
+@param numero_item: the numero of the item which is being repaired
 @return true if the item has full durability or isn't checked in the settings, false otherwise
 ]]
-local function performTest(i)
-    current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
-    if current and maximum then
-        if current < maximum then
-            -- Update the repair button and wait for the users to click on it
-            useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], i, EMHDB.to_repair))
-            useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], EMHDB.keys[i]))
-            return false
-        else
-            -- Go to the next item
-            return true
-        end
-    else
-        -- If the item has full durability or isn't checked in the settings, go to the next item
-        return true
+local function testAndUpdateButton(i, numero_item)
+    if not performTest(i) then
+        -- Update the repair button and wait for the users to click on it
+        useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], numero_item,
+            EMHDB.to_repair))
+        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], EMHDB.keys[i]))
+        return false
     end
+    -- Go to the next item
+    return true
 end
 
 --[[
@@ -335,37 +333,41 @@ local function endRepairs()
     end
 end
 
+-- Function declared here to avoid a circular dependency
+local waitForUserToRepair, runTestsInstantly
+
 --[[
-Start the ticker to check durability every {TICKER} seconds until all the items are repaired,
-then stop the ticker and update the button
+Wait for the user to repair the item then update i and numero_item, and run the tests again
+Use a ticker to check the durability every {TICKER} seconds
+
+@param i: the index of the item to check
+@param numero_item: the numero of the item which is being repaired
 ]]
-local function startTicker(i)
-    testTicker = C_Timer.NewTicker(TICKER, function()
-        local continue = performTest(i)
-        if continue then
-            i = i + 1
-            if i > #EMHDB.keys then
-                endRepairs()
-                testTicker:Cancel()
-                testTicker = nil
-            end
-        end
-    end)
+waitForUserToRepair = function(i, numero_item)
+    if testAndUpdateButton(i, numero_item) then
+        i = i + 1
+        numero_item = numero_item + 1
+
+        runTestsInstantly(i, numero_item)
+    else
+        C_Timer.After(TICKER, function() waitForUserToRepair(i, numero_item) end)
+    end
 end
 
 
 --[[
 Run all tests instantly to check if any items need to be repaired
 If a repair is needed, start the ticker to check durability every second until the item is repaired
-]] --
 
-local function runTestsInstantly(i)
-    repairAllCost, _ = GetRepairAllCost()
+@param i: the index of the item to check
+@param numero_item: the numero of the item which is being repaired
+]]
+
+runTestsInstantly = function(i, numero_item)
     while i <= #EMHDB.keys do
-        local continue = performTest(i)
-        if not continue then
+        if not performTest(i) then
             -- If a repair is needed, start the ticker
-            startTicker(i)
+            waitForUserToRepair(i, numero_item)
             return
         end
         i = i + 1
@@ -385,7 +387,9 @@ end
 
 -- When the Main Frame is shown, run the tests
 MainFrame:SetScript("OnShow", function()
-    runTestsInstantly(1)
+    repairAllCost, _ = GetRepairAllCost()
+    performAllTests()
+    runTestsInstantly(1, 1)
 end)
 
 -- When the Main Frame is hidden, stop the tests

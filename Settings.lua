@@ -1,5 +1,64 @@
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+-------------------------- Create the checkboxes ----------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--- Variables
+--------------------------------------------------------------------------------
+
+local checkboxes, secondColumn = 0, 0 -- Variables to place the checkboxes
+
+--------------------------------------------------------------------------------
+--- Functions
+--------------------------------------------------------------------------------
+
+--[[
+Create a checkbox with the given text, key and tooltip, and add it to the SettingsFrame.
+]]
+function CreateCheckbox(checkboxText, key, checkboxTooltip)
+    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
+    checkbox.Text:SetText(" - " .. checkboxText)
+    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote2, "TOP", (-20 + secondColumn), -30 + (checkboxes * -30))
+
+
+    if EMHDB.settingsKeys[key] == nil then
+        EMHDB.settingsKeys[key] = true
+        AddByName(key)
+    end
+
+    checkbox:SetChecked(EMHDB.settingsKeys[key])
+
+    checkbox:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(checkboxTooltip, nil, nil, nil, nil, true)
+    end)
+
+    checkbox:SetScript("OnLeave", function(self)
+        GameTooltip:Hide()
+    end)
+
+    checkbox:SetScript("OnClick", function(self)
+        EMHDB.settingsKeys[key] = self:GetChecked()
+        if (EMHDB.settingsKeys[key]) then
+            AddByName(key)
+            EMHDB.to_repair = EMHDB.to_repair + 1
+        else
+            RemoveByName(key)
+            EMHDB.to_repair = EMHDB.to_repair - 1
+        end
+    end)
+
+    checkboxes = checkboxes + 1
+    if (checkboxes == 5) then
+        secondColumn = 200
+        checkboxes = 0
+    end
+
+    return checkbox
+end
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -------------------------- Create the SettingsFrame ----------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -8,7 +67,7 @@
 
 SettingsFrame = CreateFrame("Frame", "EMHSettingsFrame", UIParent, "BasicFrameTemplateWithInset");
 
-SettingsFrame:SetSize(520, 320);
+SettingsFrame:SetSize(FRAMES_WIDTH, FRAMES_HEIGHT);
 SettingsFrame:SetFrameStrata("DIALOG")
 SetFramePosition(SettingsFrame);
 SettingsFrame.TitleBg:SetHeight(30);
