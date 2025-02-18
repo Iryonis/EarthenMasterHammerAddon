@@ -57,12 +57,12 @@ SETTINGS = {
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["hands_node"]),
     },
     {
-        settingText = L["mainHand"],
+        settingText = L["mainHandSettings"],
         settingKey = "mainHand",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["mainHand_node"]),
     },
     {
-        settingText = L["offHand"],
+        settingText = L["offHandSettings"],
         settingKey = "offHand",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["offHand_node"]),
     },

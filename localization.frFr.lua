@@ -16,9 +16,17 @@ if GetLocale() == "frFR" then
     "En raison de limitations de l'API de Blizzard, le montant affiché ne prend en compte que les économies réalisées lors de l'utilisation d'EMH avec une fenêtre de réparateur ouverte."
     L["CREDITS"] = "EMH - version %s - par Iryon"
 
-    -- Items names
-    L["mainHand"] = "Main principale"
-    L["offHand"] = "Main secondaire"
+    -- Item names
+    L["head"] = "le casque"
+    L["shoulder"] = "les épaules"
+    L["chest"] = "le torse"
+    L["waist"] = "la ceinture"
+    L["legs"] = "les jambes"
+    L["feet"] = "les pieds"
+    L["wrists"] = "les poignets"
+    L["hands"] = "les gants"
+    L["mainHand"] = "l'arme principale"
+    L["offHand"] = "l'arme secondaire"
 
     --- Settings
     L["SETTINGS_FRAME_TITLE"] = "EMH : Marteau de maître terrestre - Paramètres"
@@ -28,6 +36,10 @@ if GetLocale() == "frFR" then
     "(Note : Vous ne pouvez réparer que les objets dont le noeud de spécialisation"
     L["SETTINGS_SUB_TITLE_NOTE_2"] = "est au niveau maximal)"
     L["SETTINGS_TOOLTIP"] = "Cochez l'option si vous avez le noeud de spécialisation %s au niveau maximal."
+    -- Item names in settings
+    L["mainHandSettings"] = "Main principale"
+    L["offHandSettings"] = "Main secondaire"
+
     -- Nodes
     L["head_node"] = "'Heaumes'"
     L["shoulder_node"] = "'Espauliers'"

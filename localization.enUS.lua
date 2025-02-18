@@ -24,9 +24,9 @@ L["GOLD_TOOLTIP"] =
 "Due to limitations in Blizzard's API, the displayed amount only accounts for the savings made when using EMH while having a repair frame open."
 L["CREDITS"] = "EMH - v%s - by Iryon"
 
--- Items names
-L["mainHand"] = "Main hand item"
-L["offHand"] = "Off hand item"
+-- Item names
+L["mainHand"] = "main hand item"
+L["offHand"] = "off hand item"
 
 --- Settings
 L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Master's Hammer - Settings"
@@ -35,6 +35,9 @@ L["SETTINGS_SUB_TITLE"] = "Please check the items you can repair:"
 L["SETTINGS_SUB_TITLE_NOTE_1"] = "(Note: You can only repair items with a max level specialization node.)"
 L["SETTINGS_SUB_TITLE_NOTE_2"] = "(Make sure to select the correct items.)"
 L["SETTINGS_TOOLTIP"] = "Check the box if you have the Blacksmithing node %s at max level."
+-- Item names in settings
+L["mainHandSettings"] = "Main hand item"
+L["offHandSettings"] = "Off hand item"
 
 -- Nodes
 L["head_node"] = "'Helms'"

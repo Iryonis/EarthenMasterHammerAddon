@@ -107,7 +107,6 @@ end)
 --------------------------------------------------------------------------------
 
 local itemName, repairAllCost, currentRepairCost
-local testTicker = {}
 
 --------------------------------------------------------------------------------
 --- Miscellaneous functions
@@ -380,14 +379,6 @@ MainFrame:SetScript("OnShow", function()
     repairAllCost, _ = GetRepairAllCost()
     performAllTests()
     runTestsInstantly(1, 1)
-end)
-
--- When the Main Frame is hidden, stop the tests
-MainFrame:SetScript("OnHide", function()
-    if testTicker then
-        testTicker:Cancel()
-        testTicker = nil
-    end
 end)
 
 --------------------------------------------------------------------------------
