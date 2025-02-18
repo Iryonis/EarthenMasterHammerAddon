@@ -113,33 +113,64 @@ local itemName, repairAllCost, currentRepairCost
 --------------------------------------------------------------------------------
 ---
 
--- Format a number with commas: 155425 -> "155,425"
+--[[
+Format a number with commas or spaces in a string depending on the Locale
+If French (frFR): 155425 -> "155 425"
+Else: 155425 -> "155,425"
+
+@param number: the number to format
+@return the formatted number in a string
+]]
 local function formatNumberWithCommas(number)
+    -- Check if "number" is of type number
+    if type(number) ~= "number" then
+        error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(number)))
+    end
+
     local formatted = tostring(number)
+    local format
+
+    -- Check the locale and set the format accordingly
+    if GetLocale() == "frFR" then
+        format = '%1 %2'
+    else
+        format = '%1,%2'
+    end
+
+    -- Format the number with commas or spaces and return
     while true do
         local k
-        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", format)
         if k == 0 then
             break
         end
     end
+
     return formatted
 end
 
--- Format money in gold, silver and copper: 155425 -> "15 gold, 54 silver, 25 copper"
+--[[
+Format money in string with text
+Example with 155425 -> "15 gold, 54 silver, 25 copper"
+
+@param money: the amount of money to format
+@return the formatted money in a string
+]]
 local function formatMoney(money)
+    -- Check if "money" is of type number
+    if type(money) ~= "number" then
+        error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(money)))
+    end
+    -- If money is 0, return 0 formatted
     if money == 0 then
         return string.format(L["FORMAT_MONEY"], 0, 0, 0)
     end
+
     local gold = math.floor(money / 10000)
     local silver = math.floor((money % 10000) / 100)
     local copper = money % 100
-    -- Different format depending on language
-    if GetLocale() == "enUS" then
-        return string.format(L["FORMAT_MONEY"], formatNumberWithCommas(gold), silver, copper)
-    else
-        return string.format(L["FORMAT_MONEY"], gold, silver, copper)
-    end
+
+    return string.format(L["FORMAT_MONEY"], formatNumberWithCommas(gold), silver, copper)
 end
 
 -- Check if the player has the hammer in his inventory
@@ -291,13 +322,13 @@ end
 Check the durability of the items and update the button if a repair is needed
 
 @param i: the index of the item to check
-@param numero_item: the numero of the item which is being repaired
+@param item_number: the number of the item which is being repaired
 @return true if the item has full durability or isn't checked in the settings, false otherwise
 ]]
-local function testAndUpdateButton(i, numero_item)
+local function testAndUpdateButton(i, item_number)
     if not performTest(i) then
         -- Update the repair button and wait for the users to click on it
-        useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], numero_item,
+        useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], item_number,
             EMHDB.to_repair))
         useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], EMHDB.keys[i]))
         return false
@@ -316,30 +347,36 @@ local function endRepairs()
 
     local gold_saved = repairAllCost - currentRepairCost
     EMHDB.goldSaved = EMHDB.goldSaved + gold_saved
-    MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
     if (gold_saved > 0) then
+        MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
         print(string.format(L["SAVED_MONEY_PRINT"], formatMoney(gold_saved)))
     end
+
+    repairAllCost, currentRepairCost = 0, 0
 end
 
 -- Function declared here to avoid a circular dependency
 local waitForUserToRepair, runTestsInstantly
 
 --[[
-Wait for the user to repair the item then update i and numero_item, and run the tests again
+Wait for the user to repair the item then update i and item_number, and run the tests again
 Use a ticker to check the durability every {TICKER} seconds
 
 @param i: the index of the item to check
-@param numero_item: the numero of the item which is being repaired
+@param item_number: the number of the item which is being repaired
 ]]
-waitForUserToRepair = function(i, numero_item)
-    if testAndUpdateButton(i, numero_item) then
+waitForUserToRepair = function(i, item_number)
+    -- Check if the frame is still open
+    if not MainFrame:IsShown() then
+        return
+    end
+    if testAndUpdateButton(i, item_number) then
         i = i + 1
-        numero_item = numero_item + 1
+        item_number = item_number + 1
 
-        runTestsInstantly(i, numero_item)
+        runTestsInstantly(i, item_number)
     else
-        C_Timer.After(TICKER, function() waitForUserToRepair(i, numero_item) end)
+        C_Timer.After(TICKER, function() waitForUserToRepair(i, item_number) end)
     end
 end
 
@@ -349,14 +386,14 @@ Run all tests instantly to check if any items need to be repaired
 If a repair is needed, start the ticker to check durability every second until the item is repaired
 
 @param i: the index of the item to check
-@param numero_item: the numero of the item which is being repaired
+@param item_number: the number of the item which is being repaired
 ]]
 
-runTestsInstantly = function(i, numero_item)
+runTestsInstantly = function(i, item_number)
     while i <= #EMHDB.keys do
         if not performTest(i) then
             -- If a repair is needed, start the ticker
-            waitForUserToRepair(i, numero_item)
+            waitForUserToRepair(i, item_number)
             return
         end
         i = i + 1
@@ -374,11 +411,18 @@ end
 --- Scripts
 --------------------------------------------------------------------------------
 
--- When the Main Frame is shown, run the tests
+-- Update the goldSaved and run the tests for the repair button
 MainFrame:SetScript("OnShow", function()
+    MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
+
     repairAllCost, _ = GetRepairAllCost()
     performAllTests()
     runTestsInstantly(1, 1)
+end)
+
+-- Update economy
+MainFrame:SetScript("OnHide", function()
+    endRepairs()
 end)
 
 --------------------------------------------------------------------------------
@@ -396,14 +440,14 @@ SlashCmdList.EMH = function()
     -- Check if the player has the hammer in his inventory
     checkHammerPresence(HAMMER_ID)
 
-    -- Hide both frames and save the position of the Main Frame
+    -- Hide both frames
     if MainFrame:IsShown() then
         SaveFramePosition(MainFrame)
         MainFrame:Hide()
         SettingsFrame:Hide()
-        -- Set the Main Frame position, update the gold saved, show the Main Frame and hide the Settings Frame
+
+        -- Show the Main Frame and hide the Settings Frame
     elseif not MainFrame:IsShown() then
-        MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
         SetFramePosition(MainFrame)
         SettingsFrame:Hide()
         MainFrame:Show()

@@ -50,3 +50,6 @@ L["wrists_node"] = "'Vambraces'"
 L["hands_node"] = "'Gauntlets'"
 L["mainHand_node"] = "for your main hand weapon ('Axes and Polearms' / 'Long Blades' / 'Short Blades' / 'Maces')"
 L["offHand_node"] = "for your off-hand item ('Shields' / 'Short Blades' / 'Long Blades' / 'Maces')"
+
+-- Errors and warning
+L["ERROR_BAD_TYPE_NUMBER"] = "Expected a number, got %s"

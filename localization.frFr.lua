@@ -1,7 +1,7 @@
 local _, L = ...
 if GetLocale() == "frFR" then
     --- Main
-    L["FORMAT_MONEY"] = "%d or, %d argent, %d bronze"
+    L["FORMAT_MONEY"] = "%s or, %d argent, %d cuivre"
     L["MAIN_FRAME_TITLE"] = "EMH : Marteau de maître terrestre"
     L["SUB_TITLE"] = "En réparant votre équipement avec EMH, vous avec économisé :"
     L["MAIN_TO_SETTINGS_BUTTON"] = "Ouvrir les paramètres"
@@ -53,4 +53,7 @@ if GetLocale() == "frFR" then
     "de votre arme équipée en main droite ('Haches et armes d'hast' / 'Lames longues' / 'Lames courtes' / 'Masse' )"
     L["offHand_node"] =
     "de votre objet équipé en main gauche ('Boucliers' / 'Lames courtes' / 'Lames longues' / 'Masse')"
+
+    -- Errors and warning
+    L["ERROR_BAD_TYPE_NUMBER"] = "Number attendu, mais reçu un %s"
 end
