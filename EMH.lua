@@ -2,12 +2,87 @@
 --------------------------------------------------------------------------------
 ---------- Initialization of the addon, the database and the settings ----------
 --------------------------------------------------------------------------------
---- Function and variables needed at initialization
+--- Variables and constants needed at initialization
 --------------------------------------------------------------------------------
 
 local repairOpen = false            -- True if the frame of a merchant who can repair is open
+local badProfession = false         -- True if the player doesn't have the right profession (Blacksmithing)
+
 local RIGHT_OF_MERCHANT_FRAME = 298 -- Position of the MainFrame relative to the MerchantFrame
 local VERSION = "1.0.0"             -- Version of the addon
+local BLACKSMITHING_ID = 164        -- ID of the Blacksmithing profession
+local HAMMER_ID = 225660            -- ID of the Earthen Master's Hammer
+local TICKER = 0.1                  -- Ticker duration in seconds
+
+local ID_TO_NAME = {
+    [1] = "head",
+    [3] = "shoulder",
+    [5] = "chest",
+    [6] = "waist",
+    [7] = "legs",
+    [8] = "feet",
+    [9] = "wrists",
+    [10] = "hands",
+    [16] = "mainHand",
+    [17] = "offHand",
+}
+
+local SETTINGS = {
+    {
+        settingText = L["head_node"],
+        settingKey = "head",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["head_node"]),
+    },
+    {
+        settingText = L["shoulder_node"],
+        settingKey = "shoulder",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["shoulder_node"]),
+    },
+    {
+        settingText = L["chest_node"],
+        settingKey = "chest",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["chest_node"]),
+    },
+    {
+        settingText = L["waist_node"],
+        settingKey = "waist",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["waist_node"]),
+    },
+    {
+        settingText = L["legs_node"],
+        settingKey = "legs",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["legs_node"]),
+    },
+    {
+        settingText = L["feet_node"],
+        settingKey = "feet",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["feet_node"]),
+    },
+    {
+        settingText = L["wrists_node"],
+        settingKey = "wrists",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["wrists_node"]),
+    },
+    {
+        settingText = L["hands_node"],
+        settingKey = "hands",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["hands_node"]),
+    },
+    {
+        settingText = L["mainHandSettings"],
+        settingKey = "mainHand",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["mainHand_node"]),
+    },
+    {
+        settingText = L["offHandSettings"],
+        settingKey = "offHand",
+        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["offHand_node"]),
+    },
+}
+
+--------------------------------------------------------------------------------
+--- Functions needed at initialization
+--------------------------------------------------------------------------------
 
 --[[
 Check if the player needs to repair his items
@@ -48,6 +123,33 @@ local function closeEMHMerchant()
         MainFrame:Hide()
         SettingsFrame:Hide()
     end
+end
+
+--- Profession functions
+
+--- Get the id of the profession at the given index
+local function getProfessionId(professionIndex)
+    if professionIndex then
+        local _, _, _, _, _, _, skillId, _, _, _ =
+            GetProfessionInfo(professionIndex)
+        return skillId
+    end
+    return "None"
+end
+
+-- Check if the player is a blacksmith
+function CheckProfession()
+    local prof1, prof2, _, _, _ = GetProfessions()
+
+    local skill1 = getProfessionId(prof1)
+    local skill2 = getProfessionId(prof2)
+
+    if skill1 ~= BLACKSMITHING_ID and skill2 ~= BLACKSMITHING_ID then
+        badProfession = true
+        return
+    end
+
+    badProfession = false
 end
 
 --------------------------------------------------------------------------------
@@ -91,9 +193,9 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
         for _, setting in pairs(SETTINGS) do
             CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
-    elseif (event == "MERCHANT_SHOW" and not BadProfession) then
+    elseif (event == "MERCHANT_SHOW" and not badProfession) then
         openEMHMerchant(MainFrame)
-    elseif (event == "MERCHANT_CLOSED" and not BadProfession) then
+    elseif (event == "MERCHANT_CLOSED" and not badProfession) then
         closeEMHMerchant()
     end
 end)
@@ -433,7 +535,7 @@ end)
 SLASH_EMH1 = "/emh"
 SlashCmdList.EMH = function()
     -- Check if the player has the right profession: Blacksmithing
-    if BadProfession then
+    if badProfession then
         return
     end
 
@@ -453,9 +555,3 @@ SlashCmdList.EMH = function()
         MainFrame:Show()
     end
 end
-
---------------------------------------------------------------------------------
---- Everything is working
---------------------------------------------------------------------------------
-
-print("EMH - end.")

@@ -52,4 +52,7 @@ L["mainHand_node"] = "for your main hand weapon ('Axes and Polearms' / 'Long Bla
 L["offHand_node"] = "for your off-hand item ('Shields' / 'Short Blades' / 'Long Blades' / 'Maces')"
 
 -- Errors and warning
-L["ERROR_BAD_TYPE_NUMBER"] = "Expected a number, got %s"
+L["ERROR_BAD_TYPE_NUMBER"] = "ERROR: Expected a number, got %s"
+L["ERROR_NO_NAME_IN_EMHDB"] = "ERROR: No element with the name %s in NAME_TO_ID."
+L["ERROR_REMOVE_EMHDB"] = "ERROR: Error while trying to remove element with id '%s' from the database."
+L["ERROR_ADD_EMHDB"] = "ERROR: Element with id '%s' already exists in the database."

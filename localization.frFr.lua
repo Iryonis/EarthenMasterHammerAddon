@@ -55,5 +55,8 @@ if GetLocale() == "frFR" then
     "de votre objet équipé en main gauche ('Boucliers' / 'Lames courtes' / 'Lames longues' / 'Masse')"
 
     -- Errors and warning
-    L["ERROR_BAD_TYPE_NUMBER"] = "Number attendu, mais reçu un %s"
+    L["ERROR_BAD_TYPE_NUMBER"] = "ERREUR : Élément de type number attendu, mais reçu un type %s"
+    L["ERROR_NO_NAME_IN_EMHDB"] = "ERREUR: Pas d'élément avec le nom %s dans NAME_TO_ID."
+    L["ERROR_REMOVE_EMHDB"] = "ERREUR: Erreur lors de la suppression de l'élément avec l'id '%s' de la base de données."
+    L["ERROR_ADD_EMHDB"] = "ERREUR : L'élément avec l'id '%s' existe déjà dans la base de données."
 end

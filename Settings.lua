@@ -8,9 +8,68 @@
 
 local checkboxes, secondColumn = 0, 0 -- Variables to place the checkboxes
 
+local NAME_TO_ID = {
+    head = 1,
+    shoulder = 3,
+    chest = 5,
+    waist = 6,
+    legs = 7,
+    feet = 8,
+    wrists = 9,
+    hands = 10,
+    mainHand = 16,
+    offHand = 17,
+    ranged = 18,
+}
+
 --------------------------------------------------------------------------------
 --- Functions
 --------------------------------------------------------------------------------
+---
+------ EMHDB.keys functions
+
+--[[
+Remove an item from EMHDB.keys by its name.
+]]
+function RemoveByName(name)
+    local id = NAME_TO_ID[name]
+
+    if not id then
+        print(string.format(L["ERROR_NO_NAME_IN_EMHDB"], name))
+        return
+    end
+
+    for i = #EMHDB.keys, 1, -1 do
+        if EMHDB.keys[i] == id then
+            table.remove(EMHDB.keys, i)
+            return
+        end
+    end
+    -- Should not print
+    error(string.format(L["ERROR_REMOVE_EMHDB"], id))
+end
+
+--[[
+Add an item to EMHDB.keys by its name.
+]]
+function AddByName(name)
+    local id = NAME_TO_ID[name]
+
+    if not id then
+        print(string.format(L["ERROR_NO_NAME_IN_EMHDB"], name))
+        return
+    end
+
+    for _, v in ipairs(EMHDB.keys) do
+        -- Should not print
+        if v == id then
+            error(string.format(L["ERROR_ADD_EMHDB"], id))
+            return
+        end
+    end
+
+    table.insert(EMHDB.keys, id)
+end
 
 --[[
 Create a checkbox with the given text, key and tooltip, and add it to the SettingsFrame.
