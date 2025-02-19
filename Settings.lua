@@ -153,7 +153,7 @@ local goToMainButton = CreateFrame("Button", "goToMainButton", SettingsFrame, "U
 goToMainButton:SetPoint("TOPRIGHT", SettingsFrame, "TOPRIGHT", -25, 0)
 goToMainButton:SetSize(160, 20)
 goToMainButton:SetText(L["SETTINGS_TO_MAIN_BUTTON"])
-goToMainButton:SetScript("OnClick", function(self, button, down)
+goToMainButton:SetScript("OnClick", function(self)
     SaveFramePosition(SettingsFrame)
     SettingsFrame:Hide()
     SetFramePosition(MainFrame)
@@ -162,6 +162,7 @@ end)
 
 -- Settings frame interactions
 
+-- Make the frame movable
 SettingsFrame:EnableMouse(true)
 SettingsFrame:SetMovable(true)
 SettingsFrame:RegisterForDrag("LeftButton")
@@ -171,6 +172,13 @@ end)
 SettingsFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
     SaveFramePosition(self)
+end)
+
+-- Reset the position of the frame when right-clicking on it
+SettingsFrame:SetScript("OnMouseDown", function(self, button)
+    if button == "RightButton" then
+        DefaultFramePosition(SettingsFrame)
+    end
 end)
 
 -- Allow escap key to close the frame

@@ -5,14 +5,14 @@
 --- Variables and constants needed at initialization
 --------------------------------------------------------------------------------
 
-local repairOpen = false            -- True if the frame of a merchant who can repair is open
-local badProfession = false         -- True if the player doesn't have the right profession (Blacksmithing)
+local repairOpen = false                -- True if the frame of a merchant who can repair is open
+local badProfession = false             -- True if the player doesn't have the right profession (Blacksmithing)
 
-local RIGHT_OF_MERCHANT_FRAME = 298 -- Position of the MainFrame relative to the MerchantFrame
-local VERSION = "1.0.0"             -- Version of the addon
-local BLACKSMITHING_ID = 164        -- ID of the Blacksmithing profession
-local HAMMER_ID = 225660            -- ID of the Earthen Master's Hammer
-local TICKER = 0.1                  -- Ticker duration in seconds
+local POS_RIGHT_OF_MERCHANT_FRAME = 298 -- Position of the MainFrame relative to the MerchantFrame
+local VERSION = "1.0.0"                 -- Version of the addon
+local BLACKSMITHING_ID = 164            -- ID of the Blacksmithing profession
+local HAMMER_ID = 225660                -- ID of the Earthen Master's Hammer
+local TICKER = 0.1                      -- Ticker duration in seconds
 
 local ID_TO_NAME = {
     [1] = "head",
@@ -103,13 +103,16 @@ Open the EMH frame (to the right of the merchant frame) if:
 - the player needs to repair his items
 ]]
 local function openEMHMerchant(frame)
+    if not frame then
+        error(string.format(L["ERROR_NOT_A_FRAME"], "openEMHMerchant"))
+    end
     if (CanMerchantRepair() and checkRepairNeeded()) then
         repairOpen = true
         SettingsFrame:Hide()
 
         -- Set the position of the MainFrame
         frame:ClearAllPoints()
-        frame:SetPoint("TOP", MerchantFrame, "TOPRIGHT", RIGHT_OF_MERCHANT_FRAME, 0)
+        frame:SetPoint("TOP", MerchantFrame, "TOPRIGHT", POS_RIGHT_OF_MERCHANT_FRAME, 0)
         frame:Show()
     end
 end
@@ -127,29 +130,41 @@ end
 
 --- Profession functions
 
---- Get the id of the profession at the given index
+--[[
+Get the id of the profession at the given index
+
+@param professionIndex: the index of the profession
+@return the id of the profession at the given index or nil if the index is not a number
+]]
 local function getProfessionId(professionIndex)
-    if professionIndex then
-        local _, _, _, _, _, _, skillId, _, _, _ =
-            GetProfessionInfo(professionIndex)
-        return skillId
+    if type(professionIndex) ~= "number" then
+        print(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(professionIndex)))
+        return nil
     end
-    return "None"
+
+    local _, _, _, _, _, _, skillId, _, _, _ = GetProfessionInfo(professionIndex)
+    return skillId
 end
 
--- Check if the player is a blacksmith
+--[[
+Check if the player has the Blacksmithing profession
+]]
 function CheckProfession()
-    local prof1, prof2, _, _, _ = GetProfessions()
+    local profession1, profession2, _, _, _ = GetProfessions()
 
-    local skill1 = getProfessionId(prof1)
-    local skill2 = getProfessionId(prof2)
+    if not profession1 and not profession2 then
+        badProfession = true
+        return false
+    end
+
+    local skill1 = getProfessionId(profession1)
+    local skill2 = getProfessionId(profession2)
 
     if skill1 ~= BLACKSMITHING_ID and skill2 ~= BLACKSMITHING_ID then
         badProfession = true
-        return
+    else
+        badProfession = false
     end
-
-    badProfession = false
 end
 
 --------------------------------------------------------------------------------
@@ -275,9 +290,18 @@ local function formatMoney(money)
     return string.format(L["FORMAT_MONEY"], formatNumberWithCommas(gold), silver, copper)
 end
 
--- Check if the player has the hammer in his inventory
--- Only work the first time the player opens the MainFrame
+
+--[[
+Check if the player has the hammer in his inventory
+Only work the first time the player opens the MainFrame
+
+@param id: the id of the hammer
+]]
 local function checkHammerPresence(id)
+    if type(id) ~= "number" then
+        error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(id)))
+    end
+
     itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ =
         C_Item.GetItemInfo(id)
 
@@ -344,24 +368,15 @@ goToSettingsButton:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -25, 0)
 goToSettingsButton:SetSize(150, 20)
 goToSettingsButton:SetText(L["MAIN_TO_SETTINGS_BUTTON"])
 
-goToSettingsButton:SetScript("OnClick", function(self, button, down)
+goToSettingsButton:SetScript("OnClick", function(self)
     SaveFramePosition(MainFrame)
     MainFrame:Hide()
     SetFramePosition(SettingsFrame)
     SettingsFrame:Show()
 end)
 
--- Main frame interactions
 MainFrame:EnableMouse(true)
 MainFrame:SetMovable(true)
-MainFrame:RegisterForDrag("LeftButton")
-MainFrame:SetScript("OnDragStart", function(self)
-    self:StartMoving()
-end)
-MainFrame:SetScript("OnDragStop", function(self)
-    self:StopMovingOrSizing()
-    SaveFramePosition(MainFrame)
-end)
 
 -- Add tooltip to the button
 tooltipButton:SetScript("OnEnter", function(self)
@@ -447,6 +462,10 @@ local function endRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
     currentRepairCost, _ = GetRepairAllCost()
 
+    if (not repairAllCost) then
+        return
+    end
+
     local gold_saved = repairAllCost - currentRepairCost
     EMHDB.goldSaved = EMHDB.goldSaved + gold_saved
     if (gold_saved > 0) then
@@ -492,6 +511,12 @@ If a repair is needed, start the ticker to check durability every second until t
 ]]
 
 runTestsInstantly = function(i, item_number)
+    if type(i) ~= "number" then
+        error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(i)))
+    elseif type(item_number) ~= "number" then
+        error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(item_number)))
+    end
+
     while i <= #EMHDB.keys do
         if not performTest(i) then
             -- If a repair is needed, start the ticker
@@ -513,6 +538,16 @@ end
 --- Scripts
 --------------------------------------------------------------------------------
 
+-- Make the frame movable
+MainFrame:RegisterForDrag("LeftButton")
+MainFrame:SetScript("OnDragStart", function(self)
+    self:StartMoving()
+end)
+MainFrame:SetScript("OnDragStop", function(self)
+    self:StopMovingOrSizing()
+    SaveFramePosition(MainFrame)
+end)
+
 -- Update the goldSaved and run the tests for the repair button
 MainFrame:SetScript("OnShow", function()
     MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
@@ -525,6 +560,13 @@ end)
 -- Update economy
 MainFrame:SetScript("OnHide", function()
     endRepairs()
+end)
+
+-- Reset the position of the frame when right-clicking on it
+MainFrame:SetScript("OnMouseDown", function(self, button)
+    if button == "RightButton" then
+        DefaultFramePosition(MainFrame)
+    end
 end)
 
 --------------------------------------------------------------------------------

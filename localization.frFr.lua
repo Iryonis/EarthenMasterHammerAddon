@@ -59,4 +59,5 @@ if GetLocale() == "frFR" then
     L["ERROR_NO_NAME_IN_EMHDB"] = "ERREUR: Pas d'élément avec le nom %s dans NAME_TO_ID."
     L["ERROR_REMOVE_EMHDB"] = "ERREUR: Erreur lors de la suppression de l'élément avec l'id '%s' de la base de données."
     L["ERROR_ADD_EMHDB"] = "ERREUR : L'élément avec l'id '%s' existe déjà dans la base de données."
+    L["ERROR_NOT_A_FRAME"] = "ERREUR: Mauvais paramètre passé à la fonction %s, une frame était attendue."
 end
