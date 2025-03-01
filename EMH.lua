@@ -5,8 +5,8 @@
 --- Variables and constants needed at initialization
 --------------------------------------------------------------------------------
 
-local repairOpen = false                -- True if the frame of a merchant who can repair is open
 local badProfession = false             -- True if the player doesn't have the right profession (Blacksmithing)
+local number_item_repaired              -- Number of items repaired
 
 local POS_RIGHT_OF_MERCHANT_FRAME = 298 -- Position of the MainFrame relative to the MerchantFrame
 local VERSION = "1.0.0"                 -- Version of the addon
@@ -107,7 +107,6 @@ local function openEMHMerchant(frame)
         error(string.format(L["ERROR_NOT_A_FRAME"], "openEMHMerchant"))
     end
     if (CanMerchantRepair() and checkRepairNeeded()) then
-        repairOpen = true
         SettingsFrame:Hide()
 
         -- Set the position of the MainFrame
@@ -121,11 +120,8 @@ end
 Close the EMH frame if the merchant frame that was opened could repair
 ]]
 local function closeEMHMerchant()
-    if (repairOpen) then
-        repairOpen = false
-        MainFrame:Hide()
-        SettingsFrame:Hide()
-    end
+    MainFrame:Hide()
+    SettingsFrame:Hide()
 end
 
 --- Profession functions
@@ -326,6 +322,7 @@ MainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWi
 MainFrame:SetSize(FRAMES_WIDTH, FRAMES_HEIGHT)
 MainFrame:SetFrameStrata("DIALOG")
 SetFramePosition(MainFrame)
+MainFrame:Hide()
 MainFrame.TitleBg:SetHeight(30)
 MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 MainFrame.title:SetPoint("TOPLEFT", MainFrame.TitleBg, "TOPLEFT", 5, -3)
@@ -455,11 +452,14 @@ local function testAndUpdateButton(i, item_number)
 end
 
 --[[
-Once the repairs are finished, update the button, the gold saved and print a message
-to tell the user how much gold he saved
+Compute the gold saved, print it for the user and update the goldSaved text in the MainFrame
+If no item has been repaired, return immediately
 ]]
-local function endRepairs()
-    useItemButton:SetText(L["NO_REPAIR"])
+local function computeGoldSaved()
+    if number_item_repaired and number_item_repaired < 1 then
+        return
+    end
+
     currentRepairCost, _ = GetRepairAllCost()
 
     if (not repairAllCost) then
@@ -475,6 +475,16 @@ local function endRepairs()
 
     repairAllCost, currentRepairCost = 0, 0
 end
+
+--[[
+Once the repairs are finished, update the button and compute the gold saved
+]]
+local function endRepairs()
+    useItemButton:SetText(L["NO_REPAIR"])
+    computeGoldSaved()
+end
+
+
 
 -- Function declared here to avoid a circular dependency
 local waitForUserToRepair, runTestsInstantly
@@ -511,6 +521,7 @@ If a repair is needed, start the ticker to check durability every second until t
 ]]
 
 runTestsInstantly = function(i, item_number)
+    number_item_repaired = number_item_repaired + 1
     if type(i) ~= "number" then
         error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(i)))
     elseif type(item_number) ~= "number" then
@@ -550,6 +561,7 @@ end)
 
 -- Update the goldSaved and run the tests for the repair button
 MainFrame:SetScript("OnShow", function()
+    number_item_repaired = -1
     MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
 
     repairAllCost, _ = GetRepairAllCost()
@@ -559,7 +571,7 @@ end)
 
 -- Update economy
 MainFrame:SetScript("OnHide", function()
-    endRepairs()
+    computeGoldSaved()
 end)
 
 -- Reset the position of the frame when right-clicking on it
