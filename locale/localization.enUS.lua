@@ -39,6 +39,11 @@ L["SETTINGS_TOOLTIP"] = "Check the box if you have the Blacksmithing node %s at 
 L["mainHandSettings"] = "Main hand item"
 L["offHandSettings"] = "Off hand item"
 
+-- Frame Control
+L["COMPARTMENT_LEFT"] = "Left-click to open main frame"
+L["COMPARTMENT_RIGHT"] = "Right-click to open settings"
+L["EMH"] = "Earthen Master's Hammer"
+
 -- Nodes
 L["head_node"] = "'Helms'"
 L["shoulder_node"] = "'Pauldrons'"

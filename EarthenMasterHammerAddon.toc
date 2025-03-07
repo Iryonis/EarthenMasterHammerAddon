@@ -1,21 +1,23 @@
 ## Interface: 110100
 ## Title: Earthen Master's Hammer
-## Title--FrFR: Marteau de maître terrestre
 ## Notes: A WoW: TWW Addon to simplify the use of the blacksmithing item 'Earthen Master's Hammer'.
 ## Notes--FrFR: Un addon WoW : TWW pour simplifier l'utilisation de l'objet de forge 'Marteau de maître terrestre'.
 ## Author: Iryon
 ## Version: 1.0.0
-## RequiredDeps:
 ## X-Curse-Project-ID: 1202156
-## SavedVariables:
 ## SavedVariablesPerCharacter: EMHDB
+## IconTexture: Interface\AddOns\EarthenMasterHammerAddon\Images\logo.png
+## AddonCompartmentFunc: EMH_AddonCompartmentClick
+## AddonCompartmentFuncOnEnter: EMH_AddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: EMH_AddonCompartmentLeave
 
 # Localization
-Localization.enUS.lua
-Localization.frFR.lua
+locale/Localization.enUS.lua
+locale/Localization.frFR.lua
 
 # Main files
-Common.lua
+FramePosition.lua
 EMH.lua
+FrameControl.lua
 Settings.lua
 

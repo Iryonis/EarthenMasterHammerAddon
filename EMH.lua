@@ -5,14 +5,14 @@
 --- Variables and constants needed at initialization
 --------------------------------------------------------------------------------
 
-local badProfession = false             -- True if the player doesn't have the right profession (Blacksmithing)
-local number_item_repaired              -- Number of items repaired
+_, L = ...                   -- Localization
 
-local POS_RIGHT_OF_MERCHANT_FRAME = 298 -- Position of the MainFrame relative to the MerchantFrame
-local VERSION = "1.0.0"                 -- Version of the addon
-local BLACKSMITHING_ID = 164            -- ID of the Blacksmithing profession
-local HAMMER_ID = 225660                -- ID of the Earthen Master's Hammer
-local TICKER = 0.1                      -- Ticker duration in seconds
+local badProfession = false  -- True if the player doesn't have the right profession (Blacksmithing)
+local number_item_repaired   -- Number of items repaired
+local VERSION = "1.0.0"      -- Version of the addon
+local BLACKSMITHING_ID = 164 -- ID of the Blacksmithing profession
+local HAMMER_ID = 225660     -- ID of the Earthen Master's Hammer
+local TICKER = 0.1           -- Ticker duration in seconds
 
 local ID_TO_NAME = {
     [1] = "head",
@@ -102,26 +102,29 @@ Open the EMH frame (to the right of the merchant frame) if:
 - the merchant can repair
 - the player needs to repair his items
 ]]
-local function openEMHMerchant(frame)
-    if not frame then
+local function openEMHMerchant()
+    if not MainFrame then
         error(string.format(L["ERROR_NOT_A_FRAME"], "openEMHMerchant"))
     end
     if (CanMerchantRepair() and checkRepairNeeded()) then
         SettingsFrame:Hide()
 
         -- Set the position of the MainFrame
-        frame:ClearAllPoints()
-        frame:SetPoint("TOP", MerchantFrame, "TOPRIGHT", POS_RIGHT_OF_MERCHANT_FRAME, 0)
-        frame:Show()
+        MainFrame:ClearAllPoints()
+        MainFrame:SetPoint(FRAME_POSITION_MERCHANTS.point, FRAME_POSITION_MERCHANTS.relativeTo,
+            FRAME_POSITION_MERCHANTS.relativePoint, FRAME_POSITION_MERCHANTS.xOfs, FRAME_POSITION_MERCHANTS.yOfs)
+        MainFrame:Show()
     end
 end
 
 --[[
-Close the EMH frame if the merchant frame that was opened could repair
+Close the EMH frame if the merchant frame that was opened could repair and update the position of the frames
 ]]
 local function closeEMHMerchant()
     MainFrame:Hide()
     SettingsFrame:Hide()
+    SetFramePosition(MainFrame)
+    SetFramePosition(SettingsFrame)
 end
 
 --- Profession functions
@@ -205,7 +208,7 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
             CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
     elseif (event == "MERCHANT_SHOW" and not badProfession) then
-        openEMHMerchant(MainFrame)
+        openEMHMerchant()
     elseif (event == "MERCHANT_CLOSED" and not badProfession) then
         closeEMHMerchant()
     end
@@ -213,7 +216,7 @@ end)
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--------------------- Variables and misceallenous functions ---------------------
+---------------- Creation and initialization of the main frame -----------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --- Local variables and constants
@@ -366,10 +369,7 @@ goToSettingsButton:SetSize(150, 20)
 goToSettingsButton:SetText(L["MAIN_TO_SETTINGS_BUTTON"])
 
 goToSettingsButton:SetScript("OnClick", function(self)
-    SaveFramePosition(MainFrame)
-    MainFrame:Hide()
-    SetFramePosition(SettingsFrame)
-    SettingsFrame:Show()
+    FrameToggle()
 end)
 
 MainFrame:EnableMouse(true)
@@ -596,16 +596,6 @@ SlashCmdList.EMH = function()
     -- Check if the player has the hammer in his inventory
     checkHammerPresence(HAMMER_ID)
 
-    -- Hide both frames
-    if MainFrame:IsShown() then
-        SaveFramePosition(MainFrame)
-        MainFrame:Hide()
-        SettingsFrame:Hide()
-
-        -- Show the Main Frame and hide the Settings Frame
-    elseif not MainFrame:IsShown() then
-        SetFramePosition(MainFrame)
-        SettingsFrame:Hide()
-        MainFrame:Show()
-    end
+    -- Toggle the frames
+    MainFrameToggle()
 end

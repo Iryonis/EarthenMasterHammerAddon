@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--------------------------- Create the checkboxes -------------------------------
+------------- Creation and initialization of the settings frame ----------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --- Variables
@@ -155,10 +155,7 @@ goToMainButton:SetPoint("TOPRIGHT", SettingsFrame, "TOPRIGHT", -25, 0)
 goToMainButton:SetSize(160, 20)
 goToMainButton:SetText(L["SETTINGS_TO_MAIN_BUTTON"])
 goToMainButton:SetScript("OnClick", function(self)
-    SaveFramePosition(SettingsFrame)
-    SettingsFrame:Hide()
-    SetFramePosition(MainFrame)
-    MainFrame:Show()
+    FrameToggle()
 end)
 
 -- Settings frame interactions

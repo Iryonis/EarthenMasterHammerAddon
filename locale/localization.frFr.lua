@@ -2,7 +2,7 @@ local _, L = ...
 if GetLocale() == "frFR" then
     --- Main
     L["FORMAT_MONEY"] = "%s or, %d argent, %d cuivre"
-    L["MAIN_FRAME_TITLE"] = "EMH : Marteau de maître terrestre"
+    L["MAIN_FRAME_TITLE"] = "EMH : Earthen Master's Hammer"
     L["SUB_TITLE"] = "En réparant votre équipement avec EMH, vous avec économisé :"
     L["MAIN_TO_SETTINGS_BUTTON"] = "Ouvrir les paramètres"
     L["LOADING"] = "Chargement..."
@@ -29,7 +29,7 @@ if GetLocale() == "frFR" then
     L["offHand"] = "l'arme secondaire"
 
     --- Settings
-    L["SETTINGS_FRAME_TITLE"] = "EMH : Marteau de maître terrestre - Paramètres"
+    L["SETTINGS_FRAME_TITLE"] = "EMH : Earthen Master's Hammer - Paramètres"
     L["SETTINGS_TO_MAIN_BUTTON"] = "Fermer les paramètres"
     L["SETTINGS_SUB_TITLE"] = "Veuillez cocher les objets que vous pouvez réparer :"
     L["SETTINGS_SUB_TITLE_NOTE_1"] =
@@ -39,6 +39,11 @@ if GetLocale() == "frFR" then
     -- Item names in settings
     L["mainHandSettings"] = "Main principale"
     L["offHandSettings"] = "Main secondaire"
+
+    -- Frame Control
+    L["COMPARTMENT_LEFT"] = "Clic gauche pour ouvrir la fenêtre principale"
+    L["COMPARTMENT_RIGHT"] = "Clic droit pour ouvrir les paramètres"
+    L["EMH"] = "Earthen Master's Hammer"
 
     -- Nodes
     L["head_node"] = "'Heaumes'"
