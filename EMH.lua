@@ -222,7 +222,7 @@ end)
 --- Local variables and constants
 --------------------------------------------------------------------------------
 
-local itemName, repairAllCost, currentRepairCost
+local tempRepairCost, currentRepairCost, totalRepairCost
 
 --------------------------------------------------------------------------------
 --- Miscellaneous functions
@@ -297,6 +297,7 @@ Only work the first time the player opens the MainFrame
 @param id: the id of the hammer
 ]]
 local function checkHammerPresence(id)
+    local itemName
     if type(id) ~= "number" then
         error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(id)))
     end
@@ -410,7 +411,7 @@ useItemButton:SetAttribute("type1", "macro")
 --------------------------------------------------------------------------------
 
 -- Check the durability of all the items and update EMHDB.to_repair in consequence
-local function performAllTests()
+local function updateToRepairParameter()
     EMHDB.to_repair = 0
     for _, key in ipairs(EMHDB.keys) do
         local current, maximum = GetInventoryItemDurability(key)
@@ -452,42 +453,37 @@ local function testAndUpdateButton(i, item_number)
 end
 
 --[[
-Compute the gold saved, print it for the user and update the goldSaved text in the MainFrame
-If no item has been repaired, return immediately
+Compute the gold saved and update the goldSaved text in the MainFrame
 ]]
 local function computeGoldSaved()
-    if number_item_repaired and number_item_repaired < 1 then
-        return
-    end
+    tempRepairCost, _ = GetRepairAllCost()
 
-    currentRepairCost, _ = GetRepairAllCost()
-
-    if (not repairAllCost) then
-        return
-    end
-
-    local gold_saved = repairAllCost - currentRepairCost
+    local gold_saved = currentRepairCost - tempRepairCost
     EMHDB.goldSaved = EMHDB.goldSaved + gold_saved
-    if (gold_saved > 0) then
+    if gold_saved > 0 then
         MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
-        print(string.format(L["SAVED_MONEY_PRINT"], formatMoney(gold_saved)))
     end
 
-    repairAllCost, currentRepairCost = 0, 0
+    currentRepairCost = currentRepairCost - gold_saved
+    tempRepairCost, gold_saved = 0, 0
 end
 
 --[[
-Once the repairs are finished, update the button and compute the gold saved
+Update the text of the repair button and compute the total gold saved to print it in the chat
 ]]
-local function endRepairs()
+local function finalizeRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
-    computeGoldSaved()
+
+    local total_gold_saved = totalRepairCost - currentRepairCost
+    if total_gold_saved > 0 then
+        print(string.format(L["SAVED_MONEY_PRINT"], formatMoney(total_gold_saved)))
+    end
+
+    totalRepairCost, currentRepairCost = 0, 0
 end
 
-
-
 -- Function declared here to avoid a circular dependency
-local waitForUserToRepair, runTestsInstantly
+local runTestsInstantly, waitForUserToRepair
 
 --[[
 Wait for the user to repair the item then update i and item_number, and run the tests again
@@ -504,6 +500,7 @@ waitForUserToRepair = function(i, item_number)
     if testAndUpdateButton(i, item_number) then
         i = i + 1
         item_number = item_number + 1
+        computeGoldSaved()
 
         runTestsInstantly(i, item_number)
     else
@@ -519,7 +516,6 @@ If a repair is needed, start the ticker to check durability every second until t
 @param i: the index of the item to check
 @param item_number: the number of the item which is being repaired
 ]]
-
 runTestsInstantly = function(i, item_number)
     number_item_repaired = number_item_repaired + 1
     if type(i) ~= "number" then
@@ -537,7 +533,7 @@ runTestsInstantly = function(i, item_number)
         i = i + 1
     end
     -- If no repair is needed, call the end function
-    endRepairs()
+    finalizeRepairs()
 end
 
 
@@ -564,14 +560,15 @@ MainFrame:SetScript("OnShow", function()
     number_item_repaired = -1
     MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
 
-    repairAllCost, _ = GetRepairAllCost()
-    performAllTests()
+    totalRepairCost, _ = GetRepairAllCost()
+    currentRepairCost = totalRepairCost
+    updateToRepairParameter()
     runTestsInstantly(1, 1)
 end)
 
 -- Update economy
 MainFrame:SetScript("OnHide", function()
-    computeGoldSaved()
+    finalizeRepairs()
 end)
 
 -- Reset the position of the frame when right-clicking on it
