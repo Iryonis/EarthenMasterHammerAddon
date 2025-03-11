@@ -8,22 +8,21 @@ Download the addon from Curseforge. It will automatically install, and after a r
 
 You can also download and install it manually from Curseforge or GitHub. Once you have downloaded the package, navigate to your game folder, then `_retail_` -> `Interface` -> `AddOns` and place it there. Then extract the package, and after a reload, it will be usable.
 
+**Note:** The directory in `AddOns` should be named `EarthenMasterHammerAddon` and should directly contain the files. Depending on where you download it from, this may not be the case immediately.
+
 ## Usage
 
-The frame will automatically open when talking to a repair merchant (if repairs are needed). You can also open it manually by typing the following command in the chat:
+When talking to a merchant who can repair (and if you have damaged equipment), the **Main Frame** will automatically open.  
+Otherwise, you can type `/emh` in the chat or use the button in the AddOn compartment in the top-right corner, just below the calendar.
 
-```
-/emh
-```
-
-In the Settings frame, you can check the items that you can repair (I did not find a way to automate that), and then, in the Main frame, you can repair any equipped item by clicking the same button.
-If you do it while talking to a repair merchant, it will also record the savings you made while using the AddOn.
+In the **Settings Frame**, select the items you can repair based on your Blacksmithing nodes.  
+Then, in the **Main Frame**, use the button to repair all damaged equipment. The AddOn will also track how much gold you've saved using the hammer—so you can brag to your non-blacksmith friends!
 
 ## Contributing
 
-For any bug reports or feature requests, feel free to open an issue on GitHub, [right here](https://github.com/Iryonis/EarthenMasterHammerAddon/issues).
+For bug reports or feature requests, feel free to open an issue on GitHub [right here](https://github.com/Iryonis/EarthenMasterHammerAddon/issues).
 
-Please keep in mind that this is my first WoW addon and that English is not my first language.
+Please note that this is my first WoW AddOn and that English is not my first language.
 
 ## License
 
