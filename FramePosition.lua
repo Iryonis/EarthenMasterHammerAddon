@@ -121,7 +121,7 @@ function SetFramePosition(frame)
     end
     if EMHDB and EMHDB.framePos then
         frame:ClearAllPoints()
-        if MerchantFrame and MerchantFrame:IsVisible() then
+        if IsMerchantFrameOpen then
             frame:SetPoint(FRAME_POSITION_MERCHANTS.point, FRAME_POSITION_MERCHANTS.relativeTo,
                 FRAME_POSITION_MERCHANTS.relativePoint,
                 FRAME_POSITION_MERCHANTS.xOfs, FRAME_POSITION_MERCHANTS.yOfs)

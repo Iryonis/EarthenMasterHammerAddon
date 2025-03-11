@@ -6,6 +6,7 @@
 --------------------------------------------------------------------------------
 
 _, L = ...                   -- Localization
+IsMerchantFrameOpen = false  -- True if the merchant frame is open
 
 local badProfession = false  -- True if the player doesn't have the right profession (Blacksmithing)
 local number_item_repaired   -- Number of items repaired
@@ -21,7 +22,7 @@ local ID_TO_NAME = {
     [6] = "waist",
     [7] = "legs",
     [8] = "feet",
-    [9] = "wrists",
+    [9] = "wrist",
     [10] = "hands",
     [16] = "mainHand",
     [17] = "offHand",
@@ -60,7 +61,7 @@ local SETTINGS = {
     },
     {
         settingText = L["wrists_node"],
-        settingKey = "wrists",
+        settingKey = "wrist",
         settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["wrists_node"]),
     },
     {
@@ -107,24 +108,19 @@ local function openEMHMerchant()
         error(string.format(L["ERROR_NOT_A_FRAME"], "openEMHMerchant"))
     end
     if (CanMerchantRepair() and checkRepairNeeded()) then
+        IsMerchantFrameOpen = true
         SettingsFrame:Hide()
-
-        -- Set the position of the MainFrame
-        MainFrame:ClearAllPoints()
-        MainFrame:SetPoint(FRAME_POSITION_MERCHANTS.point, FRAME_POSITION_MERCHANTS.relativeTo,
-            FRAME_POSITION_MERCHANTS.relativePoint, FRAME_POSITION_MERCHANTS.xOfs, FRAME_POSITION_MERCHANTS.yOfs)
         MainFrame:Show()
     end
 end
 
 --[[
-Close the EMH frame if the merchant frame that was opened could repair and update the position of the frames
+Close the EMH frame if the merchant frame opened could repair and update the position of the frames
 ]]
 local function closeEMHMerchant()
+    IsMerchantFrameOpen = false
     MainFrame:Hide()
     SettingsFrame:Hide()
-    SetFramePosition(MainFrame)
-    SetFramePosition(SettingsFrame)
 end
 
 --- Profession functions
@@ -552,11 +548,11 @@ MainFrame:SetScript("OnDragStart", function(self)
 end)
 MainFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
-    SaveFramePosition(MainFrame)
 end)
 
 -- Update the goldSaved and run the tests for the repair button
 MainFrame:SetScript("OnShow", function()
+    SetFramePosition(MainFrame)
     number_item_repaired = -1
     MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
 
@@ -566,9 +562,10 @@ MainFrame:SetScript("OnShow", function()
     runTestsInstantly(1, 1)
 end)
 
--- Update economy
+-- Update economy and save position
 MainFrame:SetScript("OnHide", function()
     finalizeRepairs()
+    SaveFramePosition(MainFrame)
 end)
 
 -- Reset the position of the frame when right-clicking on it

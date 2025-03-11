@@ -25,8 +25,17 @@ L["GOLD_TOOLTIP"] =
 L["CREDITS"] = "EMH - v%s - by Iryon"
 
 -- Item names
-L["mainHand"] = "main hand item"
-L["offHand"] = "off hand item"
+L["head"] = "head slot"
+L["shoulder"] = "shoulder slot"
+L["chest"] = "chest slot"
+L["waist"] = "waist slot"
+L["legs"] = "legs slot"
+L["feet"] = "feet slot"
+L["wrist"] = "wrist slot"
+L["hands"] = "hands slot"
+L["mainHand"] = "main hand slot"
+L["offHand"] = "off-hand slot"
+
 
 --- Settings
 L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Master's Hammer - Settings"

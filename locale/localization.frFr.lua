@@ -23,7 +23,7 @@ if GetLocale() == "frFR" then
     L["waist"] = "la ceinture"
     L["legs"] = "les jambes"
     L["feet"] = "les pieds"
-    L["wrists"] = "les poignets"
+    L["wrist"] = "les poignets"
     L["hands"] = "les gants"
     L["mainHand"] = "l'arme principale"
     L["offHand"] = "l'arme secondaire"

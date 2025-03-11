@@ -76,14 +76,10 @@ Save the position of the frame that is being hidden and set it as the position o
 ]]
 function FrameToggle()
     if MainFrame:IsVisible() then
-        SaveFramePosition(MainFrame)
         MainFrame:Hide()
-        SetFramePosition(SettingsFrame)
         SettingsFrame:Show()
     else
-        SaveFramePosition(SettingsFrame)
         SettingsFrame:Hide()
-        SetFramePosition(MainFrame)
         MainFrame:Show()
     end
 end

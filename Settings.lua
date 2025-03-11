@@ -15,7 +15,7 @@ local NAME_TO_ID = {
     waist = 6,
     legs = 7,
     feet = 8,
-    wrists = 9,
+    wrist = 9,
     hands = 10,
     mainHand = 16,
     offHand = 17,
@@ -169,7 +169,6 @@ SettingsFrame:SetScript("OnDragStart", function(self)
 end)
 SettingsFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
-    SaveFramePosition(self)
 end)
 
 -- Reset the position of the frame when right-clicking on it
@@ -177,6 +176,16 @@ SettingsFrame:SetScript("OnMouseDown", function(self, button)
     if button == "RightButton" then
         DefaultFramePosition(SettingsFrame)
     end
+end)
+
+-- Update position when opening the frame
+SettingsFrame:SetScript("OnShow", function()
+    SetFramePosition(SettingsFrame)
+end)
+
+-- Save position when closing the frame
+SettingsFrame:SetScript("OnHide", function()
+    SaveFramePosition(SettingsFrame)
 end)
 
 -- Allow escap key to close the frame
