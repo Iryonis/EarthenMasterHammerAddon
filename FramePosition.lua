@@ -54,11 +54,18 @@ Reset EMHDB.framePos and the given frame to the default position
 @param frame - The frame to reset the position of
 ]]
 local function resetFramePosition(frame)
-    EMHDB.framePos = frame_position_default
-    frame:ClearAllPoints()
-    frame:SetPoint(frame_position_default.point, RELATIVE_TO_DEFAULT, frame_position_default.relativePoint,
-        frame_position_default
-        .xOfs, frame_position_default.yOfs)
+    if (not IsMerchantFrameOpen) then
+        EMHDB.framePos = frame_position_default
+        frame:ClearAllPoints()
+        frame:SetPoint(frame_position_default.point, RELATIVE_TO_DEFAULT, frame_position_default.relativePoint,
+            frame_position_default
+            .xOfs, frame_position_default.yOfs)
+    else
+        frame:ClearAllPoints()
+        frame:SetPoint(FRAME_POSITION_MERCHANTS.point, FRAME_POSITION_MERCHANTS.relativeTo,
+            FRAME_POSITION_MERCHANTS.relativePoint,
+            FRAME_POSITION_MERCHANTS.xOfs, FRAME_POSITION_MERCHANTS.yOfs)
+    end
 end
 
 --[[
@@ -93,7 +100,7 @@ function SaveFramePosition(frame)
     if not isFrameOnScreen(frame) then
         resetFramePosition(frame)
     else
-        if not (MerchantFrame and MerchantFrame:IsVisible() and CanMerchantRepair()) then
+        if not (IsMerchantFrameOpen) then
             local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint()
 
             if not relativeTo or (relativeTo and relativeTo:GetName() == "UIParent") then

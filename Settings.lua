@@ -169,6 +169,7 @@ SettingsFrame:SetScript("OnDragStart", function(self)
 end)
 SettingsFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
+    SaveFramePosition(SettingsFrame)
 end)
 
 -- Reset the position of the frame when right-clicking on it

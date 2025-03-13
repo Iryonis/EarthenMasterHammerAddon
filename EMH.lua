@@ -548,6 +548,7 @@ MainFrame:SetScript("OnDragStart", function(self)
 end)
 MainFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
+    SaveFramePosition(MainFrame)
 end)
 
 -- Update the goldSaved and run the tests for the repair button
