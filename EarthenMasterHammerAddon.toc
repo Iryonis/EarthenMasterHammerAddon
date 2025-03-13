@@ -3,7 +3,7 @@
 ## Notes: A WoW: TWW Addon to simplify the use of the blacksmithing item 'Earthen Master's Hammer'.
 ## Notes--FrFR: Un addon WoW : TWW pour simplifier l'utilisation de l'objet de forge 'Marteau de maître terrestre'.
 ## Author: Iryon
-## Version: 1.0.0
+## Version: 1.0.1
 ## X-Curse-Project-ID: 1202156
 ## SavedVariablesPerCharacter: EMHDB
 ## IconTexture: Interface\AddOns\EarthenMasterHammerAddon\Images\logo.png

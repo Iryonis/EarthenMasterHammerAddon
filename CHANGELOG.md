@@ -8,8 +8,9 @@ The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/e
 
 #### Added
 
-- Added Russian translation.
+- Added Russian translation - Thanks @Hubbotu.
 - Added reset functionality when a merchant frame is opened.
+- Linked .toc version to .lua version, for easier versionning.
 
 #### Changed
 

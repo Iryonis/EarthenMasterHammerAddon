@@ -1,3 +1,7 @@
+-- Get the addon version from .toc
+local addonName, addonTable = ...
+addonTable.VERSION = C_AddOns.GetAddOnMetadata(addonName, "Version")
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 ---------- Initialization of the addon, the database and the settings ----------
@@ -5,15 +9,15 @@
 --- Variables and constants needed at initialization
 --------------------------------------------------------------------------------
 
-_, L = ...                   -- Localization
-IsMerchantFrameOpen = false  -- True if the merchant frame is open
+_, L = ...                         -- Localization
+IsMerchantFrameOpen = false        -- True if the merchant frame is open
 
-local badProfession = false  -- True if the player doesn't have the right profession (Blacksmithing)
-local number_item_repaired   -- Number of items repaired
-local VERSION = "1.0.0"      -- Version of the addon
-local BLACKSMITHING_ID = 164 -- ID of the Blacksmithing profession
-local HAMMER_ID = 225660     -- ID of the Earthen Master's Hammer
-local TICKER = 0.1           -- Ticker duration in seconds
+local badProfession = false        -- True if the player doesn't have the right profession (Blacksmithing)
+local number_item_repaired         -- Number of items repaired
+local VERSION = addonTable.VERSION -- Version of the addon
+local BLACKSMITHING_ID = 164       -- ID of the Blacksmithing profession
+local HAMMER_ID = 225660           -- ID of the Earthen Master's Hammer
+local TICKER = 0.1                 -- Ticker duration in seconds
 
 local ID_TO_NAME = {
     [1] = "head",
