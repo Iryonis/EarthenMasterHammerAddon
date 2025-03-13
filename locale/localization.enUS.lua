@@ -19,7 +19,7 @@ L["NO_EMH"] =
 L["NO_REPAIR"] = "No repair needed"
 L["SAVED_MONEY_PRINT"] = "You just saved %s using EMH."
 L["REPAIR_BUTTON"] = "Repair %s (%d/%d)"
-L["MACRO"] = "/use Earthen Master's Hammer\n/use %d"
+L["MACRO"] = "/use item:%d\n/use %d"
 L["GOLD_TOOLTIP"] =
 "Due to limitations in Blizzard's API, the displayed amount only accounts for the savings made when using EMH while having a repair frame open."
 L["CREDITS"] = "EMH - v%s - by Iryon"

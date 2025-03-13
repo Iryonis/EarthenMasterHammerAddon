@@ -441,7 +441,7 @@ local function testAndUpdateButton(i, item_number)
         -- Update the repair button and wait for the users to click on it
         useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], item_number,
             EMHDB.to_repair))
-        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], EMHDB.keys[i]))
+        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], HAMMER_ID, EMHDB.keys[i]))
         return false
     end
     -- Go to the next item
