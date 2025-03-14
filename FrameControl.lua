@@ -6,7 +6,9 @@
 --- Variables and constants
 --------------------------------------------------------------------------------
 
-local tooltip
+local tooltip             -- The compartment tooltip
+local _, L = ...          -- Localization
+local _, addonTable = ... -- Addon table
 
 --------------------------------------------------------------------------------
 --- Compartment functions
@@ -46,11 +48,11 @@ Handle the click on the compartment:
 ]]
 function EMH_AddonCompartmentClick(_, button)
     if button == "LeftButton" then
-        SettingsFrame:Hide()
-        MainFrame:Show()
+        addonTable.settingsFrame:Hide()
+        addonTable.mainFrame:Show()
     elseif button == "RightButton" then
-        MainFrame:Hide()
-        SettingsFrame:Show()
+        addonTable.mainFrame:Hide()
+        addonTable.settingsFrame:Show()
     end
 end
 
@@ -61,12 +63,12 @@ end
 --[[
 Toggle the visibility of the main frame (used in the slash command and the compartment)
 ]]
-function MainFrameToggle()
-    if MainFrame:IsVisible() then
-        MainFrame:Hide()
+function EMH_MainFrameToggle()
+    if addonTable.mainFrame:IsVisible() then
+        addonTable.mainFrame:Hide()
     else
-        SettingsFrame:Hide()
-        MainFrame:Show()
+        addonTable.settingsFrame:Hide()
+        addonTable.mainFrame:Show()
     end
 end
 
@@ -74,12 +76,12 @@ end
 Show the frame that is currently hidden and hide the one that is currently shown
 Save the position of the frame that is being hidden and set it as the position of the frame that is shown
 ]]
-function FrameToggle()
-    if MainFrame:IsVisible() then
-        MainFrame:Hide()
-        SettingsFrame:Show()
+function EMH_FrameToggle()
+    if addonTable.mainFrame:IsVisible() then
+        addonTable.mainFrame:Hide()
+        addonTable.settingsFrame:Show()
     else
-        SettingsFrame:Hide()
-        MainFrame:Show()
+        addonTable.settingsFrame:Hide()
+        addonTable.mainFrame:Show()
     end
 end

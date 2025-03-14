@@ -6,21 +6,24 @@
 --- Variables and constants
 --------------------------------------------------------------------------------
 
+local _, L = ...                 -- Localization
+local _, addonTable = ...        -- Addon table
 
-FRAMES_WIDTH = 520           -- Width of the frames
-FRAMES_HEIGHT = 300          -- Height of the frames
+addonTable.FRAMES_WIDTH = 520    -- Width of the frames
+addonTable.FRAMES_HEIGHT = 300   -- Height of the frames
 
-FRAME_POSITION_MERCHANTS = { -- Position of the frames when the merchant frame is visible
-    point = "TOP",
-    relativeTo = MerchantFrame,
-    relativePoint = "TOPRIGHT",
-    xOfs = 298,
-    yOfs = 0
-}
 local frame_position_default = { -- Default position of the frames
     point = "CENTER",
     relativePoint = "CENTER",
     xOfs = 0,
+    yOfs = 0
+}
+
+local FRAME_POSITION_MERCHANTS = { -- Position of the frames when the merchant frame is visible
+    point = "TOP",
+    relativeTo = MerchantFrame,
+    relativePoint = "TOPRIGHT",
+    xOfs = 298,
     yOfs = 0
 }
 local RELATIVE_TO_DEFAULT = UIParent -- Default relativeTo value
@@ -54,7 +57,7 @@ Reset EMHDB.framePos and the given frame to the default position
 @param frame - The frame to reset the position of
 ]]
 local function resetFramePosition(frame)
-    if (not IsMerchantFrameOpen) then
+    if (not addonTable.isMerchantFrameOpen) then
         EMHDB.framePos = frame_position_default
         frame:ClearAllPoints()
         frame:SetPoint(frame_position_default.point, RELATIVE_TO_DEFAULT, frame_position_default.relativePoint,
@@ -74,9 +77,9 @@ Put the frame position to the default one (center of the screen)
 @param frame - The frame to reset the position of
 ]]
 
-function DefaultFramePosition(frame)
+function EMH_DefaultFramePosition(frame)
     if not frame then
-        error(string.format(L["ERROR_NOT_A_FRAME"], "DefaultFramePosition"))
+        error(string.format(L["ERROR_NOT_A_FRAME"], "EMH_DefaultFramePosition"))
     end
 
     frame:ClearAllPoints()
@@ -93,14 +96,14 @@ save the position (case where the merchant frame has just been closed)
 
 @param frame - The frame to save the position of
 ]]
-function SaveFramePosition(frame)
+function EMH_SaveFramePosition(frame)
     if not frame then
-        error(string.format(L["ERROR_NOT_A_FRAME"], "SaveFramePosition"))
+        error(string.format(L["ERROR_NOT_A_FRAME"], "EMH_SaveFramePosition"))
     end
     if not isFrameOnScreen(frame) then
         resetFramePosition(frame)
     else
-        if not (IsMerchantFrameOpen) then
+        if not (addonTable.isMerchantFrameOpen) then
             local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint()
 
             if not relativeTo or (relativeTo and relativeTo:GetName() == "UIParent") then
@@ -122,13 +125,13 @@ If the database isn't set, set the frame to the default position
 
 @param frame - The frame to set the position of
 ]]
-function SetFramePosition(frame)
+function EMH_SetFramePosition(frame)
     if not frame then
-        error(string.format(L["ERROR_NOT_A_FRAME"], "SetFramePosition"))
+        error(string.format(L["ERROR_NOT_A_FRAME"], "EMH_SetFramePosition"))
     end
     if EMHDB and EMHDB.framePos then
         frame:ClearAllPoints()
-        if IsMerchantFrameOpen then
+        if addonTable.isMerchantFrameOpen then
             frame:SetPoint(FRAME_POSITION_MERCHANTS.point, FRAME_POSITION_MERCHANTS.relativeTo,
                 FRAME_POSITION_MERCHANTS.relativePoint,
                 FRAME_POSITION_MERCHANTS.xOfs, FRAME_POSITION_MERCHANTS.yOfs)
@@ -137,6 +140,6 @@ function SetFramePosition(frame)
                 .xOfs, EMHDB.framePos.yOfs)
         end
     else
-        DefaultFramePosition(frame)
+        EMH_DefaultFramePosition(frame)
     end
 end

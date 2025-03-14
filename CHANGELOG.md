@@ -16,6 +16,7 @@ The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/e
 
 - Improved the macro for repair.
 - Improved README.md.
+- Changed global variables and functions to local ones.
 
 #### Fixed
 

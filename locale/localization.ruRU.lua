@@ -3,7 +3,7 @@ local _, L = ...
 if GetLocale() == "ruRU" then
     --- Main
     L["FORMAT_MONEY"] = "%s золота, %d серебра, %d меди"
-    L["MAIN_FRAME_TITLE"] = "EMH: Молот Земного Мастера"
+    L["MAIN_FRAME_TITLE"] = "EMH: Earthen Master's Hammer"
     L["SUB_TITLE"] = "Благодаря ремонту вашего снаряжения с помощью EMH, вы сэкономили:"
     L["MAIN_TO_SETTINGS_BUTTON"] = "Перейти к настройкам"
     L["LOADING"] = "Загрузка..."
@@ -30,7 +30,7 @@ if GetLocale() == "ruRU" then
     L["offHand"] = "дополнительное оружие"
 
     --- Settings
-    L["SETTINGS_FRAME_TITLE"] = "EMH: Молоток земельника-мастера - Настройки"
+    L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Master's Hammer - Настройки"
     L["SETTINGS_TO_MAIN_BUTTON"] = "Перейти к основному окну"
     L["SETTINGS_SUB_TITLE"] = "Пожалуйста, отметьте предметы, которые вы можете ремонтировать:"
     L["SETTINGS_SUB_TITLE_NOTE_1"] =

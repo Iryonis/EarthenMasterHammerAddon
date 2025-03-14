@@ -8,7 +8,7 @@ A 'World of Warcraft: The War Within' AddOn to simplify the use of the blacksmit
 
 Using the CurseForge application, you can install this AddOn automatically:
 
-1. Search '**EarthenMasterHammer**' on the application.
+1. Search '**Earthen Master Hammer**' on the application.
 2. Click the 'Download' button
 3. Reload your game (`/reload`) to activate the AddOn.
 

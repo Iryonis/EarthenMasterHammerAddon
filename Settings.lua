@@ -6,6 +6,8 @@
 --- Variables
 --------------------------------------------------------------------------------
 
+local _, L = ...                      -- Localization
+local _, addonTable = ...             -- Addon table
 local checkboxes, secondColumn = 0, 0 -- Variables to place the checkboxes
 
 local NAME_TO_ID = {
@@ -31,7 +33,7 @@ local NAME_TO_ID = {
 --[[
 Remove an item from EMHDB.keys by its name.
 ]]
-function RemoveByName(name)
+local function removeByName(name)
     local id = NAME_TO_ID[name]
 
     if not id then
@@ -52,7 +54,7 @@ end
 --[[
 Add an item to EMHDB.keys by its name.
 ]]
-function AddByName(name)
+local function addByName(name)
     local id = NAME_TO_ID[name]
 
     if not id then
@@ -72,16 +74,18 @@ function AddByName(name)
 end
 
 --[[
-Create a checkbox with the given text, key and tooltip, and add it to the SettingsFrame.
+Create a checkbox with the given text, key and tooltip, and add it to the addonTable.settingsFrame.
 ]]
-function CreateCheckbox(checkboxText, key, checkboxTooltip)
-    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, SettingsFrame, "UICheckButtonTemplate")
+function EMH_CreateCheckbox(checkboxText, key, checkboxTooltip)
+    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, addonTable.settingsFrame,
+        "UICheckButtonTemplate")
     checkbox.Text:SetText(" - " .. checkboxText)
-    checkbox:SetPoint("TOP", SettingsFrame.subTitleNote1, "TOP", (-135 + secondColumn), -50 + (checkboxes * -30))
+    checkbox:SetPoint("TOP", addonTable.settingsFrame.subTitleNote1, "TOP", (-135 + secondColumn),
+        -50 + (checkboxes * -30))
 
     if EMHDB.settingsKeys[key] == nil then
         EMHDB.settingsKeys[key] = true
-        AddByName(key)
+        addByName(key)
     end
 
     checkbox:SetChecked(EMHDB.settingsKeys[key])
@@ -98,10 +102,10 @@ function CreateCheckbox(checkboxText, key, checkboxTooltip)
     checkbox:SetScript("OnClick", function(self)
         EMHDB.settingsKeys[key] = self:GetChecked()
         if (EMHDB.settingsKeys[key]) then
-            AddByName(key)
+            addByName(key)
             EMHDB.to_repair = EMHDB.to_repair + 1
         else
-            RemoveByName(key)
+            removeByName(key)
             EMHDB.to_repair = EMHDB.to_repair - 1
         end
     end)
@@ -117,76 +121,76 @@ end
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--------------------------- Create the SettingsFrame ----------------------------
+-------------------------- Create the addonTable.settingsFrame ----------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --- Settings Frame
 --------------------------------------------------------------------------------
 
-SettingsFrame = CreateFrame("Frame", "EMHSettingsFrame", UIParent, "BasicFrameTemplateWithInset")
+addonTable.settingsFrame = CreateFrame("Frame", "EMHSettingsFrame", UIParent, "BasicFrameTemplateWithInset")
 
-SettingsFrame:SetSize(FRAMES_WIDTH, FRAMES_HEIGHT)
-SettingsFrame:SetFrameStrata("DIALOG")
-SetFramePosition(SettingsFrame)
-SettingsFrame:Hide()
-SettingsFrame.TitleBg:SetHeight(30)
-SettingsFrame.title = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-SettingsFrame.title:SetPoint("TOPLEFT", SettingsFrame.TitleBg, "TOPLEFT", 5, -3)
-SettingsFrame.title:SetText(L["SETTINGS_FRAME_TITLE"])
+addonTable.settingsFrame:SetSize(addonTable.FRAMES_WIDTH, addonTable.FRAMES_HEIGHT)
+addonTable.settingsFrame:SetFrameStrata("DIALOG")
+EMH_SetFramePosition(addonTable.settingsFrame)
+addonTable.settingsFrame:Hide()
+addonTable.settingsFrame.TitleBg:SetHeight(30)
+addonTable.settingsFrame.title = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+addonTable.settingsFrame.title:SetPoint("TOPLEFT", addonTable.settingsFrame.TitleBg, "TOPLEFT", 5, -3)
+addonTable.settingsFrame.title:SetText(L["SETTINGS_FRAME_TITLE"])
 
-SettingsFrame.subTitle = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-local font, _, flags = SettingsFrame.subTitle:GetFont()
+addonTable.settingsFrame.subTitle = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local font, _, flags = addonTable.settingsFrame.subTitle:GetFont()
 if font then
-    SettingsFrame.subTitle:SetFont(font, 16, flags)
+    addonTable.settingsFrame.subTitle:SetFont(font, 16, flags)
 end
-SettingsFrame.subTitle:SetPoint("TOPLEFT", SettingsFrame, "TOPLEFT", 15, -35)
-SettingsFrame.subTitle:SetText(L["SETTINGS_SUB_TITLE"])
-SettingsFrame.subTitleNote1 = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-SettingsFrame.subTitleNote1:SetPoint("TOPLEFT", SettingsFrame.subTitle, "BOTTOMLEFT", 0, -12)
-SettingsFrame.subTitleNote1:SetText(L["SETTINGS_SUB_TITLE_NOTE_1"])
-SettingsFrame.subTitleNote2 = SettingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-SettingsFrame.subTitleNote2:SetPoint("TOPLEFT", SettingsFrame.subTitleNote1, "BOTTOMLEFT", 0, -8)
-SettingsFrame.subTitleNote2:SetText(L["SETTINGS_SUB_TITLE_NOTE_2"])
+addonTable.settingsFrame.subTitle:SetPoint("TOPLEFT", addonTable.settingsFrame, "TOPLEFT", 15, -35)
+addonTable.settingsFrame.subTitle:SetText(L["SETTINGS_SUB_TITLE"])
+addonTable.settingsFrame.subTitleNote1 = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+addonTable.settingsFrame.subTitleNote1:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitle, "BOTTOMLEFT", 0, -12)
+addonTable.settingsFrame.subTitleNote1:SetText(L["SETTINGS_SUB_TITLE_NOTE_1"])
+addonTable.settingsFrame.subTitleNote2 = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+addonTable.settingsFrame.subTitleNote2:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT", 0, -8)
+addonTable.settingsFrame.subTitleNote2:SetText(L["SETTINGS_SUB_TITLE_NOTE_2"])
 
 -- Button "Go to Main Frame"
 
-local goToMainButton = CreateFrame("Button", "goToMainButton", SettingsFrame, "UIPanelButtonTemplate")
-goToMainButton:SetPoint("TOPRIGHT", SettingsFrame, "TOPRIGHT", -25, 0)
+local goToMainButton = CreateFrame("Button", "goToMainButton", addonTable.settingsFrame, "UIPanelButtonTemplate")
+goToMainButton:SetPoint("TOPRIGHT", addonTable.settingsFrame, "TOPRIGHT", -25, 0)
 goToMainButton:SetSize(160, 20)
 goToMainButton:SetText(L["SETTINGS_TO_MAIN_BUTTON"])
 goToMainButton:SetScript("OnClick", function(self)
-    FrameToggle()
+    EMH_FrameToggle()
 end)
 
 -- Settings frame interactions
 
 -- Make the frame movable
-SettingsFrame:EnableMouse(true)
-SettingsFrame:SetMovable(true)
-SettingsFrame:RegisterForDrag("LeftButton")
-SettingsFrame:SetScript("OnDragStart", function(self)
+addonTable.settingsFrame:EnableMouse(true)
+addonTable.settingsFrame:SetMovable(true)
+addonTable.settingsFrame:RegisterForDrag("LeftButton")
+addonTable.settingsFrame:SetScript("OnDragStart", function(self)
     self:StartMoving()
 end)
-SettingsFrame:SetScript("OnDragStop", function(self)
+addonTable.settingsFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
-    SaveFramePosition(SettingsFrame)
+    EMH_SaveFramePosition(addonTable.settingsFrame)
 end)
 
 -- Reset the position of the frame when right-clicking on it
-SettingsFrame:SetScript("OnMouseDown", function(self, button)
+addonTable.settingsFrame:SetScript("OnMouseDown", function(self, button)
     if button == "RightButton" then
-        DefaultFramePosition(SettingsFrame)
+        EMH_DefaultFramePosition(addonTable.settingsFrame)
     end
 end)
 
 -- Update position when opening the frame
-SettingsFrame:SetScript("OnShow", function()
-    SetFramePosition(SettingsFrame)
+addonTable.settingsFrame:SetScript("OnShow", function()
+    EMH_SetFramePosition(addonTable.settingsFrame)
 end)
 
 -- Save position when closing the frame
-SettingsFrame:SetScript("OnHide", function()
-    SaveFramePosition(SettingsFrame)
+addonTable.settingsFrame:SetScript("OnHide", function()
+    EMH_SaveFramePosition(addonTable.settingsFrame)
 end)
 
 -- Allow escap key to close the frame

@@ -1,4 +1,5 @@
 local _, L = ...
+
 if GetLocale() == "frFR" then
     --- Main
     L["FORMAT_MONEY"] = "%s or, %d argent, %d cuivre"
