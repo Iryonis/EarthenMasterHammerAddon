@@ -4,11 +4,34 @@ A 'World of Warcraft: The War Within' AddOn to simplify the use of the blacksmit
 
 ## Installation
 
-Download the addon from Curseforge. It will automatically install, and after a reload (`/reload`), it will be usable.
+### (Automatic) CurseForge Application
 
-You can also download and install it manually from Curseforge or GitHub. Once you have downloaded the package, navigate to your game folder, then `_retail_` -> `Interface` -> `AddOns` and place it there. Then extract the package, and after a reload, it will be usable.
+Using the CurseForge application, you can install this AddOn automatically:
 
-**Note:** The directory in `AddOns` should be named `EarthenMasterHammerAddon` and should directly contain the files. Depending on where you download it from, this may not be the case immediately.
+1. Search '**Earthen Master Hammer**' on the application.
+2. Click the 'Download' button
+3. Reload your game (`/reload`) to activate the AddOn.
+
+### (Manual) Download from CurseForge Website
+
+On the CurseForge website, you can download the AddOn package from its [official page](https://www.curseforge.com/wow/addons/emh). Click the 'Download' button and select the latest version.
+
+### (Manual) Download from GitHub
+
+On the ['Releases' page](https://github.com/Iryonis/EarthenMasterHammerAddon/releases) of the GitHub repository of the AddOn, you can download the package by clicking on '**EarthenMasterHammerAddon-x.x.x.zip**' from the latest release.
+
+### (Manual) Installing the Package
+
+Once you have downloaded the package:
+
+1. Move it to your `AddOns` folder, which should be located in your game directory, under:
+   `_retail_` → `Interface` → `AddOns`
+2. Extract the package.
+3. Reload your game (`/reload`) to activate the AddOn.
+
+**Note:** The folder inside `AddOns` must be named `EarthenMasterHammerAddon` and should directly contain the files. Depending on where you downloaded it from, you may need to adjust this manually.
+
+---
 
 ## Usage
 
@@ -18,9 +41,12 @@ Otherwise, you can type `/emh` in the chat or use the button in the AddOn compar
 In the **Settings Frame**, select the items you can repair based on your Blacksmithing nodes.  
 Then, in the **Main Frame**, use the button to repair all damaged equipment. The AddOn will also track how much gold you've saved using the hammer—so you can brag to your non-blacksmith friends!
 
+By right-clicking on the AddOn frame, you can reset its position.
+
 ## Contributing
 
-For bug reports or feature requests, feel free to open an issue on GitHub [right here](https://github.com/Iryonis/EarthenMasterHammerAddon/issues).
+For **bug reports** or **feature requests**, feel free to open an issue on GitHub [right here](https://github.com/Iryonis/EarthenMasterHammerAddon/issues).
+You can also contact me on [Curseforge](https://legacy.curseforge.com/private-messages).
 
 Please note that this is my first WoW AddOn and that English is not my first language.
 
@@ -31,3 +57,9 @@ Please note that this is my first WoW AddOn and that English is not my first lan
 ## Credits
 
 I followed [this guide](https://www.reddit.com/r/wowaddondev/comments/1cc2pia/creating_a_wow_addon_part_1_a_fresh_start/?rdt=36019) to learn the basics of AddOn creation, so a big thanks to the author!
+
+### Translations
+
+The following translations were freely offered by these contributors, so a huge thanks to them:
+
+- **Russian** -> ZamestoTV (@Hubbotu)

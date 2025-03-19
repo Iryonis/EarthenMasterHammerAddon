@@ -1,4 +1,7 @@
+-- Original version by Iryon
+
 local _, L = ...
+
 if GetLocale() == "frFR" then
     --- Main
     L["FORMAT_MONEY"] = "%s or, %d argent, %d cuivre"
@@ -11,7 +14,7 @@ if GetLocale() == "frFR" then
     L["NO_REPAIR"] = "Aucune réparation nécessaire"
     L["SAVED_MONEY_PRINT"] = "Vous venez d'économiser %s grâce à EMH."
     L["REPAIR_BUTTON"] = "Réparer %s (%d/%d)"
-    L["MACRO"] = "/use Marteau de maître terrestre\n/use %d"
+    L["MACRO"] = "/use item:%d\n/use %d"
     L["GOLD_TOOLTIP"] =
     "En raison de limitations de l'API de Blizzard, le montant affiché ne prend en compte que les économies réalisées lors de l'utilisation d'EMH avec une fenêtre de réparateur ouverte."
     L["CREDITS"] = "EMH - version %s - par Iryon"

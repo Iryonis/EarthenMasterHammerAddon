@@ -1,11 +1,11 @@
-local _, L = ... -- Let's use the private table passed to every .lua file to store our locale
+-- Translated by Iryon
+
+local _, L = ...
+
 local function defaultFunc(L, key)
-    -- If this function was called, we have no localization for this key.
-    -- We could complain loudly to allow localizers to see the error of their ways,
-    -- but, for now, just return the key as its own localization. This allows you to
-    -- avoid writing the default localization out explicitly.
     return key
 end
+
 setmetatable(L, { __index = defaultFunc })
 
 --- Main
@@ -19,7 +19,7 @@ L["NO_EMH"] =
 L["NO_REPAIR"] = "No repair needed"
 L["SAVED_MONEY_PRINT"] = "You just saved %s using EMH."
 L["REPAIR_BUTTON"] = "Repair %s (%d/%d)"
-L["MACRO"] = "/use Earthen Master's Hammer\n/use %d"
+L["MACRO"] = "/use item:%d\n/use %d"
 L["GOLD_TOOLTIP"] =
 "Due to limitations in Blizzard's API, the displayed amount only accounts for the savings made when using EMH while having a repair frame open."
 L["CREDITS"] = "EMH - v%s - by Iryon"

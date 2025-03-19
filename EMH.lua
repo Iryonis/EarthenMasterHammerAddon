@@ -4,16 +4,19 @@
 --------------------------------------------------------------------------------
 --- Variables and constants needed at initialization
 --------------------------------------------------------------------------------
+---
+-- Get the addon version from .toc
+local addonName, addonTable = ... -- Addon table
+addonTable.VERSION = C_AddOns.GetAddOnMetadata(addonName, "Version")
 
-_, L = ...                   -- Localization
-IsMerchantFrameOpen = false  -- True if the merchant frame is open
+addonTable.isMerchantFrameOpen = false -- True if the merchant frame is open
 
-local badProfession = false  -- True if the player doesn't have the right profession (Blacksmithing)
-local number_item_repaired   -- Number of items repaired
-local VERSION = "1.0.0"      -- Version of the addon
-local BLACKSMITHING_ID = 164 -- ID of the Blacksmithing profession
-local HAMMER_ID = 225660     -- ID of the Earthen Master's Hammer
-local TICKER = 0.1           -- Ticker duration in seconds
+local _, L = ...                       -- Localization
+local badProfession = false            -- True if the player doesn't have the right profession (Blacksmithing)
+local VERSION = addonTable.VERSION     -- Version of the addon
+local BLACKSMITHING_ID = 164           -- ID of the Blacksmithing profession
+local HAMMER_ID = 225660               -- ID of the Earthen Master's Hammer
+local TICKER = 0.1                     -- Ticker duration in seconds
 
 local ID_TO_NAME = {
     [1] = "head",
@@ -104,13 +107,13 @@ Open the EMH frame (to the right of the merchant frame) if:
 - the player needs to repair his items
 ]]
 local function openEMHMerchant()
-    if not MainFrame then
+    if not addonTable.mainFrame then
         error(string.format(L["ERROR_NOT_A_FRAME"], "openEMHMerchant"))
     end
     if (CanMerchantRepair() and checkRepairNeeded()) then
-        IsMerchantFrameOpen = true
-        SettingsFrame:Hide()
-        MainFrame:Show()
+        addonTable.isMerchantFrameOpen = true
+        addonTable.settingsFrame:Hide()
+        addonTable.mainFrame:Show()
     end
 end
 
@@ -118,9 +121,9 @@ end
 Close the EMH frame if the merchant frame opened could repair and update the position of the frames
 ]]
 local function closeEMHMerchant()
-    IsMerchantFrameOpen = false
-    MainFrame:Hide()
-    SettingsFrame:Hide()
+    addonTable.isMerchantFrameOpen = false
+    addonTable.mainFrame:Hide()
+    addonTable.settingsFrame:Hide()
 end
 
 --- Profession functions
@@ -144,7 +147,7 @@ end
 --[[
 Check if the player has the Blacksmithing profession
 ]]
-function CheckProfession()
+local function checkProfession()
     local profession1, profession2, _, _, _ = GetProfessions()
 
     if not profession1 and not profession2 then
@@ -175,7 +178,7 @@ eventListenerFrame:RegisterEvent("MERCHANT_CLOSED")
 
 eventListenerFrame:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_LOGIN" then
-        CheckProfession()
+        checkProfession()
         if not EMHDB then
             EMHDB = {}
         end
@@ -197,11 +200,11 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
 
         if not EMHDB.framePos then
             EMHDB.framePos = {}
-            SaveFramePosition(MainFrame) -- Initializing the frame position
+            EMH_SaveFramePosition(addonTable.mainFrame) -- Initializing the frame position
         end
 
         for _, setting in pairs(SETTINGS) do
-            CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
+            EMH_CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
     elseif (event == "MERCHANT_SHOW" and not badProfession) then
         openEMHMerchant()
@@ -288,7 +291,7 @@ end
 
 --[[
 Check if the player has the hammer in his inventory
-Only work the first time the player opens the MainFrame
+Only work the first time the player opens the addonTable.mainFrame
 
 @param id: the id of the hammer
 ]]
@@ -309,7 +312,7 @@ end
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
----------------------------- Create the MainFrame ------------------------------
+---------------------------- Create the addonTable.mainFrame ------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --- Main Frame
@@ -317,42 +320,42 @@ end
 
 -- Create the main frame
 
-MainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset")
+addonTable.mainFrame = CreateFrame("Frame", "EMHMainFrame", UIParent, "BasicFrameTemplateWithInset")
 
-MainFrame:SetSize(FRAMES_WIDTH, FRAMES_HEIGHT)
-MainFrame:SetFrameStrata("DIALOG")
-SetFramePosition(MainFrame)
-MainFrame:Hide()
-MainFrame.TitleBg:SetHeight(30)
-MainFrame.title = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-MainFrame.title:SetPoint("TOPLEFT", MainFrame.TitleBg, "TOPLEFT", 5, -3)
-MainFrame.title:SetText(L["MAIN_FRAME_TITLE"])
+addonTable.mainFrame:SetSize(addonTable.FRAMES_WIDTH, addonTable.FRAMES_HEIGHT)
+addonTable.mainFrame:SetFrameStrata("DIALOG")
+EMH_SetFramePosition(addonTable.mainFrame)
+addonTable.mainFrame:Hide()
+addonTable.mainFrame.TitleBg:SetHeight(30)
+addonTable.mainFrame.title = addonTable.mainFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+addonTable.mainFrame.title:SetPoint("TOPLEFT", addonTable.mainFrame.TitleBg, "TOPLEFT", 5, -3)
+addonTable.mainFrame.title:SetText(L["MAIN_FRAME_TITLE"])
 
-MainFrame.subTitle1 = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-MainFrame.subTitle1:SetPoint("TOP", MainFrame, "TOP", 0, -35)
-MainFrame.subTitle1:SetText(L["SUB_TITLE"])
-MainFrame.goldSaved = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-MainFrame.goldSaved:SetPoint("TOP", MainFrame.subTitle1, "BOTTOM", 0, -20)
+addonTable.mainFrame.subTitle1 = addonTable.mainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+addonTable.mainFrame.subTitle1:SetPoint("TOP", addonTable.mainFrame, "TOP", 0, -35)
+addonTable.mainFrame.subTitle1:SetText(L["SUB_TITLE"])
+addonTable.mainFrame.goldSaved = addonTable.mainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+addonTable.mainFrame.goldSaved:SetPoint("TOP", addonTable.mainFrame.subTitle1, "BOTTOM", 0, -20)
 
 -- Draw a horizontal line
-MainFrame.backgroundButtonRepair = MainFrame:CreateTexture(nil, "ARTWORK")
-MainFrame.backgroundButtonRepair:SetColorTexture(1, 1, 1, 0.05) -- Set the color to WoW yellow
-MainFrame.backgroundButtonRepair:SetSize(480, 100)
-MainFrame.backgroundButtonRepair:SetPoint("TOP", MainFrame.goldSaved, "BOTTOM", 0, -30)
+addonTable.mainFrame.backgroundButtonRepair = addonTable.mainFrame:CreateTexture(nil, "ARTWORK")
+addonTable.mainFrame.backgroundButtonRepair:SetColorTexture(1, 1, 1, 0.05) -- Set the color to WoW yellow
+addonTable.mainFrame.backgroundButtonRepair:SetSize(480, 100)
+addonTable.mainFrame.backgroundButtonRepair:SetPoint("TOP", addonTable.mainFrame.goldSaved, "BOTTOM", 0, -30)
 -- Credits
-MainFrame.credits = MainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-MainFrame.credits:SetPoint("BOTTOM", MainFrame, "BOTTOM", 0, 15)
-MainFrame.credits:SetText(string.format(L["CREDITS"], VERSION))
+addonTable.mainFrame.credits = addonTable.mainFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+addonTable.mainFrame.credits:SetPoint("BOTTOM", addonTable.mainFrame, "BOTTOM", 0, 15)
+addonTable.mainFrame.credits:SetText(string.format(L["CREDITS"], VERSION))
 
-local horizontalLineCredits = MainFrame:CreateTexture(nil, "ARTWORK")
+local horizontalLineCredits = addonTable.mainFrame:CreateTexture(nil, "ARTWORK")
 horizontalLineCredits:SetColorTexture(1, 0.82, 0, 1) -- Set the color to WoW yellow
 horizontalLineCredits:SetSize(240, 1)
-horizontalLineCredits:SetPoint("TOP", MainFrame.credits, "TOP", 0, 35)
+horizontalLineCredits:SetPoint("TOP", addonTable.mainFrame.credits, "TOP", 0, 35)
 
 -- Tooltip gold
-local tooltipButton = CreateFrame("Button", nil, MainFrame, "UIPanelButtonTemplate")
+local tooltipButton = CreateFrame("Button", nil, addonTable.mainFrame, "UIPanelButtonTemplate")
 tooltipButton:SetSize(24, 24)
-tooltipButton:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -13, -30)
+tooltipButton:SetPoint("TOPRIGHT", addonTable.mainFrame, "TOPRIGHT", -13, -30)
 -- Create a font string for the "?"
 local fontString = tooltipButton:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 fontString:SetPoint("CENTER", tooltipButton, "CENTER", 0, 0)
@@ -360,17 +363,17 @@ fontString:SetText("?")
 
 
 -- Button "Go to settings frame"
-local goToSettingsButton = CreateFrame("Button", "goToSettingsButton", MainFrame, "UIPanelButtonTemplate")
-goToSettingsButton:SetPoint("TOPRIGHT", MainFrame, "TOPRIGHT", -25, 0)
+local goToSettingsButton = CreateFrame("Button", "goToSettingsButton", addonTable.mainFrame, "UIPanelButtonTemplate")
+goToSettingsButton:SetPoint("TOPRIGHT", addonTable.mainFrame, "TOPRIGHT", -25, 0)
 goToSettingsButton:SetSize(150, 20)
 goToSettingsButton:SetText(L["MAIN_TO_SETTINGS_BUTTON"])
 
 goToSettingsButton:SetScript("OnClick", function(self)
-    FrameToggle()
+    EMH_FrameToggle()
 end)
 
-MainFrame:EnableMouse(true)
-MainFrame:SetMovable(true)
+addonTable.mainFrame:EnableMouse(true)
+addonTable.mainFrame:SetMovable(true)
 
 -- Add tooltip to the button
 tooltipButton:SetScript("OnEnter", function(self)
@@ -394,9 +397,9 @@ table.insert(UISpecialFrames, "EMHMainFrame")
 --- Button to repair items
 --------------------------------------------------------------------------------
 
-local useItemButton = CreateFrame("Button", "UseItemButton", MainFrame,
+local useItemButton = CreateFrame("Button", "UseItemButton", addonTable.mainFrame,
     "SecureActionButtonTemplate, UIPanelButtonTemplate")
-useItemButton:SetPoint("CENTER", MainFrame, "CENTER", 0, -10)
+useItemButton:SetPoint("CENTER", addonTable.mainFrame, "CENTER", 0, -10)
 useItemButton:SetSize(280, 40)
 useItemButton:SetText(L["LOADING"])
 useItemButton:RegisterForClicks("AnyUp", "AnyDown")
@@ -441,7 +444,7 @@ local function testAndUpdateButton(i, item_number)
         -- Update the repair button and wait for the users to click on it
         useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], item_number,
             EMHDB.to_repair))
-        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], EMHDB.keys[i]))
+        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], HAMMER_ID, EMHDB.keys[i]))
         return false
     end
     -- Go to the next item
@@ -449,7 +452,7 @@ local function testAndUpdateButton(i, item_number)
 end
 
 --[[
-Compute the gold saved and update the goldSaved text in the MainFrame
+Compute the gold saved and update the goldSaved text in the addonTable.mainFrame
 ]]
 local function computeGoldSaved()
     tempRepairCost, _ = GetRepairAllCost()
@@ -457,7 +460,7 @@ local function computeGoldSaved()
     local gold_saved = currentRepairCost - tempRepairCost
     EMHDB.goldSaved = EMHDB.goldSaved + gold_saved
     if gold_saved > 0 then
-        MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
+        addonTable.mainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
     end
 
     currentRepairCost = currentRepairCost - gold_saved
@@ -490,7 +493,7 @@ Use a ticker to check the durability every {TICKER} seconds
 ]]
 waitForUserToRepair = function(i, item_number)
     -- Check if the frame is still open
-    if not MainFrame:IsShown() then
+    if not addonTable.mainFrame:IsShown() then
         return
     end
     if testAndUpdateButton(i, item_number) then
@@ -513,7 +516,6 @@ If a repair is needed, start the ticker to check durability every second until t
 @param item_number: the number of the item which is being repaired
 ]]
 runTestsInstantly = function(i, item_number)
-    number_item_repaired = number_item_repaired + 1
     if type(i) ~= "number" then
         error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(i)))
     elseif type(item_number) ~= "number" then
@@ -542,19 +544,19 @@ end
 --------------------------------------------------------------------------------
 
 -- Make the frame movable
-MainFrame:RegisterForDrag("LeftButton")
-MainFrame:SetScript("OnDragStart", function(self)
+addonTable.mainFrame:RegisterForDrag("LeftButton")
+addonTable.mainFrame:SetScript("OnDragStart", function(self)
     self:StartMoving()
 end)
-MainFrame:SetScript("OnDragStop", function(self)
+addonTable.mainFrame:SetScript("OnDragStop", function(self)
     self:StopMovingOrSizing()
+    EMH_SaveFramePosition(addonTable.mainFrame)
 end)
 
 -- Update the goldSaved and run the tests for the repair button
-MainFrame:SetScript("OnShow", function()
-    SetFramePosition(MainFrame)
-    number_item_repaired = -1
-    MainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
+addonTable.mainFrame:SetScript("OnShow", function()
+    EMH_SetFramePosition(addonTable.mainFrame)
+    addonTable.mainFrame.goldSaved:SetText(formatMoney(EMHDB.goldSaved))
 
     totalRepairCost, _ = GetRepairAllCost()
     currentRepairCost = totalRepairCost
@@ -563,15 +565,15 @@ MainFrame:SetScript("OnShow", function()
 end)
 
 -- Update economy and save position
-MainFrame:SetScript("OnHide", function()
+addonTable.mainFrame:SetScript("OnHide", function()
     finalizeRepairs()
-    SaveFramePosition(MainFrame)
+    EMH_SaveFramePosition(addonTable.mainFrame)
 end)
 
 -- Reset the position of the frame when right-clicking on it
-MainFrame:SetScript("OnMouseDown", function(self, button)
+addonTable.mainFrame:SetScript("OnMouseDown", function(self, button)
     if button == "RightButton" then
-        DefaultFramePosition(MainFrame)
+        EMH_DefaultFramePosition(addonTable.mainFrame)
     end
 end)
 
@@ -591,5 +593,5 @@ SlashCmdList.EMH = function()
     checkHammerPresence(HAMMER_ID)
 
     -- Toggle the frames
-    MainFrameToggle()
+    EMH_MainFrameToggle()
 end
