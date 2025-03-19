@@ -1,3 +1,5 @@
+-- Original version by Iryon
+
 local _, L = ...
 
 if GetLocale() == "frFR" then

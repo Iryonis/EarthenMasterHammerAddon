@@ -31,6 +31,8 @@ Once you have downloaded the package:
 
 **Note:** The folder inside `AddOns` must be named `EarthenMasterHammerAddon` and should directly contain the files. Depending on where you downloaded it from, you may need to adjust this manually.
 
+---
+
 ## Usage
 
 When talking to a merchant who can repair (and if you have damaged equipment), the **Main Frame** will automatically open.  
@@ -43,7 +45,7 @@ By right-clicking on the AddOn frame, you can reset its position.
 
 ## Contributing
 
-For bug reports or feature requests, feel free to open an issue on GitHub [right here](https://github.com/Iryonis/EarthenMasterHammerAddon/issues).
+For **bug reports** or **feature requests**, feel free to open an issue on GitHub [right here](https://github.com/Iryonis/EarthenMasterHammerAddon/issues).
 You can also contact me on [Curseforge](https://legacy.curseforge.com/private-messages).
 
 Please note that this is my first WoW AddOn and that English is not my first language.

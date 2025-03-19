@@ -194,5 +194,4 @@ addonTable.settingsFrame:SetScript("OnHide", function()
 end)
 
 -- Allow escap key to close the frame
-
 table.insert(UISpecialFrames, "EMHSettingsFrame")

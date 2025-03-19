@@ -1,3 +1,5 @@
+-- Translated by Iryon
+
 local _, L = ...
 
 local function defaultFunc(L, key)

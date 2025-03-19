@@ -1,3 +1,5 @@
+-- Translated thanks to ZamestoTV (@Hubbotu)
+
 local _, L = ...
 
 if GetLocale() == "ruRU" then
