@@ -16,6 +16,8 @@
 locale/Localization.enUS.lua
 locale/Localization.frFR.lua
 locale/localization.ruRU.lua
+locale/localization.zhCN.lua
+
 
 # Main files
 FramePosition.lua
