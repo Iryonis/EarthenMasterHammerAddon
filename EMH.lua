@@ -468,10 +468,11 @@ local function computeGoldSaved()
 end
 
 --[[
-Update the text of the repair button and compute the total gold saved to print it in the chat
+Update the text and the macro of the repair button, and compute the total gold saved to print it in the chat
 ]]
 local function finalizeRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
+    useItemButton:SetAttribute("macrotext", "/emh")
 
     local total_gold_saved = totalRepairCost - currentRepairCost
     if total_gold_saved > 0 then

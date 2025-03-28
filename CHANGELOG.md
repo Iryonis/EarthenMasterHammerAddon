@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+### [1.0.2] - 2025-03
+
+#### Added
+
+- Clicking the repair button after completing all repairs will now close the addon window.
+
 ### [1.0.1] - 2025-03-19
 
 #### Added

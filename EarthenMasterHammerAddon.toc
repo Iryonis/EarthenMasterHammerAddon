@@ -4,7 +4,7 @@
 ## Notes--FrFR: Un addon WoW : TWW pour simplifier l'utilisation de l'objet de forge 'Marteau de maître terrestre'.
 ## Notes--ruRU: Аддон для WoW: TWW, упрощающий использование кузнечного инструмента 'Молоток земельника-мастера'.
 ## Author: Iryon
-## Version: 1.0.1
+## Version: 1.0.2
 ## X-Curse-Project-ID: 1202156
 ## SavedVariablesPerCharacter: EMHDB
 ## IconTexture: Interface\AddOns\EarthenMasterHammerAddon\Images\logo.png
