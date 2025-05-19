@@ -88,15 +88,31 @@ local SETTINGS = {
 --- Functions needed at initialization
 --------------------------------------------------------------------------------
 
+-- Check the durability of the given item
+
+-- @param i: the index of the item to check
+-- @return true if the item has full durability or isn't checked in the settings, false otherwise
+local function performTest(i)
+    local current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
+    if current and maximum and current < maximum then
+        return false
+    end
+    return true
+end
+
 --[[
 Check if the player needs to repair his items
 
 @return true if the player needs to repair his items, false otherwise
 ]]
 local function checkRepairNeeded()
-    local repairCost, _ = GetRepairAllCost()
-    if repairCost > 0 then
-        return true
+    local i = 1
+    while i <= #EMHDB.keys do
+        if not performTest(i) then
+            -- If a repair is needed, return true
+            return true
+        end
+        i = i + 1
     end
     return false
 end
@@ -418,18 +434,6 @@ local function updateToRepairParameter()
             EMHDB.to_repair = EMHDB.to_repair + 1
         end
     end
-end
-
--- Check the durability of the given item
-
--- @param i: the index of the item to check
--- @return true if the item has full durability or isn't checked in the settings, false otherwise
-local function performTest(i)
-    local current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
-    if current and maximum and current < maximum then
-        return false
-    end
-    return true
 end
 
 --[[
