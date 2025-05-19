@@ -8,6 +8,7 @@ The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/e
 
 #### Added
 
+- Added Chinese translation - Thanks Fenei.
 - Clicking the repair button after completing all repairs will now close the addon window.
 
 ### [1.0.1] - 2025-03-19

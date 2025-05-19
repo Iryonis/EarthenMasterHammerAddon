@@ -1,8 +1,9 @@
 -- Translated thanks to Fenei
+
 local _, L = ...
 
 if GetLocale() == "zhCN" then
-    --- 主界面
+    --- Main
     L["FORMAT_MONEY"] = "%s 金，%d 银，%d 铜"
     L["MAIN_FRAME_TITLE"] = "EMH：土灵大师之锤"
     L["SUB_TITLE"] = "通过使用EMH修理装备，您已节省："
@@ -13,9 +14,9 @@ if GetLocale() == "zhCN" then
     L["SAVED_MONEY_PRINT"] = "您通过使用EMH节省了 %s。"
     L["REPAIR_BUTTON"] = "修理 %s (%d/%d)"
     L["GOLD_TOOLTIP"] = "由于暴雪API限制，显示金额仅包含打开修理窗口时使用EMH的节省。"
-    L["CREDITS"] = "EMH - version %s - par Iryon"
+    L["CREDITS"] = "EMH - v%s - by Iryon"
 
-    -- 装备部位名称
+    -- Item names
     L["head"] = "头部"
     L["shoulder"] = "肩部"
     L["chest"] = "胸部"
@@ -27,20 +28,20 @@ if GetLocale() == "zhCN" then
     L["mainHand"] = "主手武器"
     L["offHand"] = "副手物品"
 
-    --- 设置界面
+    --- Settings
     L["SETTINGS_FRAME_TITLE"] = "EMH：土灵大师之锤 - 设置"
     L["SETTINGS_TO_MAIN_BUTTON"] = "返回主界面"
     L["SETTINGS_SUB_TITLE"] = "请勾选您可以修理的装备类型："
     L["SETTINGS_SUB_TITLE_NOTE_1"] = "（注意：只能修理已学习最高等级专业节点的装备）"
     L["SETTINGS_SUB_TITLE_NOTE_2"] = "（请确保选择正确的装备类型）"
     L["SETTINGS_TOOLTIP"] = "勾选此项表示您已学习%s专业节点的最高等级。"
-    
-    -- 界面控制
+
+    -- Frame Control
     L["COMPARTMENT_LEFT"] = "左键点击打开主界面"
     L["COMPARTMENT_RIGHT"] = "右键点击打开设置"
     L["EMH"] = "土灵大师之锤"
 
-    -- 专业节点
+    -- Nodes
     L["head_node"] = "'头盔'"
     L["shoulder_node"] = "'护肩'"
     L["chest_node"] = "'胸甲'"
@@ -52,11 +53,10 @@ if GetLocale() == "zhCN" then
     L["mainHand_node"] = "主手武器（'战斧与长柄武器'/'长剑'/'短剑'/'锤类武器'）"
     L["offHand_node"] = "副手物品（'盾牌'/'短剑'/'长剑'/'锤类武器'）"
 
-    -- 错误信息
+    -- Errors and warning
     L["ERROR_BAD_TYPE_NUMBER"] = "错误：预期数字类型，实际得到 %s"
     L["ERROR_NO_NAME_IN_EMHDB"] = "错误：NAME_TO_ID中找不到%s对应的元素"
     L["ERROR_REMOVE_EMHDB"] = "错误：尝试从数据库删除ID为'%s'的元素时出错"
     L["ERROR_ADD_EMHDB"] = "错误：数据库已存在ID为'%s'的元素"
     L["ERROR_NOT_A_FRAME"] = "错误：%s参数错误，预期得到框架对象"
-
 end
