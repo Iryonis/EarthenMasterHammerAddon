@@ -1,4 +1,4 @@
-## Interface: 110100
+## Interface: 110105
 ## Title: Earthen Master's Hammer
 ## Notes: A WoW: TWW Addon to simplify the use of the blacksmithing item 'Earthen Master's Hammer'.
 ## Notes--FrFR: Un addon WoW : TWW pour simplifier l'utilisation de l'objet de forge 'Marteau de maître terrestre'.
