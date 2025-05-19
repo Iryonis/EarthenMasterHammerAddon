@@ -63,3 +63,4 @@ I followed [this guide](https://www.reddit.com/r/wowaddondev/comments/1cc2pia/cr
 The following translations were freely offered by these contributors, so a huge thanks to them:
 
 - **Russian** -> ZamestoTV (@Hubbotu)
+- **Chinese** -> Fenei (@babyfenei)

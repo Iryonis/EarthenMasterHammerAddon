@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+### [1.0.2] - 2025-05-19
+
+#### Added
+
+- Added Chinese translation - Thanks Fenei.
+- Clicking the repair button after completing all repairs will now close the addon window.
+
+#### Changed
+
+- The EMH frame will now automatically open when a merchant frame is opened, but only if equipped items need repairs. It no longer checks inventory items.
+
 ### [1.0.1] - 2025-03-19
 
 #### Added

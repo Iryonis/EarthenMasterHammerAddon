@@ -88,15 +88,31 @@ local SETTINGS = {
 --- Functions needed at initialization
 --------------------------------------------------------------------------------
 
+-- Check the durability of the given item
+
+-- @param i: the index of the item to check
+-- @return true if the item has full durability or isn't checked in the settings, false otherwise
+local function performTest(i)
+    local current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
+    if current and maximum and current < maximum then
+        return false
+    end
+    return true
+end
+
 --[[
 Check if the player needs to repair his items
 
 @return true if the player needs to repair his items, false otherwise
 ]]
 local function checkRepairNeeded()
-    local repairCost, _ = GetRepairAllCost()
-    if repairCost > 0 then
-        return true
+    local i = 1
+    while i <= #EMHDB.keys do
+        if not performTest(i) then
+            -- If a repair is needed, return true
+            return true
+        end
+        i = i + 1
     end
     return false
 end
@@ -420,18 +436,6 @@ local function updateToRepairParameter()
     end
 end
 
--- Check the durability of the given item
-
--- @param i: the index of the item to check
--- @return true if the item has full durability or isn't checked in the settings, false otherwise
-local function performTest(i)
-    local current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
-    if current and maximum and current < maximum then
-        return false
-    end
-    return true
-end
-
 --[[
 Check the durability of the items and update the button if a repair is needed
 
@@ -468,10 +472,11 @@ local function computeGoldSaved()
 end
 
 --[[
-Update the text of the repair button and compute the total gold saved to print it in the chat
+Update the text and the macro of the repair button, and compute the total gold saved to print it in the chat
 ]]
 local function finalizeRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
+    useItemButton:SetAttribute("macrotext", "/emh")
 
     local total_gold_saved = totalRepairCost - currentRepairCost
     if total_gold_saved > 0 then
