@@ -35,8 +35,8 @@ Once you have downloaded the package:
 
 ## Usage
 
-When talking to a merchant who can repair (and if you have damaged equipment), the **Main Frame** will automatically open.  
-Otherwise, you can type `/emh` in the chat or use the button in the AddOn compartment in the top-right corner, just below the calendar.
+When talking to a merchant who can repair (out of combat and if you have damaged equipment), the **Main Frame** will automatically open.  
+Otherwise, you can type `/emh` in the chat or use the button in the AddOn compartment in the top-right corner, just below the calendar (it only works out of combat).
 
 In the **Settings Frame**, select the items you can repair based on your Blacksmithing nodes.  
 Then, in the **Main Frame**, use the button to repair all damaged equipment. The AddOn will also track how much gold you've saved using the hammer—so you can brag to your non-blacksmith friends!
