@@ -13,11 +13,16 @@ if GetLocale() == "frFR" then
     "Attention : Il semblerait que vous n'ayez pas le Marteau de maître terrestre dans votre inventaire. Soyez sûr de l'avoir avant d'essayer d'utiliser l'addon EMH."
     L["NO_REPAIR"] = "Aucune réparation nécessaire"
     L["SAVED_MONEY_PRINT"] = "Vous venez d'économiser %s grâce à EMH."
-    L["REPAIR_BUTTON"] = "Réparer %s (%d/%d)"
+    L["REPAIR_BUTTON"] = "Réparer %s (%d/%d) : %d%%"
     L["MACRO"] = "/use item:%d\n/use %d"
     L["GOLD_TOOLTIP"] =
     "En raison de limitations de l'API de Blizzard, le montant affiché ne prend en compte que les économies réalisées lors de l'utilisation d'EMH avec une fenêtre de réparateur ouverte."
     L["CREDITS"] = "EMH - version %s - par Iryon"
+
+    -- Durability command
+    L["DURABILITY_TITLE"] = "Durabilité des objets :"
+    L["DURABILITY_INFO"] = "- %s -> %d%%"
+    L["DURABILITY_FULL"] = "Aucun objet n'a besoin d'être réparé."
 
     -- Item names
     L["head"] = "le casque"
@@ -46,6 +51,7 @@ if GetLocale() == "frFR" then
     -- Frame Control
     L["COMPARTMENT_LEFT"] = "Clic gauche pour ouvrir la fenêtre principale"
     L["COMPARTMENT_RIGHT"] = "Clic droit pour ouvrir les paramètres"
+    L["COMPARTMENT_INCOMBAT"] = "Impossible d'ouvrir la fenêtre EMH en combat"
     L["EMH"] = "Earthen Master's Hammer"
 
     -- Nodes
@@ -63,6 +69,7 @@ if GetLocale() == "frFR" then
     "de votre objet équipé en main gauche ('Boucliers' / 'Lames courtes' / 'Lames longues' / 'Masse')"
 
     -- Errors and warning
+    L["CANT_OPEN_IN_COMBAT"] = "Vous ne pouvez pas ouvrir la fenêtre EMH en combat."
     L["ERROR_BAD_TYPE_NUMBER"] = "ERREUR : Élément de type number attendu, mais reçu un type %s"
     L["ERROR_NO_NAME_IN_EMHDB"] = "ERREUR: Pas d'élément avec le nom %s dans NAME_TO_ID."
     L["ERROR_REMOVE_EMHDB"] = "ERREUR: Erreur lors de la suppression de l'élément avec l'id '%s' de la base de données."

@@ -18,11 +18,16 @@ L["NO_EMH"] =
 "Warning: It seems that you currently don't have the Earthen Master's Hammer in your inventory. Please make sure to get it before using the addon."
 L["NO_REPAIR"] = "No repair needed"
 L["SAVED_MONEY_PRINT"] = "You just saved %s using EMH."
-L["REPAIR_BUTTON"] = "Repair %s (%d/%d)"
+L["REPAIR_BUTTON"] = "Repair %s (%d/%d): %d%%"
 L["MACRO"] = "/use item:%d\n/use %d"
 L["GOLD_TOOLTIP"] =
 "Due to limitations in Blizzard's API, the displayed amount only accounts for the savings made when using EMH while having a repair frame open."
 L["CREDITS"] = "EMH - v%s - by Iryon"
+
+-- Durability command
+L["DURABILITY_TITLE"] = "Item durability:"
+L["DURABILITY_INFO"] = "- %s -> %d%%"
+L["DURABILITY_FULL"] = "No item needs to be repaired."
 
 -- Item names
 L["head"] = "head slot"
@@ -35,7 +40,6 @@ L["wrist"] = "wrist slot"
 L["hands"] = "hands slot"
 L["mainHand"] = "main hand slot"
 L["offHand"] = "off-hand slot"
-
 
 --- Settings
 L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Master's Hammer - Settings"
@@ -51,6 +55,7 @@ L["offHandSettings"] = "Off hand item"
 -- Frame Control
 L["COMPARTMENT_LEFT"] = "Left-click to open main frame"
 L["COMPARTMENT_RIGHT"] = "Right-click to open settings"
+L["COMPARTMENT_INCOMBAT"] = "You can't open the EMH frame while in combat"
 L["EMH"] = "Earthen Master's Hammer"
 
 -- Nodes
@@ -66,6 +71,7 @@ L["mainHand_node"] = "for your main hand weapon ('Axes and Polearms' / 'Long Bla
 L["offHand_node"] = "for your off-hand item ('Shields' / 'Short Blades' / 'Long Blades' / 'Maces')"
 
 -- Errors and warning
+L["CANT_OPEN_IN_COMBAT"] = "You can't open the EMH frame while in combat."
 L["ERROR_BAD_TYPE_NUMBER"] = "ERROR: Expected a number, got %s"
 L["ERROR_NO_NAME_IN_EMHDB"] = "ERROR: No element with the name %s in NAME_TO_ID."
 L["ERROR_REMOVE_EMHDB"] = "ERROR: Error while trying to remove element with id '%s' from the database."

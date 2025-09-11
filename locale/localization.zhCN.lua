@@ -12,10 +12,15 @@ if GetLocale() == "zhCN" then
     L["NO_EMH"] = "警告：当前背包中没有土灵大师之锤。请在使用插件前确保已获取该物品。"
     L["NO_REPAIR"] = "无需修理"
     L["SAVED_MONEY_PRINT"] = "您通过使用EMH节省了 %s。"
-    L["REPAIR_BUTTON"] = "修理 %s (%d/%d)"
+    L["REPAIR_BUTTON"] = "修理 %s (%d/%d): %d%%"
     L["GOLD_TOOLTIP"] = "由于暴雪API限制，显示金额仅包含打开修理窗口时使用EMH的节省。"
     L["CREDITS"] = "EMH - v%s - by Iryon"
 
+    -- Durability command
+    -- L["DURABILITY_TITLE"] =
+    -- L["DURABILITY_INFO"] =
+    -- L["DURABILITY_FULL"] =
+  
     -- Item names
     L["head"] = "头部"
     L["shoulder"] = "肩部"
@@ -39,6 +44,7 @@ if GetLocale() == "zhCN" then
     -- Frame Control
     L["COMPARTMENT_LEFT"] = "左键点击打开主界面"
     L["COMPARTMENT_RIGHT"] = "右键点击打开设置"
+    -- L["COMPARTMENT_INCOMBAT"] =
     L["EMH"] = "土灵大师之锤"
 
     -- Nodes
@@ -54,6 +60,7 @@ if GetLocale() == "zhCN" then
     L["offHand_node"] = "副手物品（'盾牌'/'短剑'/'长剑'/'锤类武器'）"
 
     -- Errors and warning
+    -- L["CANT_OPEN_IN_COMBAT"] =
     L["ERROR_BAD_TYPE_NUMBER"] = "错误：预期数字类型，实际得到 %s"
     L["ERROR_NO_NAME_IN_EMHDB"] = "错误：NAME_TO_ID中找不到%s对应的元素"
     L["ERROR_REMOVE_EMHDB"] = "错误：尝试从数据库删除ID为'%s'的元素时出错"

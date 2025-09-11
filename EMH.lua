@@ -17,6 +17,7 @@ local VERSION = addonTable.VERSION     -- Version of the addon
 local BLACKSMITHING_ID = 164           -- ID of the Blacksmithing profession
 local HAMMER_ID = 225660               -- ID of the Earthen Master's Hammer
 local TICKER = 0.1                     -- Ticker duration in seconds
+local sortedKeys                       -- Sorted table to store the keys and durability percentage of the items to repair
 
 local ID_TO_NAME = {
     [1] = "head",
@@ -90,10 +91,10 @@ local SETTINGS = {
 
 -- Check the durability of the given item
 
--- @param i: the index of the item to check
+-- @param itemKey: the key of the item to check (1 for head, 3 for shoulder, etc.)
 -- @return true if the item has full durability or isn't checked in the settings, false otherwise
-local function performTest(i)
-    local current, maximum = GetInventoryItemDurability(EMHDB.keys[i])
+local function performTest(itemKey)
+    local current, maximum = GetInventoryItemDurability(itemKey)
     if current and maximum and current < maximum then
         return false
     end
@@ -108,7 +109,7 @@ Check if the player needs to repair his items
 local function checkRepairNeeded()
     local i = 1
     while i <= #EMHDB.keys do
-        if not performTest(i) then
+        if not performTest(EMHDB.keys[i]) then
             -- If a repair is needed, return true
             return true
         end
@@ -189,6 +190,7 @@ end
 local eventListenerFrame = CreateFrame("Frame", "EMHSettingsEventListenerFrame", UIParent)
 
 eventListenerFrame:RegisterEvent("PLAYER_LOGIN")
+eventListenerFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 eventListenerFrame:RegisterEvent("MERCHANT_SHOW")
 eventListenerFrame:RegisterEvent("MERCHANT_CLOSED")
 
@@ -202,18 +204,22 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
             EMHDB.settingsKeys = {}
         end
 
+        -- Number of items to repair
         if not EMHDB.to_repair then
             EMHDB.to_repair = 0
         end
 
+        -- Table to store the ids of the items checked in the settings
         if not EMHDB.keys then
             EMHDB.keys = {}
         end
 
+        -- Total gold saved by the addon
         if not EMHDB.goldSaved then
             EMHDB.goldSaved = 0
         end
 
+        -- Position of the frames
         if not EMHDB.framePos then
             EMHDB.framePos = {}
             EMH_SaveFramePosition(addonTable.mainFrame) -- Initializing the frame position
@@ -222,9 +228,11 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
         for _, setting in pairs(SETTINGS) do
             EMH_CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
-    elseif (event == "MERCHANT_SHOW" and not badProfession) then
+    elseif (event == "PLAYER_REGEN_DISABLED" and not badProfession) then
+        closeEMHMerchant()
+    elseif (event == "MERCHANT_SHOW" and not badProfession and not InCombatLockdown()) then
         openEMHMerchant()
-    elseif (event == "MERCHANT_CLOSED" and not badProfession) then
+    elseif (event == "MERCHANT_CLOSED" and not badProfession and not InCombatLockdown()) then
         closeEMHMerchant()
     end
 end)
@@ -425,15 +433,27 @@ useItemButton:SetAttribute("type1", "macro")
 --- Button repair's functions
 --------------------------------------------------------------------------------
 
--- Check the durability of all the items and update EMHDB.to_repair in consequence
+--[[
+Check the durability of every items in EMHDB.keys and update EMHDB.to_repair
+and sortedKeys (sorted by durability percentage) accordingly
+]]
 local function updateToRepairParameter()
     EMHDB.to_repair = 0
+    sortedKeys = {}
     for _, key in ipairs(EMHDB.keys) do
         local current, maximum = GetInventoryItemDurability(key)
         if current and maximum and current < maximum then
+            local percentage = (current / maximum) * 100
+
+            table.insert(sortedKeys, { key = key, percentage = percentage })
+
             EMHDB.to_repair = EMHDB.to_repair + 1
         end
     end
+    -- Sort the table by durability percentage (ascending order)
+    table.sort(sortedKeys, function(a, b)
+        return a.percentage < b.percentage
+    end)
 end
 
 --[[
@@ -444,11 +464,12 @@ Check the durability of the items and update the button if a repair is needed
 @return true if the item has full durability or isn't checked in the settings, false otherwise
 ]]
 local function testAndUpdateButton(i, item_number)
-    if not performTest(i) then
+    local itemKey = sortedKeys[i].key
+    if not performTest(itemKey) then
         -- Update the repair button and wait for the users to click on it
-        useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[EMHDB.keys[i]]], item_number,
-            EMHDB.to_repair))
-        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], HAMMER_ID, EMHDB.keys[i]))
+        useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[itemKey]], item_number,
+            EMHDB.to_repair, sortedKeys[i].percentage))
+        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], HAMMER_ID, itemKey))
         return false
     end
     -- Go to the next item
@@ -527,8 +548,8 @@ runTestsInstantly = function(i, item_number)
         error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(item_number)))
     end
 
-    while i <= #EMHDB.keys do
-        if not performTest(i) then
+    while i <= #sortedKeys do
+        if not performTest(sortedKeys[i].key) then
             -- If a repair is needed, start the ticker
             waitForUserToRepair(i, item_number)
             return
@@ -586,11 +607,15 @@ end)
 --- Slash command
 --------------------------------------------------------------------------------
 
-
+-- Open the main frame with /emh
 SLASH_EMH1 = "/emh"
 SlashCmdList.EMH = function()
     -- Check if the player has the right profession: Blacksmithing
     if badProfession then
+        return
+        -- Check if the player is in combat
+    elseif InCombatLockdown() then
+        print(L["CANT_OPEN_IN_COMBAT"])
         return
     end
 
@@ -599,4 +624,19 @@ SlashCmdList.EMH = function()
 
     -- Toggle the frames
     EMH_MainFrameToggle()
+end
+
+-- Check the durability of the items with /emhcheck
+SLASH_EMHCHECK1 = "/emhcheck"
+SlashCmdList.EMHCHECK = function()
+    -- Create and fill the sortedKeys table
+    updateToRepairParameter()
+    if (#sortedKeys ~= 0) then
+        print(L["DURABILITY_TITLE"])
+        for _, v in ipairs(sortedKeys) do
+            print(string.format(L["DURABILITY_INFO"], L[ID_TO_NAME[v.key]], v.percentage))
+        end
+    else
+        print(L["DURABILITY_FULL"])
+    end
 end

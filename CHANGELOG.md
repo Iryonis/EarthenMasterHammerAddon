@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
+### [1.0.3] - 2025-09-11
+
+#### Added
+
+- Combat management for opening and closing frames.
+- New command: `/emhcheck` will print the durability percentage of every item needing repair.
+
+#### Changed
+
+- The order of items to repair in the main frame now depends on durability percentage. The lower durability items will be repaired before those with higher durability.
+- The durability percentage is now displayed on the repair button.
+
 ### [1.0.2] - 2025-05-19
 
 #### Added
