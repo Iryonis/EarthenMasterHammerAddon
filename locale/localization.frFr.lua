@@ -46,6 +46,7 @@ if GetLocale() == "frFR" then
     -- Frame Control
     L["COMPARTMENT_LEFT"] = "Clic gauche pour ouvrir la fenêtre principale"
     L["COMPARTMENT_RIGHT"] = "Clic droit pour ouvrir les paramètres"
+    L["COMPARTMENT_INCOMBAT"] = "Impossible d'ouvrir la fenêtre EMH en combat"
     L["EMH"] = "Earthen Master's Hammer"
 
     -- Nodes
@@ -63,6 +64,7 @@ if GetLocale() == "frFR" then
     "de votre objet équipé en main gauche ('Boucliers' / 'Lames courtes' / 'Lames longues' / 'Masse')"
 
     -- Errors and warning
+    L["CANT_OPEN_IN_COMBAT"] = "Vous ne pouvez pas ouvrir la fenêtre EMH en combat."
     L["ERROR_BAD_TYPE_NUMBER"] = "ERREUR : Élément de type number attendu, mais reçu un type %s"
     L["ERROR_NO_NAME_IN_EMHDB"] = "ERREUR: Pas d'élément avec le nom %s dans NAME_TO_ID."
     L["ERROR_REMOVE_EMHDB"] = "ERREUR: Erreur lors de la suppression de l'élément avec l'id '%s' de la base de données."

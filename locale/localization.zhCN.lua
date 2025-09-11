@@ -39,6 +39,7 @@ if GetLocale() == "zhCN" then
     -- Frame Control
     L["COMPARTMENT_LEFT"] = "左键点击打开主界面"
     L["COMPARTMENT_RIGHT"] = "右键点击打开设置"
+    -- L["COMPARTMENT_INCOMBAT"]
     L["EMH"] = "土灵大师之锤"
 
     -- Nodes
@@ -54,6 +55,7 @@ if GetLocale() == "zhCN" then
     L["offHand_node"] = "副手物品（'盾牌'/'短剑'/'长剑'/'锤类武器'）"
 
     -- Errors and warning
+    -- L["CANT_OPEN_IN_COMBAT"]
     L["ERROR_BAD_TYPE_NUMBER"] = "错误：预期数字类型，实际得到 %s"
     L["ERROR_NO_NAME_IN_EMHDB"] = "错误：NAME_TO_ID中找不到%s对应的元素"
     L["ERROR_REMOVE_EMHDB"] = "错误：尝试从数据库删除ID为'%s'的元素时出错"

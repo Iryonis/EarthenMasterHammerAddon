@@ -46,6 +46,7 @@ if GetLocale() == "ruRU" then
     -- Frame Control
     L["COMPARTMENT_LEFT"] = "ЛКМ, чтобы открыть основное окно"
     L["COMPARTMENT_RIGHT"] = "ПКМ, чтобы открыть настройки"
+    -- L["COMPARTMENT_INCOMBAT"]
     L["EMH"] = "Молоток земельника-мастера"
 
     -- Nodes
@@ -61,6 +62,7 @@ if GetLocale() == "ruRU" then
     L["offHand_node"] = "для дополнительного оружия ('Щиты' / 'Короткие клинки' / 'Длинные клинки' / 'Булавы')"
 
     -- Errors and warning
+    -- L["CANT_OPEN_IN_COMBAT"]
     L["ERROR_BAD_TYPE_NUMBER"] = "ОШИБКА: Ожидалось число, получено %s"
     L["ERROR_NO_NAME_IN_EMHDB"] = "ОШИБКА: Предмет с названием %s отсутствует в NAME_TO_ID."
     L["ERROR_REMOVE_EMHDB"] = "ОШИБКА: Ошибка при попытке удалить предмет с id '%s' из базы данных."

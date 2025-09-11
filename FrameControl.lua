@@ -17,6 +17,7 @@ local _, addonTable = ... -- Addon table
 --[[
 Create the compartment tooltip
 If the tooltip already exists, just update the text
+If the player is in combat, add a warning line in red
 
 @param button - The button that the tooltip is attached to
 ]]
@@ -29,6 +30,9 @@ function EMH_AddonCompartmentEnter(_, button)
     tooltip:SetText(L["EMH"])
     tooltip:AddLine(L["COMPARTMENT_LEFT"], 1, 1, 1)
     tooltip:AddLine(L["COMPARTMENT_RIGHT"], 1, 1, 1)
+    if InCombatLockdown() then
+        tooltip:AddLine(L["COMPARTMENT_INCOMBAT"], 1, 0, 0)
+    end
     tooltip:Show()
 end
 
@@ -41,12 +45,16 @@ end
 
 --[[
 Handle the click on the compartment:
+- If the player is in combat, do nothing
 - If the left button is clicked, show the main frame
 - If the right button is clicked, show the settings frame
 
 @param button - The button that was clicked
 ]]
 function EMH_AddonCompartmentClick(_, button)
+    if InCombatLockdown() then
+        return
+    end
     if button == "LeftButton" then
         addonTable.settingsFrame:Hide()
         addonTable.mainFrame:Show()
@@ -61,7 +69,7 @@ end
 --------------------------------------------------------------------------------
 
 --[[
-Toggle the visibility of the main frame (used in the slash command and the compartment)
+Toggle the visibility of the main frame (used in the slash command)
 ]]
 function EMH_MainFrameToggle()
     if addonTable.mainFrame:IsVisible() then

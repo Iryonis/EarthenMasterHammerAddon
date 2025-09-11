@@ -189,6 +189,7 @@ end
 local eventListenerFrame = CreateFrame("Frame", "EMHSettingsEventListenerFrame", UIParent)
 
 eventListenerFrame:RegisterEvent("PLAYER_LOGIN")
+eventListenerFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 eventListenerFrame:RegisterEvent("MERCHANT_SHOW")
 eventListenerFrame:RegisterEvent("MERCHANT_CLOSED")
 
@@ -222,9 +223,11 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
         for _, setting in pairs(SETTINGS) do
             EMH_CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
         end
-    elseif (event == "MERCHANT_SHOW" and not badProfession) then
+    elseif (event == "PLAYER_REGEN_DISABLED" and not badProfession) then
+        closeEMHMerchant()
+    elseif (event == "MERCHANT_SHOW" and not badProfession and not InCombatLockdown()) then
         openEMHMerchant()
-    elseif (event == "MERCHANT_CLOSED" and not badProfession) then
+    elseif (event == "MERCHANT_CLOSED" and not badProfession and not InCombatLockdown()) then
         closeEMHMerchant()
     end
 end)
@@ -591,6 +594,10 @@ SLASH_EMH1 = "/emh"
 SlashCmdList.EMH = function()
     -- Check if the player has the right profession: Blacksmithing
     if badProfession then
+        return
+        -- Check if the player is in combat
+    elseif InCombatLockdown() then
+        print(L["CANT_OPEN_IN_COMBAT"])
         return
     end
 
