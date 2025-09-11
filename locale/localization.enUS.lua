@@ -18,11 +18,16 @@ L["NO_EMH"] =
 "Warning: It seems that you currently don't have the Earthen Master's Hammer in your inventory. Please make sure to get it before using the addon."
 L["NO_REPAIR"] = "No repair needed"
 L["SAVED_MONEY_PRINT"] = "You just saved %s using EMH."
-L["REPAIR_BUTTON"] = "Repair %s (%d/%d)"
+L["REPAIR_BUTTON"] = "Repair %s (%d/%d): %d%%"
 L["MACRO"] = "/use item:%d\n/use %d"
 L["GOLD_TOOLTIP"] =
 "Due to limitations in Blizzard's API, the displayed amount only accounts for the savings made when using EMH while having a repair frame open."
 L["CREDITS"] = "EMH - v%s - by Iryon"
+
+-- Durability command
+L["DURABILITY_TITLE"] = "Item durability:"
+L["DURABILITY_INFO"] = "- %s -> %d%%"
+L["DURABILITY_FULL"] = "No item needs to be repaired."
 
 -- Item names
 L["head"] = "head slot"
@@ -35,7 +40,6 @@ L["wrist"] = "wrist slot"
 L["hands"] = "hands slot"
 L["mainHand"] = "main hand slot"
 L["offHand"] = "off-hand slot"
-
 
 --- Settings
 L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Master's Hammer - Settings"

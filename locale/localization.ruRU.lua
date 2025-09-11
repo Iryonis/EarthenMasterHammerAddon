@@ -13,11 +13,16 @@ if GetLocale() == "ruRU" then
     "Внимание: Похоже, что у вас в инвентаре нет Молотка земельника-мастера. Пожалуйста, убедитесь, что он у вас есть, прежде чем использовать аддон."
     L["NO_REPAIR"] = "Ремонт не требуется"
     L["SAVED_MONEY_PRINT"] = "Вы только что сэкономили %s, используя EMH."
-    L["REPAIR_BUTTON"] = "Ремонт %s (%d/%d)"
+    L["REPAIR_BUTTON"] = "Ремонт %s (%d/%d): %d%%"
     L["MACRO"] = "/use item:%d\n/use %d"
     L["GOLD_TOOLTIP"] =
     "Из-за ограничений API Blizzard отображаемая сумма учитывает только экономию, полученную при использовании EMH с открытым окном ремонта."
     L["CREDITS"] = "EMH - v%s - от Iryon"
+
+    -- Durability command
+    -- L["DURABILITY_TITLE"] =
+    -- L["DURABILITY_INFO"] =
+    -- L["DURABILITY_FULL"] =
 
     -- Item names
     L["head"] = "головной убор"
@@ -46,7 +51,7 @@ if GetLocale() == "ruRU" then
     -- Frame Control
     L["COMPARTMENT_LEFT"] = "ЛКМ, чтобы открыть основное окно"
     L["COMPARTMENT_RIGHT"] = "ПКМ, чтобы открыть настройки"
-    -- L["COMPARTMENT_INCOMBAT"]
+    -- L["COMPARTMENT_INCOMBAT"] =
     L["EMH"] = "Молоток земельника-мастера"
 
     -- Nodes
@@ -62,7 +67,7 @@ if GetLocale() == "ruRU" then
     L["offHand_node"] = "для дополнительного оружия ('Щиты' / 'Короткие клинки' / 'Длинные клинки' / 'Булавы')"
 
     -- Errors and warning
-    -- L["CANT_OPEN_IN_COMBAT"]
+    -- L["CANT_OPEN_IN_COMBAT"] =
     L["ERROR_BAD_TYPE_NUMBER"] = "ОШИБКА: Ожидалось число, получено %s"
     L["ERROR_NO_NAME_IN_EMHDB"] = "ОШИБКА: Предмет с названием %s отсутствует в NAME_TO_ID."
     L["ERROR_REMOVE_EMHDB"] = "ОШИБКА: Ошибка при попытке удалить предмет с id '%s' из базы данных."
