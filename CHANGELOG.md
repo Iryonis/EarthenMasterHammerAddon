@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+
 ### [1.0.3] - 2025-09-11
 
 #### Added

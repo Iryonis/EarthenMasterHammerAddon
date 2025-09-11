@@ -20,7 +20,7 @@ if GetLocale() == "zhCN" then
     -- L["DURABILITY_TITLE"] =
     -- L["DURABILITY_INFO"] =
     -- L["DURABILITY_FULL"] =
-
+  
     -- Item names
     L["head"] = "头部"
     L["shoulder"] = "肩部"
