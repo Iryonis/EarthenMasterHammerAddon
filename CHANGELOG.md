@@ -9,7 +9,7 @@ The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/e
 #### Added
 
 - Combat management for opening and closing frames.
-- New command: '/emhcheck' will print the durability percentage of every item needing repair.
+- New command: `/emhcheck` will print the durability percentage of every item needing repair.
 
 #### Changed
 

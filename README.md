@@ -43,6 +43,8 @@ Then, in the **Main Frame**, use the button to repair all damaged equipment. The
 
 By right-clicking on the AddOn frame, you can reset its position.
 
+You can also type `/emhcheck` in the chat to display the durability percentage of every item needing repair.
+
 ## Contributing
 
 For **bug reports** or **feature requests**, feel free to open an issue on GitHub [right here](https://github.com/Iryonis/EarthenMasterHammerAddon/issues).
