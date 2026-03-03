@@ -6,118 +6,8 @@
 --- Variables
 --------------------------------------------------------------------------------
 
-local _, L = ...                      -- Localization
-local _, addonTable = ...             -- Addon table
-local checkboxes, secondColumn = 0, 0 -- Variables to place the checkboxes
-
-local NAME_TO_ID = {
-    head = 1,
-    shoulder = 3,
-    chest = 5,
-    waist = 6,
-    legs = 7,
-    feet = 8,
-    wrist = 9,
-    hands = 10,
-    mainHand = 16,
-    offHand = 17,
-    ranged = 18,
-}
-
---------------------------------------------------------------------------------
---- Functions
---------------------------------------------------------------------------------
----
------- EMHDB.keys functions
-
---[[
-Remove an item from EMHDB.keys by its name.
-]]
-local function removeByName(name)
-    local id = NAME_TO_ID[name]
-
-    if not id then
-        print(string.format(L["ERROR_NO_NAME_IN_EMHDB"], name))
-        return
-    end
-
-    for i = #EMHDB.keys, 1, -1 do
-        if EMHDB.keys[i] == id then
-            table.remove(EMHDB.keys, i)
-            return
-        end
-    end
-    -- Should not print
-    error(string.format(L["ERROR_REMOVE_EMHDB"], id))
-end
-
---[[
-Add an item to EMHDB.keys by its name.
-]]
-local function addByName(name)
-    local id = NAME_TO_ID[name]
-
-    if not id then
-        print(string.format(L["ERROR_NO_NAME_IN_EMHDB"], name))
-        return
-    end
-
-    for _, v in ipairs(EMHDB.keys) do
-        -- Should not print
-        if v == id then
-            error(string.format(L["ERROR_ADD_EMHDB"], id))
-            return
-        end
-    end
-
-    table.insert(EMHDB.keys, id)
-end
-
---[[
-Create a checkbox with the given text, key and tooltip, and add it to the addonTable.settingsFrame.
-]]
-function EMH_CreateCheckbox(checkboxText, key, checkboxTooltip)
-    local checkbox = CreateFrame("CheckButton", "EMHCheckboxID" .. checkboxes, addonTable.settingsFrame,
-        "UICheckButtonTemplate")
-    checkbox.Text:SetText(" - " .. checkboxText)
-    checkbox:SetPoint("TOP", addonTable.settingsFrame.subTitleNote1, "TOP", (-135 + secondColumn),
-        -50 + (checkboxes * -30))
-
-    if EMHDB.settingsKeys[key] == nil then
-        EMHDB.settingsKeys[key] = true
-        addByName(key)
-    end
-
-    checkbox:SetChecked(EMHDB.settingsKeys[key])
-
-    checkbox:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(checkboxTooltip, nil, nil, nil, nil, true)
-    end)
-
-    checkbox:SetScript("OnLeave", function(self)
-        GameTooltip:Hide()
-    end)
-
-    checkbox:SetScript("OnClick", function(self)
-        EMHDB.settingsKeys[key] = self:GetChecked()
-        if (EMHDB.settingsKeys[key]) then
-            addByName(key)
-            EMHDB.to_repair = EMHDB.to_repair + 1
-        else
-            removeByName(key)
-            EMHDB.to_repair = EMHDB.to_repair - 1
-        end
-    end)
-
-    checkboxes = checkboxes + 1
-    if (checkboxes == 5) then
-        secondColumn = 200
-        checkboxes = 0
-    end
-
-    return checkbox
-end
+local _, L = ...          -- Localization
+local _, addonTable = ... -- Addon table
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -148,9 +38,89 @@ addonTable.settingsFrame.subTitle:SetText(L["SETTINGS_SUB_TITLE"])
 addonTable.settingsFrame.subTitleNote1 = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 addonTable.settingsFrame.subTitleNote1:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitle, "BOTTOMLEFT", 0, -12)
 addonTable.settingsFrame.subTitleNote1:SetText(L["SETTINGS_SUB_TITLE_NOTE_1"])
-addonTable.settingsFrame.subTitleNote2 = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-addonTable.settingsFrame.subTitleNote2:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT", 0, -8)
-addonTable.settingsFrame.subTitleNote2:SetText(L["SETTINGS_SUB_TITLE_NOTE_2"])
+
+-- Capability display: two columns anchored below subTitleNote1.
+-- FontStrings are created once here; text is refreshed each time the frame opens.
+local CAP_ROW_HEIGHT                    = 16
+local CAP_COL_RIGHT_X                   = 225
+local CAP_TOP_Y                         = -20 -- offset below subTitleNote1
+
+addonTable.settingsFrame.capArmorHeader = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local font, _, flags                    = addonTable.settingsFrame.capArmorHeader:GetFont()
+if font then
+    addonTable.settingsFrame.capArmorHeader:SetFont(font, 16, flags)
+end
+addonTable.settingsFrame.capArmorHeader:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
+    0, CAP_TOP_Y)
+
+addonTable.settingsFrame.capWeaponsHeader = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local font2, _, flags2 = addonTable.settingsFrame.capWeaponsHeader:GetFont()
+if font2 then
+    addonTable.settingsFrame.capWeaponsHeader:SetFont(font2, 16, flags2)
+end
+addonTable.settingsFrame.capWeaponsHeader:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
+    CAP_COL_RIGHT_X, CAP_TOP_Y)
+
+addonTable.settingsFrame.armorEntries  = {}
+addonTable.settingsFrame.weaponEntries = {}
+
+for i, slotID in ipairs(addonTable.ARMOR_SLOTS_ORDER) do
+    local fs = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    fs:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
+        10, CAP_TOP_Y - CAP_ROW_HEIGHT * i)
+    addonTable.settingsFrame.armorEntries[slotID] = fs
+end
+
+for i, cat in ipairs(addonTable.WEAPON_CATS_ORDER) do
+    local fs = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    fs:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
+        CAP_COL_RIGHT_X + 10, CAP_TOP_Y - CAP_ROW_HEIGHT * i)
+    addonTable.settingsFrame.weaponEntries[cat] = fs
+end
+
+-- Refresh the capability display text. Called each time the settings frame opens.
+local function refreshCapabilityDisplay()
+    addonTable.settingsFrame.capArmorHeader:SetText(L["CAP_ARMOR"])
+    addonTable.settingsFrame.capWeaponsHeader:SetText(L["CAP_WEAPONS"])
+
+    local armorCap, weaponCap = EMH_GetCapabilities()
+    local hasTWW              = EMH_HasHammerInBags(addonTable.HAMMER_ID_TWW)
+    local hasMidnight         = EMH_HasHammerInBags(addonTable.HAMMER_ID_MIDNIGHT)
+
+    -- Returns a colored label string for one source (TWW or MN).
+    -- hasNode   : whether the talent node for this source is unlocked for the slot
+    -- hasHammer : whether this source's hammer is in bags
+    local function coloredLabel(labelStr, hasNode, hasHammer)
+        local color
+        if hasNode and hasHammer then
+            color = "|cff00ff00" -- green
+        elseif hasNode or hasHammer then
+            color = "|cffffff00" -- yellow
+        else
+            color = "|cffff4444" -- red
+        end
+        return color .. labelStr .. "|r"
+    end
+
+    -- Builds "Label: TWW_colored / MN_colored" for a given cap entry.
+    local function buildEntryText(label, cap)
+        local hasTWWNode = cap ~= nil and cap.source == "tww"
+        local hasMNNode  = cap ~= nil and cap.source == "midnight"
+        local twwStr     = coloredLabel(L["CAP_SOURCE_TWW"], hasTWWNode, hasTWW)
+        local mnStr      = coloredLabel(L["CAP_SOURCE_MIDNIGHT"], hasMNNode, hasMidnight)
+        return label .. ": " .. twwStr .. " / " .. mnStr
+    end
+
+    for _, slotID in ipairs(addonTable.ARMOR_SLOTS_ORDER) do
+        local text = buildEntryText(L[addonTable.ID_TO_NAME[slotID]], armorCap[slotID])
+        addonTable.settingsFrame.armorEntries[slotID]:SetText(text)
+    end
+
+    for _, cat in ipairs(addonTable.WEAPON_CATS_ORDER) do
+        local text = buildEntryText(L[addonTable.CATEGORY_TO_NAME[cat]], weaponCap[cat])
+        addonTable.settingsFrame.weaponEntries[cat]:SetText(text)
+    end
+end
 
 -- Button "Go to Main Frame"
 
@@ -183,9 +153,10 @@ addonTable.settingsFrame:SetScript("OnMouseDown", function(self, button)
     end
 end)
 
--- Update position when opening the frame
+-- Update position and refresh capability display when opening the frame
 addonTable.settingsFrame:SetScript("OnShow", function()
     EMH_SetFramePosition(addonTable.settingsFrame)
+    refreshCapabilityDisplay()
 end)
 
 -- Save position when closing the frame

@@ -9,7 +9,11 @@ if GetLocale() == "zhCN" then
     L["SUB_TITLE"] = "通过使用EMH修理装备，您已节省："
     L["MAIN_TO_SETTINGS_BUTTON"] = "打开设置"
     L["LOADING"] = "加载中..."
-    L["NO_EMH"] = "警告：当前背包中没有土灵大师之锤。请在使用插件前确保已获取该物品。"
+    -- L["NO_EMH"]                    =
+    -- "Warning: No Master's Hammer found in your bags. Make sure you have one before using the addon."
+    -- L["NO_BLACKSMITHING"]          = "EMH: No Blacksmithing profession detected. Addon disabled."
+    -- L["NO_REPAIR_NODES"]           =
+    -- "EMH: No repair specialization nodes unlocked. Addon disabled. Use /emhcap to inspect detected capabilities."
     L["NO_REPAIR"] = "无需修理"
     L["SAVED_MONEY_PRINT"] = "您通过使用EMH节省了 %s。"
     L["REPAIR_BUTTON"] = "修理 %s (%d/%d): %d%%"
@@ -20,25 +24,12 @@ if GetLocale() == "zhCN" then
     -- L["DURABILITY_TITLE"] =
     -- L["DURABILITY_INFO"] =
     -- L["DURABILITY_FULL"] =
-  
-    -- Item names
-    L["head"] = "头部"
-    L["shoulder"] = "肩部"
-    L["chest"] = "胸部"
-    L["waist"] = "腰部"
-    L["legs"] = "腿部"
-    L["feet"] = "脚部"
-    L["wrist"] = "手腕"
-    L["hands"] = "手部"
-    L["mainHand"] = "主手武器"
-    L["offHand"] = "副手物品"
 
     --- Settings
     L["SETTINGS_FRAME_TITLE"] = "EMH：土灵大师之锤 - 设置"
     L["SETTINGS_TO_MAIN_BUTTON"] = "返回主界面"
-    L["SETTINGS_SUB_TITLE"] = "请勾选您可以修理的装备类型："
-    L["SETTINGS_SUB_TITLE_NOTE_1"] = "（注意：只能修理已学习最高等级专业节点的装备）"
-    L["SETTINGS_SUB_TITLE_NOTE_2"] = "（请确保选择正确的装备类型）"
+    -- L["SETTINGS_SUB_TITLE"] = "请勾选您可以修理的装备类型："
+    -- L["SETTINGS_SUB_TITLE_NOTE_1"] = "（注意：只能修理已学习最高等级专业节点的装备）"
     L["SETTINGS_TOOLTIP"] = "勾选此项表示您已学习%s专业节点的最高等级。"
 
     -- Frame Control
@@ -47,17 +38,31 @@ if GetLocale() == "zhCN" then
     -- L["COMPARTMENT_INCOMBAT"] =
     L["EMH"] = "土灵大师之锤"
 
-    -- Nodes
-    L["head_node"] = "'头盔'"
-    L["shoulder_node"] = "'护肩'"
-    L["chest_node"] = "'胸甲'"
-    L["waist_node"] = "'腰带'"
-    L["legs_node"] = "'腿甲'"
-    L["feet_node"] = "'战靴'"
-    L["wrists_node"] = "'护腕'"
-    L["hands_node"] = "'护手'"
-    L["mainHand_node"] = "主手武器（'战斧与长柄武器'/'长剑'/'短剑'/'锤类武器'）"
-    L["offHand_node"] = "副手物品（'盾牌'/'短剑'/'长剑'/'锤类武器'）"
+    -- -- Capabilities display
+    -- -- ARMOR
+    -- L["CAP_ARMOR"]                 = "Armor"
+    -- L["CAP_head"]                  = "'Helms'"
+    -- L["CAP_shoulder"]              = "'Pauldrons'"
+    -- L["CAP_chest"]                 = "'Breastplates'"
+    -- L["CAP_waist"]                 = "'Belts'"
+    -- L["CAP_legs"]                  = "'Greaves'"
+    -- L["CAP_feet"]                  = "'Sabatons'"
+    -- L["CAP_wrists"]                = "'Vambraces'"
+    -- L["CAP_hands"]                 = "'Gauntlets'"
+    -- -- WEAPONS
+    -- L["CAP_WEAPONS"]               = "Weapons"
+    -- L["CAP_short_blades"]          = "'Short Blades'"
+    -- L["CAP_long_blades"]           = "'Long Blades'"
+    -- L["CAP_axes_and_polearms"]     = "'Axes & Polearms'"
+    -- L["CAP_maces"]                 = "'Maces'"
+    -- L["CAP_shields"]               = "'Shields'"
+    -- -- MISC
+    -- L["CAP_HAMMERS"]               = "Hammers"
+    -- L["CAP_SOURCE_MIDNIGHT"]       = "MN"
+    -- L["CAP_SOURCE_TWW"]            = "TWW"
+    -- L["CAP_IN_BAGS"]               = "In bags"
+    -- L["CAP_NOT_IN_BAGS"]           = "Not in bags"
+    -- L["CAP_COMMAND_TITLE"]         = "=== EMH: Detected capabilities ==="
 
     -- Errors and warning
     -- L["CANT_OPEN_IN_COMBAT"] =

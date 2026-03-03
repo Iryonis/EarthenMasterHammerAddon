@@ -9,8 +9,11 @@ if GetLocale() == "ruRU" then
     L["SUB_TITLE"] = "Благодаря ремонту вашего снаряжения с помощью EMH, вы сэкономили:"
     L["MAIN_TO_SETTINGS_BUTTON"] = "Перейти к настройкам"
     L["LOADING"] = "Загрузка..."
-    L["NO_EMH"] =
-    "Внимание: Похоже, что у вас в инвентаре нет Молотка земельника-мастера. Пожалуйста, убедитесь, что он у вас есть, прежде чем использовать аддон."
+    -- L["NO_EMH"]                    =
+    -- "Warning: No Master's Hammer found in your bags. Make sure you have one before using the addon."
+    -- L["NO_BLACKSMITHING"]          = "EMH: No Blacksmithing profession detected. Addon disabled."
+    -- L["NO_REPAIR_NODES"]           =
+    -- "EMH: No repair specialization nodes unlocked. Addon disabled. Use /emhcap to inspect detected capabilities."
     L["NO_REPAIR"] = "Ремонт не требуется"
     L["SAVED_MONEY_PRINT"] = "Вы только что сэкономили %s, используя EMH."
     L["REPAIR_BUTTON"] = "Ремонт %s (%d/%d): %d%%"
@@ -24,25 +27,12 @@ if GetLocale() == "ruRU" then
     -- L["DURABILITY_INFO"] =
     -- L["DURABILITY_FULL"] =
 
-    -- Item names
-    L["head"] = "головной убор"
-    L["shoulder"] = "наплечники"
-    L["chest"] = "нагрудник"
-    L["waist"] = "пояс"
-    L["legs"] = "поножи"
-    L["feet"] = "обувь"
-    L["wrist"] = "наручи"
-    L["hands"] = "перчатки"
-    L["mainHand"] = "основное оружие"
-    L["offHand"] = "дополнительное оружие"
-
     --- Settings
     L["SETTINGS_FRAME_TITLE"] = "EMH: Earthen Master's Hammer - Настройки"
     L["SETTINGS_TO_MAIN_BUTTON"] = "Перейти к основному окну"
-    L["SETTINGS_SUB_TITLE"] = "Пожалуйста, отметьте предметы, которые вы можете ремонтировать:"
-    L["SETTINGS_SUB_TITLE_NOTE_1"] =
-    "(Примечание: Вы можете ремонтировать только предметы с максимальным уровнем специализации.)"
-    L["SETTINGS_SUB_TITLE_NOTE_2"] = "(Убедитесь, что выбрали правильные предметы.)"
+    -- L["SETTINGS_SUB_TITLE"] = "Пожалуйста, отметьте предметы, которые вы можете ремонтировать:"
+    -- L["SETTINGS_SUB_TITLE_NOTE_1"] =
+    -- "(Примечание: Вы можете ремонтировать только предметы с максимальным уровнем специализации.)"
     L["SETTINGS_TOOLTIP"] = "Отметьте галочку, если у вас есть узел кузнечного дела %s на максимальном уровне."
     -- Item names in settings
     L["mainHandSettings"] = "Основное оружие"
@@ -54,17 +44,31 @@ if GetLocale() == "ruRU" then
     -- L["COMPARTMENT_INCOMBAT"] =
     L["EMH"] = "Молоток земельника-мастера"
 
-    -- Nodes
-    L["head_node"] = "'Шлемы'"
-    L["shoulder_node"] = "'Наплечники'"
-    L["chest_node"] = "'Нагрудники'"
-    L["waist_node"] = "'Пояса'"
-    L["legs_node"] = "'Поножи'"
-    L["feet_node"] = "'Сапоги'"
-    L["wrists_node"] = "'Наручи'"
-    L["hands_node"] = "'Перчатки'"
-    L["mainHand_node"] = "для основного оружия ('Топоры и алебарды' / 'Длинные клинки' / 'Короткие клинки' / 'Булавы')"
-    L["offHand_node"] = "для дополнительного оружия ('Щиты' / 'Короткие клинки' / 'Длинные клинки' / 'Булавы')"
+    -- -- Capabilities display
+    -- -- ARMOR
+    -- L["CAP_ARMOR"]                 = "Armor"
+    -- L["CAP_head"]                  = "'Helms'"
+    -- L["CAP_shoulder"]              = "'Pauldrons'"
+    -- L["CAP_chest"]                 = "'Breastplates'"
+    -- L["CAP_waist"]                 = "'Belts'"
+    -- L["CAP_legs"]                  = "'Greaves'"
+    -- L["CAP_feet"]                  = "'Sabatons'"
+    -- L["CAP_wrists"]                = "'Vambraces'"
+    -- L["CAP_hands"]                 = "'Gauntlets'"
+    -- -- WEAPONS
+    -- L["CAP_WEAPONS"]               = "Weapons"
+    -- L["CAP_short_blades"]          = "'Short Blades'"
+    -- L["CAP_long_blades"]           = "'Long Blades'"
+    -- L["CAP_axes_and_polearms"]     = "'Axes & Polearms'"
+    -- L["CAP_maces"]                 = "'Maces'"
+    -- L["CAP_shields"]               = "'Shields'"
+    -- -- MISC
+    -- L["CAP_HAMMERS"]               = "Hammers"
+    -- L["CAP_SOURCE_MIDNIGHT"]       = "MN"
+    -- L["CAP_SOURCE_TWW"]            = "TWW"
+    -- L["CAP_IN_BAGS"]               = "In bags"
+    -- L["CAP_NOT_IN_BAGS"]           = "Not in bags"
+    -- L["CAP_COMMAND_TITLE"]         = "=== EMH: Detected capabilities ==="
 
     -- Errors and warning
     -- L["CANT_OPEN_IN_COMBAT"] =
