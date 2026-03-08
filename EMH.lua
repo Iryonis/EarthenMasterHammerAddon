@@ -365,7 +365,7 @@ Update the text and the macro of the repair button, and compute the total gold s
 ]]
 local function finalizeRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
-    useItemButton:SetAttribute("macrotext", "/emh")
+    useItemButton:SetAttribute("macrotext", "/tmh")
 
     local total_gold_saved = totalRepairCost - currentRepairCost
     if total_gold_saved > 0 then
@@ -475,8 +475,8 @@ end)
 --- Slash command
 --------------------------------------------------------------------------------
 
--- Open the main frame with /emh
-SLASH_EMH1 = "/emh"
+-- Open the main frame with /tmh
+SLASH_EMH1 = "/tmh"
 SlashCmdList.EMH = function()
     if addonTable.addonDisabled then
         return
@@ -488,8 +488,8 @@ SlashCmdList.EMH = function()
     EMH_MainFrameToggle()
 end
 
--- Check the durability of the items with /emhcheck
-SLASH_EMHCHECK1 = "/emhcheck"
+-- Check the durability of the items with /tmhcheck
+SLASH_EMHCHECK1 = "/tmhcheck"
 SlashCmdList.EMHCHECK = function()
     -- Create and fill the sortedKeys table using capabilities
     updateToRepairParameter()
@@ -510,8 +510,8 @@ SlashCmdList.EMHCHECK = function()
     end
 end
 
--- Print detected repair capabilities to chat with /emhcap
-SLASH_EMHCAP1 = "/emhcap"
+-- Print detected repair capabilities to chat with /tmhcap
+SLASH_EMHCAP1 = "/tmhcap"
 SlashCmdList.EMHCAP = function()
     local armorCap, weaponCap = EMH_GetCapabilities()
     local hasTWW              = EMH_HasHammerInBags(addonTable.HAMMER_ID_TWW)

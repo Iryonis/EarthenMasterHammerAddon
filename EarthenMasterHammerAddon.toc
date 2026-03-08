@@ -1,5 +1,5 @@
 ## Interface: 120001
-## Title: Earthen Master's Hammer
+## Title: Thalassian Master Hammer
 ## Notes: A WoW: TWW Addon to simplify the use of the blacksmithing item 'Earthen Master's Hammer'.
 ## Notes--FrFR: Un addon WoW : TWW pour simplifier l'utilisation de l'objet de forge 'Marteau de maître terrestre'.
 ## Notes--ruRU: Аддон для WoW: TWW, упрощающий использование кузнечного инструмента 'Молоток земельника-мастера'.
