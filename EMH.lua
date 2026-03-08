@@ -12,78 +12,9 @@ addonTable.VERSION = C_AddOns.GetAddOnMetadata(addonName, "Version")
 addonTable.isMerchantFrameOpen = false -- True if the merchant frame is open
 
 local _, L = ...                       -- Localization
-local badProfession = false            -- True if the player doesn't have the right profession (Blacksmithing)
 local VERSION = addonTable.VERSION     -- Version of the addon
-local BLACKSMITHING_ID = 164           -- ID of the Blacksmithing profession
-local HAMMER_ID = 225660               -- ID of the Earthen Master's Hammer
 local TICKER = 0.1                     -- Ticker duration in seconds
 local sortedKeys                       -- Sorted table to store the keys and durability percentage of the items to repair
-
-local ID_TO_NAME = {
-    [1] = "head",
-    [3] = "shoulder",
-    [5] = "chest",
-    [6] = "waist",
-    [7] = "legs",
-    [8] = "feet",
-    [9] = "wrist",
-    [10] = "hands",
-    [16] = "mainHand",
-    [17] = "offHand",
-}
-
-local SETTINGS = {
-    {
-        settingText = L["head_node"],
-        settingKey = "head",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["head_node"]),
-    },
-    {
-        settingText = L["shoulder_node"],
-        settingKey = "shoulder",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["shoulder_node"]),
-    },
-    {
-        settingText = L["chest_node"],
-        settingKey = "chest",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["chest_node"]),
-    },
-    {
-        settingText = L["waist_node"],
-        settingKey = "waist",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["waist_node"]),
-    },
-    {
-        settingText = L["legs_node"],
-        settingKey = "legs",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["legs_node"]),
-    },
-    {
-        settingText = L["feet_node"],
-        settingKey = "feet",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["feet_node"]),
-    },
-    {
-        settingText = L["wrists_node"],
-        settingKey = "wrist",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["wrists_node"]),
-    },
-    {
-        settingText = L["hands_node"],
-        settingKey = "hands",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["hands_node"]),
-    },
-    {
-        settingText = L["mainHandSettings"],
-        settingKey = "mainHand",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["mainHand_node"]),
-    },
-    {
-        settingText = L["offHandSettings"],
-        settingKey = "offHand",
-        settingTooltip = string.format(L["SETTINGS_TOOLTIP"], L["offHand_node"]),
-    },
-}
 
 --------------------------------------------------------------------------------
 --- Functions needed at initialization
@@ -102,18 +33,19 @@ local function performTest(itemKey)
 end
 
 --[[
-Check if the player needs to repair his items
+Check if the player needs to repair any items (using capabilities)
 
-@return true if the player needs to repair his items, false otherwise
+@return true if at least one equipped item can and needs to be repaired
 ]]
 local function checkRepairNeeded()
-    local i = 1
-    while i <= #EMHDB.keys do
-        if not performTest(EMHDB.keys[i]) then
-            -- If a repair is needed, return true
-            return true
+    for _, slotID in ipairs(addonTable.ALL_REPAIR_SLOTS) do
+        local canRepair, _ = EMH_CanRepairSlot(slotID)
+        if canRepair then
+            local current, maximum = GetInventoryItemDurability(slotID)
+            if current and maximum and current < maximum then
+                return true
+            end
         end
-        i = i + 1
     end
     return false
 end
@@ -143,44 +75,8 @@ local function closeEMHMerchant()
     addonTable.settingsFrame:Hide()
 end
 
---- Profession functions
-
---[[
-Get the id of the profession at the given index
-
-@param professionIndex: the index of the profession
-@return the id of the profession at the given index or nil if the index is not a number
-]]
-local function getProfessionId(professionIndex)
-    if type(professionIndex) ~= "number" then
-        print(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(professionIndex)))
-        return nil
-    end
-
-    local _, _, _, _, _, _, skillId, _, _, _ = GetProfessionInfo(professionIndex)
-    return skillId
-end
-
---[[
-Check if the player has the Blacksmithing profession
-]]
-local function checkProfession()
-    local profession1, profession2, _, _, _ = GetProfessions()
-
-    if not profession1 and not profession2 then
-        badProfession = true
-        return false
-    end
-
-    local skill1 = getProfessionId(profession1)
-    local skill2 = getProfessionId(profession2)
-
-    if skill1 ~= BLACKSMITHING_ID and skill2 ~= BLACKSMITHING_ID then
-        badProfession = true
-    else
-        badProfession = false
-    end
-end
+-- Profession check and capability scanning are handled by Capabilities.lua
+-- (EMH_ScanCapabilities, EMH_CanRepairSlot, EMH_GetCapabilities)
 
 --------------------------------------------------------------------------------
 --- Initialization
@@ -193,26 +89,19 @@ eventListenerFrame:RegisterEvent("PLAYER_LOGIN")
 eventListenerFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 eventListenerFrame:RegisterEvent("MERCHANT_SHOW")
 eventListenerFrame:RegisterEvent("MERCHANT_CLOSED")
+eventListenerFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
 
 eventListenerFrame:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_LOGIN" then
-        checkProfession()
+        -- Initialize database
         if not EMHDB then
             EMHDB = {}
         end
-        if not EMHDB.settingsKeys then
-            EMHDB.settingsKeys = {}
-        end
 
-        -- Number of items to repair
-        if not EMHDB.to_repair then
-            EMHDB.to_repair = 0
-        end
-
-        -- Table to store the ids of the items checked in the settings
-        if not EMHDB.keys then
-            EMHDB.keys = {}
-        end
+        -- Clean up obsolete database keys from previous versions
+        EMHDB.settingsKeys = nil
+        EMHDB.keys = nil
+        EMHDB.to_repair = nil
 
         -- Total gold saved by the addon
         if not EMHDB.goldSaved then
@@ -222,17 +111,26 @@ eventListenerFrame:SetScript("OnEvent", function(self, event)
         -- Position of the frames
         if not EMHDB.framePos then
             EMHDB.framePos = {}
-            EMH_SaveFramePosition(addonTable.mainFrame) -- Initializing the frame position
+            EMH_SaveFramePosition(addonTable.mainFrame)
         end
 
-        for _, setting in pairs(SETTINGS) do
-            EMH_CreateCheckbox(setting.settingText, setting.settingKey, setting.settingTooltip)
+        -- Load capabilities from cache, or scan talent trees if no cache exists
+        EMH_LoadCapabilities()
+
+        if addonTable.addonDisabled then
+            if addonTable.disableReason == "no_blacksmithing" then
+                print(L["NO_BLACKSMITHING"])
+            elseif addonTable.disableReason == "no_repair_nodes" then
+                print(L["NO_REPAIR_NODES"])
+            end
         end
-    elseif (event == "PLAYER_REGEN_DISABLED" and not badProfession) then
+    elseif event == "TRAIT_CONFIG_UPDATED" then
+        EMH_ScanCapabilities()
+    elseif (event == "PLAYER_REGEN_DISABLED" and not addonTable.addonDisabled) then
         closeEMHMerchant()
-    elseif (event == "MERCHANT_SHOW" and not badProfession and not InCombatLockdown()) then
+    elseif (event == "MERCHANT_SHOW" and not addonTable.addonDisabled and not InCombatLockdown()) then
         openEMHMerchant()
-    elseif (event == "MERCHANT_CLOSED" and not badProfession and not InCombatLockdown()) then
+    elseif (event == "MERCHANT_CLOSED" and not addonTable.addonDisabled and not InCombatLockdown()) then
         closeEMHMerchant()
     end
 end)
@@ -289,8 +187,8 @@ local function formatNumberWithCommas(number)
 end
 
 --[[
-Format money in string with text
-Example with 155425 -> "15 gold, 54 silver, 25 copper"
+Format money in string with Blizzard money icons
+Example with 155425 -> "15 gold icon, 54 silver icon, 25 copper icon"
 
 @param money: the amount of money to format
 @return the formatted money in a string
@@ -300,38 +198,8 @@ local function formatMoney(money)
     if type(money) ~= "number" then
         error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(money)))
     end
-    -- If money is 0, return 0 formatted
-    if money == 0 then
-        return string.format(L["FORMAT_MONEY"], 0, 0, 0)
-    end
 
-    local gold = math.floor(money / 10000)
-    local silver = math.floor((money % 10000) / 100)
-    local copper = money % 100
-
-    return string.format(L["FORMAT_MONEY"], formatNumberWithCommas(gold), silver, copper)
-end
-
-
---[[
-Check if the player has the hammer in his inventory
-Only work the first time the player opens the addonTable.mainFrame
-
-@param id: the id of the hammer
-]]
-local function checkHammerPresence(id)
-    local itemName
-    if type(id) ~= "number" then
-        error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(id)))
-    end
-
-    itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ =
-        C_Item.GetItemInfo(id)
-
-    if not itemName then
-        print(L["NO_EMH"])
-        return
-    end
+    return C_CurrencyInfo.GetCoinTextureString(money)
 end
 
 --------------------------------------------------------------------------------
@@ -402,7 +270,7 @@ addonTable.mainFrame:SetMovable(true)
 -- Add tooltip to the button
 tooltipButton:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:SetText(L["GOLD_TOOLTIP"], nil, nil, nil, nil, true)
+    GameTooltip:SetText(L["GOLD_TOOLTIP"], 1, 0.82, 0, 1, true)
     GameTooltip:Show()
 end)
 
@@ -434,20 +302,19 @@ useItemButton:SetAttribute("type1", "macro")
 --------------------------------------------------------------------------------
 
 --[[
-Check the durability of every items in EMHDB.keys and update EMHDB.to_repair
-and sortedKeys (sorted by durability percentage) accordingly
+Check durability of all repairable slots (using capabilities) and build
+a sorted list of items that need repair, ordered by durability % ascending.
 ]]
 local function updateToRepairParameter()
-    EMHDB.to_repair = 0
     sortedKeys = {}
-    for _, key in ipairs(EMHDB.keys) do
-        local current, maximum = GetInventoryItemDurability(key)
-        if current and maximum and current < maximum then
-            local percentage = (current / maximum) * 100
-
-            table.insert(sortedKeys, { key = key, percentage = percentage })
-
-            EMHDB.to_repair = EMHDB.to_repair + 1
+    for _, slotID in ipairs(addonTable.ALL_REPAIR_SLOTS) do
+        local canRepair, hammerID = EMH_CanRepairSlot(slotID)
+        if canRepair then
+            local current, maximum = GetInventoryItemDurability(slotID)
+            if current and maximum and current < maximum then
+                local percentage = (current / maximum) * 100
+                table.insert(sortedKeys, { key = slotID, percentage = percentage, hammerID = hammerID })
+            end
         end
     end
     -- Sort the table by durability percentage (ascending order)
@@ -464,12 +331,13 @@ Check the durability of the items and update the button if a repair is needed
 @return true if the item has full durability or isn't checked in the settings, false otherwise
 ]]
 local function testAndUpdateButton(i, item_number)
-    local itemKey = sortedKeys[i].key
+    local entry = sortedKeys[i]
+    local itemKey = entry.key
     if not performTest(itemKey) then
-        -- Update the repair button and wait for the users to click on it
-        useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[ID_TO_NAME[itemKey]], item_number,
-            EMHDB.to_repair, sortedKeys[i].percentage))
-        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], HAMMER_ID, itemKey))
+        -- Update the repair button and wait for the user to click on it
+        useItemButton:SetText(string.format(L["REPAIR_BUTTON"], L[addonTable.ID_TO_NAME[itemKey]], item_number,
+            #sortedKeys, entry.percentage))
+        useItemButton:SetAttribute("macrotext", string.format(L["MACRO"], entry.hammerID, itemKey))
         return false
     end
     -- Go to the next item
@@ -497,7 +365,7 @@ Update the text and the macro of the repair button, and compute the total gold s
 ]]
 local function finalizeRepairs()
     useItemButton:SetText(L["NO_REPAIR"])
-    useItemButton:SetAttribute("macrotext", "/emh")
+    useItemButton:SetAttribute("macrotext", "/tmh")
 
     local total_gold_saved = totalRepairCost - currentRepairCost
     if total_gold_saved > 0 then
@@ -607,36 +475,91 @@ end)
 --- Slash command
 --------------------------------------------------------------------------------
 
--- Open the main frame with /emh
-SLASH_EMH1 = "/emh"
+-- Open the main frame with /tmh
+SLASH_EMH1 = "/tmh"
 SlashCmdList.EMH = function()
-    -- Check if the player has the right profession: Blacksmithing
-    if badProfession then
+    if addonTable.addonDisabled then
         return
-        -- Check if the player is in combat
     elseif InCombatLockdown() then
         print(L["CANT_OPEN_IN_COMBAT"])
         return
     end
 
-    -- Check if the player has the hammer in his inventory
-    checkHammerPresence(HAMMER_ID)
-
-    -- Toggle the frames
     EMH_MainFrameToggle()
 end
 
--- Check the durability of the items with /emhcheck
-SLASH_EMHCHECK1 = "/emhcheck"
+-- Check the durability of the items with /tmhcheck
+SLASH_EMHCHECK1 = "/tmhcheck"
 SlashCmdList.EMHCHECK = function()
-    -- Create and fill the sortedKeys table
+    -- Create and fill the sortedKeys table using capabilities
     updateToRepairParameter()
     if (#sortedKeys ~= 0) then
         print(L["DURABILITY_TITLE"])
         for _, v in ipairs(sortedKeys) do
-            print(string.format(L["DURABILITY_INFO"], L[ID_TO_NAME[v.key]], v.percentage))
+            local itemName
+            if v.key == 16 or v.key == 17 then
+                local cat = addonTable.getWeaponCategory(v.key)
+                itemName = L[addonTable.CATEGORY_TO_NAME[cat]]
+            else
+                itemName = L[addonTable.ID_TO_NAME[v.key]]
+            end
+            print(string.format(L["DURABILITY_INFO"], itemName, v.percentage))
         end
     else
         print(L["DURABILITY_FULL"])
+    end
+end
+
+-- Print detected repair capabilities to chat with /tmhcap
+SLASH_EMHCAP1 = "/tmhcap"
+SlashCmdList.EMHCAP = function()
+    local armorCap, weaponCap = EMH_GetCapabilities()
+    local hasTWW              = EMH_HasHammerInBags(addonTable.HAMMER_ID_TWW)
+    local hasMidnight         = EMH_HasHammerInBags(addonTable.HAMMER_ID_MIDNIGHT)
+
+    -- Returns a colored label for one source given node + hammer status.
+    local function coloredLabel(labelStr, hasNode, hasHammer)
+        local color
+        if hasNode and hasHammer then
+            color = "|cff00ff00"
+        elseif hasNode or hasHammer then
+            color = "|cffffff00"
+        else
+            color = "|cffff4444"
+        end
+        return color .. labelStr .. "|r"
+    end
+
+    -- Returns "TWW_colored / MN_colored" for a given cap entry.
+    local function bothLabels(cap)
+        local hasTWWNode = cap ~= nil and cap.tww == true
+        local hasMNNode  = cap ~= nil and cap.midnight == true
+        return coloredLabel(L["CAP_SOURCE_TWW"], hasTWWNode, hasTWW)
+            .. " / "
+            .. coloredLabel(L["CAP_SOURCE_MIDNIGHT"], hasMNNode, hasMidnight)
+    end
+
+    print(L["CAP_COMMAND_TITLE"])
+
+    -- Hammer section
+    print("[" .. L["CAP_HAMMERS"] .. "]")
+    local twwHammerColor = hasTWW and "|cff00ff00" or "|cffff4444"
+    local mnHammerColor  = hasMidnight and "|cff00ff00" or "|cffff4444"
+    print("  " ..
+        L["CAP_SOURCE_TWW"] .. ": " .. twwHammerColor .. (hasTWW and L["CAP_IN_BAGS"] or L["CAP_NOT_IN_BAGS"]) .. "|r")
+    print("  " ..
+        L["CAP_SOURCE_MIDNIGHT"] ..
+        ": " .. mnHammerColor .. (hasMidnight and L["CAP_IN_BAGS"] or L["CAP_NOT_IN_BAGS"]) .. "|r")
+
+    -- Armor slots
+    print("[" .. L["CAP_ARMOR"] .. "]")
+    for _, slotID in ipairs(addonTable.ARMOR_SLOTS_ORDER) do
+        print("  " .. L[addonTable.ID_TO_NAME[slotID]] .. ": " .. bothLabels(armorCap[slotID]))
+    end
+
+    -- Weapon categories
+    print("[" .. L["CAP_WEAPONS"] .. "]")
+    for _, cat in ipairs(addonTable.WEAPON_CATS_ORDER) do
+        print("  " .. L[addonTable.CATEGORY_TO_NAME[cat]] .. ": " .. bothLabels(weaponCap[cat]))
     end
 end

@@ -27,7 +27,7 @@ function EMH_AddonCompartmentEnter(_, button)
     end
 
     tooltip:SetOwner(button, "ANCHOR_LEFT");
-    tooltip:SetText(L["EMH"])
+    tooltip:SetText(L["EMH"], 1, 0.82, 0, 1, true)
     tooltip:AddLine(L["COMPARTMENT_LEFT"], 1, 1, 1)
     tooltip:AddLine(L["COMPARTMENT_RIGHT"], 1, 1, 1)
     if InCombatLockdown() then

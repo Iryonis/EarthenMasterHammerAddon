@@ -1,11 +1,11 @@
-## Interface: 110200
-## Title: Earthen Master's Hammer
-## Notes: A WoW: TWW Addon to simplify the use of the blacksmithing item 'Earthen Master's Hammer'.
-## Notes--FrFR: Un addon WoW : TWW pour simplifier l'utilisation de l'objet de forge 'Marteau de maître terrestre'.
-## Notes--ruRU: Аддон для WoW: TWW, упрощающий использование кузнечного инструмента 'Молоток земельника-мастера'.
-## Notes--zhCN: WoW：TWW 插件可简化锻造工具“土灵大师之锤”的使用。
+## Interface: 120001
+## Title: Thalassian Master Hammer
+## Notes: A WoW: Midnight Addon to simplify the use of the blacksmithing items 'Earthen Master's Hammer' and 'Thalassian Master Repair Hammer'.
+## Notes--FrFR: Un addon WoW : Midnight pour simplifier l'utilisation des objets de forgeron 'Marteau de maître terrestre' et 'Marteau de réparation de maîtrise thalassien'.
+## Notes--ruRU: Аддон для WoW: Midnight, упрощающий использование кузнечных предметов 'Молоток земельника-мастера' и 'Ремонтный молот талассийского мастера'.
+## Notes--zhCN: 一个 WoW: Midnight 插件，用于简化锻造物品“土灵大师之锤”和“萨拉斯大师修理锤”的使用。
 ## Author: Iryon
-## Version: 1.0.3
+## Version: 1.1.0
 ## X-Curse-Project-ID: 1202156
 ## SavedVariablesPerCharacter: EMHDB
 ## IconTexture: Interface\AddOns\EarthenMasterHammerAddon\Images\logo.png
@@ -22,6 +22,7 @@ locale/localization.zhCN.lua
 
 # Main files
 FramePosition.lua
+Capabilities.lua
 EMH.lua
 FrameControl.lua
 Settings.lua

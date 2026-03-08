@@ -1,6 +1,8 @@
-# EMH: Earthen Master's Hammer
+# TMH: Thalassian Master Hammer
 
-A 'World of Warcraft: The War Within' AddOn to simplify the use of the blacksmithing item "Earthen Master's Hammer".
+_(Formerly "EMH: Earthen Master's Hammer")_
+
+A 'World of Warcraft: Midnight' AddOn to simplify the use of the blacksmithing items "Earthen Master's Hammer" and "Thalassian Master Repair Hammer".
 
 ## Installation
 
@@ -8,13 +10,13 @@ A 'World of Warcraft: The War Within' AddOn to simplify the use of the blacksmit
 
 Using the CurseForge application, you can install this AddOn automatically:
 
-1. Search '**Earthen Master Hammer**' on the application.
+1. Search '**Thalassian Master Hammer**' on the application.
 2. Click the 'Download' button
 3. Reload your game (`/reload`) to activate the AddOn.
 
 ### (Manual) Download from CurseForge Website
 
-On the CurseForge website, you can download the AddOn package from its [official page](https://www.curseforge.com/wow/addons/emh). Click the 'Download' button and select the latest version.
+On the CurseForge website, you can download the AddOn package from its [official page](https://www.curseforge.com/wow/addons/tmh). Click the 'Download' button and select the latest version.
 
 ### (Manual) Download from GitHub
 
@@ -35,15 +37,15 @@ Once you have downloaded the package:
 
 ## Usage
 
-When talking to a merchant who can repair (and if you have damaged equipment), the **Main Frame** will automatically open.  
-Otherwise, you can type `/emh` in the chat or use the button in the AddOn compartment in the top-right corner, just below the calendar.
+When talking to a merchant who can repair (out of combat and if you have damaged equipment), the **Main Frame** will automatically open.  
+Otherwise, you can type `/tmh` in the chat or use the button in the AddOn compartment in the top-right corner, just below the calendar (it only works out of combat).
+At the center of the **Main Frame**, you have a button to repair all damaged equipment. The AddOn will also track how much gold you've saved using the hammer—so you can brag to your non-blacksmith friends!
 
-In the **Settings Frame**, select the items you can repair based on your Blacksmithing nodes.  
-Then, in the **Main Frame**, use the button to repair all damaged equipment. The AddOn will also track how much gold you've saved using the hammer—so you can brag to your non-blacksmith friends!
+In the **Settings Frame**, you can see which specializations are detected, and for which expansion, and whether a Master Hammer is detected. You can also display it in the chat with the command `/tmhcap`.
 
 By right-clicking on the AddOn frame, you can reset its position.
 
-You can also type `/emhcheck` in the chat to display the durability percentage of every item needing repair.
+You can also type `/tmhcheck` in the chat to display the durability percentage of every item needing repair.
 
 ## Contributing
 
@@ -66,3 +68,5 @@ The following translations were freely offered by these contributors, so a huge 
 
 - **Russian** -> ZamestoTV (@Hubbotu)
 - **Chinese** -> Fenei (@babyfenei)
+
+Missing lines were automatically translated and marked as "Automatically translated" in the code ; they may require review by native speakers.
