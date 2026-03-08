@@ -7,34 +7,34 @@
 -- table at runtime — no talent tree access during gameplay.
 --------------------------------------------------------------------------------
 
-local _, addonTable              = ...
+local _, addonTable               = ...
 
 --------------------------------------------------------------------------------
 --- Constants
 --------------------------------------------------------------------------------
 
-local BLACKSMITHING_ID           = 164
+local BLACKSMITHING_ID            = 164
 
 -- Hammer item IDs (highest tier only; lower tiers may be added later)
-addonTable.HAMMER_ID_TWW         = 225660
-addonTable.HAMMER_ID_MIDNIGHT    = 238020
+addonTable.HAMMER_ID_TWW          = 225660
+addonTable.HAMMER_ID_MIDNIGHT     = 238020
 
 -- Skill line IDs per expansion
-local SKILLLINE_TWW              = 2872
-local SKILLLINE_MIDNIGHT         = 2907
+local SKILLLINE_TWW               = 2872
+local SKILLLINE_MIDNIGHT          = 2907
 
 -- Spell IDs: learned when the player knows the expansion's profession
-local SPELL_ID_TWW               = 423332
-local SPELL_ID_MIDNIGHT          = 471004
+local SPELL_ID_TWW                = 423332
+local SPELL_ID_MIDNIGHT           = 471004
 
 -- Maximum expansion ID that the TWW hammer can repair
-local TWW_MAX_EXPANSION          = 10
+local TWW_MAX_EXPANSION           = 10
 
 -- All repairable equipment slot IDs
-addonTable.ALL_REPAIR_SLOTS      = { 1, 3, 5, 6, 7, 8, 9, 10, 16, 17 }
+addonTable.ALL_REPAIR_SLOTS       = { 1, 3, 5, 6, 7, 8, 9, 10, 16, 17 }
 
 -- Slot ID to localization key (used for display)
-addonTable.ID_TO_NAME            = {
+addonTable.ID_TO_NAME             = {
     [1]  = "CAP_head",
     [3]  = "CAP_shoulder",
     [5]  = "CAP_chest",
@@ -43,16 +43,18 @@ addonTable.ID_TO_NAME            = {
     [8]  = "CAP_feet",
     [9]  = "CAP_wrists",
     [10] = "CAP_hands",
+    [16] = "CAP_main_hand",
+    [17] = "CAP_off_hand",
 }
 
 -- Ordered list of armor slot IDs for display (mirrors ALL_REPAIR_SLOTS minus weapons)
-addonTable.ARMOR_SLOTS_ORDER     = { 1, 3, 5, 6, 7, 8, 9, 10 }
+addonTable.ARMOR_SLOTS_ORDER      = { 1, 3, 5, 6, 7, 8, 9, 10 }
 
 -- Ordered list of weapon category keys for display
-addonTable.WEAPON_CATS_ORDER     = { "short_blades", "long_blades", "axes_and_polearms", "maces", "shields" }
+addonTable.WEAPON_CATS_ORDER      = { "short_blades", "long_blades", "axes_and_polearms", "maces", "shields" }
 
 -- Weapon category key to localization key
-addonTable.CATEGORY_TO_NAME      = {
+addonTable.CATEGORY_TO_NAME       = {
     short_blades      = "CAP_short_blades",
     long_blades       = "CAP_long_blades",
     axes_and_polearms = "CAP_axes_and_polearms",
@@ -60,19 +62,26 @@ addonTable.CATEGORY_TO_NAME      = {
     shields           = "CAP_shields",
 }
 
--- Weapon subType (from GetItemInfo) mapped to an internal category key
-local WEAPON_SUBTYPE_TO_CATEGORY = {
-    ["Daggers"]           = "short_blades",
-    ["Fist Weapons"]      = "short_blades",
-    ["One-Handed Swords"] = "long_blades",
-    ["Two-Handed Swords"] = "long_blades",
-    ["Warglaives"]        = "long_blades",
-    ["One-Handed Axes"]   = "axes_and_polearms",
-    ["Two-Handed Axes"]   = "axes_and_polearms",
-    ["Polearms"]          = "maces",
-    ["One-Handed Maces"]  = "maces",
-    ["Two-Handed Maces"]  = "maces",
-    ["Shields"]           = "shields",
+-- WoW item class IDs (locale-independent)
+local WEAPON_CLASS_ID             = 2 -- Enum.ItemClass.Weapon
+local ARMOR_CLASS_ID              = 4 -- Enum.ItemClass.Armor
+
+-- WoW armor subclass ID for shields (locale-independent)
+local SHIELD_ARMOR_SUBCLASS_ID    = 6 -- Enum.ItemArmorSubclass.Shield
+
+-- Weapon subclass IDs (from GetItemInfo pos 13) → internal category key (locale-independent)
+-- Using numeric IDs avoids localization issues with GetItemInfo's 7th return value.
+local WEAPON_SUBCLASS_TO_CATEGORY = {
+    [15] = "short_blades",      -- Daggers
+    [13] = "short_blades",      -- Fist Weapons
+    [7]  = "long_blades",       -- One-Handed Swords
+    [8]  = "long_blades",       -- Two-Handed Swords
+    [9]  = "long_blades",       -- Warglaives
+    [0]  = "axes_and_polearms", -- One-Handed Axes
+    [1]  = "axes_and_polearms", -- Two-Handed Axes
+    [6]  = "maces",             -- Polearms
+    [4]  = "maces",             -- One-Handed Maces
+    [5]  = "maces",             -- Two-Handed Maces
 }
 
 --------------------------------------------------------------------------------
@@ -88,7 +97,7 @@ local WEAPON_SUBTYPE_TO_CATEGORY = {
 -- Midnight repair nodes
 -- Keys  : slot IDs (number) for armor, category strings for weapons
 -- Values: C_Traits node IDs
-local REPAIR_NODES_MIDNIGHT      = {
+local REPAIR_NODES_MIDNIGHT       = {
     -- Armor
     [1]                   = 104570, -- Head
     [3]                   = 104569, -- Shoulder
@@ -109,7 +118,7 @@ local REPAIR_NODES_MIDNIGHT      = {
 -- TWW repair nodes
 -- Keys  : same as above
 -- Values: C_ProfSpecs path IDs
-local REPAIR_NODES_TWW           = {
+local REPAIR_NODES_TWW            = {
     -- Armor
     [1]                   = 99233, -- Head
     [3]                   = 99232, -- Shoulder
@@ -131,10 +140,13 @@ local REPAIR_NODES_TWW           = {
 --- Internal state
 --------------------------------------------------------------------------------
 
+-- Increment this when the cache format changes, to force a re-scan on next login
+local CACHE_VERSION               = 2
+
 -- Capability tables populated by scanning talents
--- Format: { [slotID_or_category] = { source = "midnight" | "tww" } }
-local armorCapabilities          = {}
-local weaponCapabilities         = {}
+-- Format: { [slotID_or_category] = { midnight = bool, tww = bool } }
+local armorCapabilities           = {}
+local weaponCapabilities          = {}
 
 --------------------------------------------------------------------------------
 --- Hammer detection
@@ -164,14 +176,21 @@ end
 --------------------------------------------------------------------------------
 
 -- Get the repair category of the weapon equipped in the given slot
+-- Uses locale-independent itemClassID / itemSubClassID instead of the localized subtype string.
+-- It returns "shields" for shields, which are technically armor but are in weapons slots.
 -- @param slotID  number  Equipment slot (16 = main hand, 17 = off hand)
--- @return string|nil  Category key (e.g. "short_blades") or nil
+-- @return string|nil  Category key (e.g. "axes_and_polearms") or nil
 local function getWeaponCategory(slotID)
     local link = GetInventoryItemLink("player", slotID)
     if not link then return nil end
-    local _, _, _, _, _, _, itemSubType = C_Item.GetItemInfo(link)
-    if not itemSubType then return nil end
-    return WEAPON_SUBTYPE_TO_CATEGORY[itemSubType]
+    local _, _, _, _, _, _, _, _, _, _, _, itemClassID, itemSubClassID = C_Item.GetItemInfo(link)
+    if not itemClassID then return nil end
+    if itemClassID == WEAPON_CLASS_ID then
+        return WEAPON_SUBCLASS_TO_CATEGORY[itemSubClassID]
+    elseif itemClassID == ARMOR_CLASS_ID and itemSubClassID == SHIELD_ARMOR_SUBCLASS_ID then
+        return "shields"
+    end
+    return nil
 end
 
 addonTable.getWeaponCategory = getWeaponCategory
@@ -192,9 +211,11 @@ local function scanMidnightCapabilities()
         local nodeInfo = C_Traits.GetNodeInfo(configID, nodeID)
         if nodeInfo and nodeInfo.activeRank and nodeInfo.activeRank == nodeInfo.maxRanks then
             if type(key) == "number" then
-                armorCapabilities[key] = { source = "midnight" }
+                if not armorCapabilities[key] then armorCapabilities[key] = {} end
+                armorCapabilities[key].midnight = true
             else
-                weaponCapabilities[key] = { source = "midnight" }
+                if not weaponCapabilities[key] then weaponCapabilities[key] = {} end
+                weaponCapabilities[key].midnight = true
             end
         end
     end
@@ -202,7 +223,7 @@ end
 
 -- Scan TWW profession specialization tree for repair capabilities
 -- Uses C_ProfSpecs API: a path is fully unlocked when state == 2
--- Only adds capabilities not already covered by Midnight (Midnight is superset)
+-- Adds capabilities alongside Midnight (can have both sources)
 local function scanTWWCapabilities()
     if not C_SpellBook.IsSpellInSpellBook(SPELL_ID_TWW) then return end
 
@@ -210,15 +231,14 @@ local function scanTWWCapabilities()
     if not configID or configID == 0 then return end
 
     for key, pathID in pairs(REPAIR_NODES_TWW) do
-        local existing = (type(key) == "number") and armorCapabilities[key] or weaponCapabilities[key]
-        if not existing then
-            local state = C_ProfSpecs.GetStateForPath(pathID, configID)
-            if state == 2 then
-                if type(key) == "number" then
-                    armorCapabilities[key] = { source = "tww" }
-                else
-                    weaponCapabilities[key] = { source = "tww" }
-                end
+        local state = C_ProfSpecs.GetStateForPath(pathID, configID)
+        if state == 2 then
+            if type(key) == "number" then
+                if not armorCapabilities[key] then armorCapabilities[key] = {} end
+                armorCapabilities[key].tww = true
+            else
+                if not weaponCapabilities[key] then weaponCapabilities[key] = {} end
+                weaponCapabilities[key].tww = true
             end
         end
     end
@@ -258,8 +278,8 @@ function EMH_LoadCapabilities()
         return
     end
 
-    -- Use cached talent scan results when available
-    if EMHDB.capabilitiesCache then
+    -- Use cached talent scan results when available (only if cache version matches)
+    if EMHDB.capabilitiesCache and EMHDB.capabilitiesCache.version == CACHE_VERSION then
         armorCapabilities  = EMHDB.capabilitiesCache.armor or {}
         weaponCapabilities = EMHDB.capabilitiesCache.weapons or {}
 
@@ -321,7 +341,7 @@ function EMH_ScanCapabilities()
     end
 
     -- Persist scan results across sessions
-    EMHDB.capabilitiesCache  = { armor = armorCapabilities, weapons = weaponCapabilities }
+    EMHDB.capabilitiesCache  = { version = CACHE_VERSION, armor = armorCapabilities, weapons = weaponCapabilities }
     addonTable.addonDisabled = false
 end
 
@@ -342,9 +362,9 @@ function EMH_CanRepairSlot(slotID)
 
     if not cap then return false, nil end
 
-    -- Determine hammer based on capability source
+    -- Determine hammer based on capability source (prefer Midnight if both available)
     local hammerID
-    if cap.source == "midnight" then
+    if cap.midnight then
         hammerID = addonTable.HAMMER_ID_MIDNIGHT
     else
         hammerID = addonTable.HAMMER_ID_TWW
@@ -354,7 +374,7 @@ function EMH_CanRepairSlot(slotID)
     if not hasHammerInBags(hammerID) then return false, nil end
 
     -- TWW hammer cannot repair items from expansions beyond TWW
-    if cap.source == "tww" then
+    if not cap.midnight and cap.tww then
         local itemID = GetInventoryItemID("player", slotID)
         if itemID then
             local _, _, _, _, _, _, _, _, _, _, _, _, _, _, expansionID = C_Item.GetItemInfo(itemID)

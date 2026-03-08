@@ -4,7 +4,6 @@ local _, L = ...
 
 if GetLocale() == "frFR" then
     --- Main
-    L["FORMAT_MONEY"]              = "%s or, %d argent, %d cuivre"
     L["MAIN_FRAME_TITLE"]          = "EMH : Earthen Master's Hammer"
     L["SUB_TITLE"]                 = "En réparant votre équipement avec EMH, vous avec économisé :"
     L["MAIN_TO_SETTINGS_BUTTON"]   = "Ouvrir les paramètres"
@@ -64,6 +63,8 @@ if GetLocale() == "frFR" then
     L["CAP_IN_BAGS"]               = "Dans les sacs"
     L["CAP_NOT_IN_BAGS"]           = "Absent des sacs"
     L["CAP_COMMAND_TITLE"]         = "=== EMH : Capacités détectées ==="
+    L["CAP_main_hand"]             = "Arme principale"
+    L["CAP_off_hand"]              = "Arme secondaire"
 
 
     -- Errors and warning

@@ -187,8 +187,8 @@ local function formatNumberWithCommas(number)
 end
 
 --[[
-Format money in string with text
-Example with 155425 -> "15 gold, 54 silver, 25 copper"
+Format money in string with Blizzard money icons
+Example with 155425 -> "15 gold icon, 54 silver icon, 25 copper icon"
 
 @param money: the amount of money to format
 @return the formatted money in a string
@@ -198,16 +198,8 @@ local function formatMoney(money)
     if type(money) ~= "number" then
         error(string.format(L["ERROR_BAD_TYPE_NUMBER"], type(money)))
     end
-    -- If money is 0, return 0 formatted
-    if money == 0 then
-        return string.format(L["FORMAT_MONEY"], 0, 0, 0)
-    end
 
-    local gold = math.floor(money / 10000)
-    local silver = math.floor((money % 10000) / 100)
-    local copper = money % 100
-
-    return string.format(L["FORMAT_MONEY"], formatNumberWithCommas(gold), silver, copper)
+    return C_CurrencyInfo.GetCoinTextureString(money)
 end
 
 --------------------------------------------------------------------------------
@@ -278,7 +270,7 @@ addonTable.mainFrame:SetMovable(true)
 -- Add tooltip to the button
 tooltipButton:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:SetText(L["GOLD_TOOLTIP"], nil, nil, nil, nil, true)
+    GameTooltip:SetText(L["GOLD_TOOLTIP"], 1, 0.82, 0, 1, true)
     GameTooltip:Show()
 end)
 
@@ -504,7 +496,14 @@ SlashCmdList.EMHCHECK = function()
     if (#sortedKeys ~= 0) then
         print(L["DURABILITY_TITLE"])
         for _, v in ipairs(sortedKeys) do
-            print(string.format(L["DURABILITY_INFO"], L[addonTable.ID_TO_NAME[v.key]], v.percentage))
+            local itemName
+            if v.key == 16 or v.key == 17 then
+                local cat = addonTable.getWeaponCategory(v.key)
+                itemName = L[addonTable.CATEGORY_TO_NAME[cat]]
+            else
+                itemName = L[addonTable.ID_TO_NAME[v.key]]
+            end
+            print(string.format(L["DURABILITY_INFO"], itemName, v.percentage))
         end
     else
         print(L["DURABILITY_FULL"])
@@ -533,8 +532,8 @@ SlashCmdList.EMHCAP = function()
 
     -- Returns "TWW_colored / MN_colored" for a given cap entry.
     local function bothLabels(cap)
-        local hasTWWNode = cap ~= nil and cap.source == "tww"
-        local hasMNNode  = cap ~= nil and cap.source == "midnight"
+        local hasTWWNode = cap ~= nil and cap.tww == true
+        local hasMNNode  = cap ~= nil and cap.midnight == true
         return coloredLabel(L["CAP_SOURCE_TWW"], hasTWWNode, hasTWW)
             .. " / "
             .. coloredLabel(L["CAP_SOURCE_MIDNIGHT"], hasMNNode, hasMidnight)

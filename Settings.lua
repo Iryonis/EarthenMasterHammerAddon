@@ -41,29 +41,31 @@ addonTable.settingsFrame.subTitleNote1:SetText(L["SETTINGS_SUB_TITLE_NOTE_1"])
 
 -- Capability display: two columns anchored below subTitleNote1.
 -- FontStrings are created once here; text is refreshed each time the frame opens.
-local CAP_ROW_HEIGHT                    = 16
-local CAP_COL_RIGHT_X                   = 225
-local CAP_TOP_Y                         = -20 -- offset below subTitleNote1
+local CAP_ROW_HEIGHT                      = 16
+local CAP_COL_RIGHT_X                     = 225
+local CAP_TOP_Y                           = -20 -- offset below subTitleNote1
 
-addonTable.settingsFrame.capArmorHeader = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-local font, _, flags                    = addonTable.settingsFrame.capArmorHeader:GetFont()
+-- Create Armor Column Header
+addonTable.settingsFrame.capArmorHeader   = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+addonTable.settingsFrame.capWeaponsHeader = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local font, _, flags                      = addonTable.settingsFrame.capArmorHeader:GetFont()
 if font then
+    -- Increase font size for headers
     addonTable.settingsFrame.capArmorHeader:SetFont(font, 16, flags)
+    addonTable.settingsFrame.capWeaponsHeader:SetFont(font, 16, flags)
 end
 addonTable.settingsFrame.capArmorHeader:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
     0, CAP_TOP_Y)
-
+-- Create Weapons Column Header
 addonTable.settingsFrame.capWeaponsHeader = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-local font2, _, flags2 = addonTable.settingsFrame.capWeaponsHeader:GetFont()
-if font2 then
-    addonTable.settingsFrame.capWeaponsHeader:SetFont(font2, 16, flags2)
-end
 addonTable.settingsFrame.capWeaponsHeader:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
     CAP_COL_RIGHT_X, CAP_TOP_Y)
 
+-- Containers to store FontStrings for each slot/category
 addonTable.settingsFrame.armorEntries  = {}
 addonTable.settingsFrame.weaponEntries = {}
 
+-- Initialize FontStrings for Armor slots
 for i, slotID in ipairs(addonTable.ARMOR_SLOTS_ORDER) do
     local fs = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     fs:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
@@ -71,6 +73,7 @@ for i, slotID in ipairs(addonTable.ARMOR_SLOTS_ORDER) do
     addonTable.settingsFrame.armorEntries[slotID] = fs
 end
 
+-- Initialize FontStrings for Weapon categories
 for i, cat in ipairs(addonTable.WEAPON_CATS_ORDER) do
     local fs = addonTable.settingsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     fs:SetPoint("TOPLEFT", addonTable.settingsFrame.subTitleNote1, "BOTTOMLEFT",
@@ -83,6 +86,7 @@ local function refreshCapabilityDisplay()
     addonTable.settingsFrame.capArmorHeader:SetText(L["CAP_ARMOR"])
     addonTable.settingsFrame.capWeaponsHeader:SetText(L["CAP_WEAPONS"])
 
+    -- Get scan results and hammer presence from bags
     local armorCap, weaponCap = EMH_GetCapabilities()
     local hasTWW              = EMH_HasHammerInBags(addonTable.HAMMER_ID_TWW)
     local hasMidnight         = EMH_HasHammerInBags(addonTable.HAMMER_ID_MIDNIGHT)
@@ -102,20 +106,22 @@ local function refreshCapabilityDisplay()
         return color .. labelStr .. "|r"
     end
 
-    -- Builds "Label: TWW_colored / MN_colored" for a given cap entry.
+    -- Format the final display string (e.g., "Helms: TWW / MN")
     local function buildEntryText(label, cap)
-        local hasTWWNode = cap ~= nil and cap.source == "tww"
-        local hasMNNode  = cap ~= nil and cap.source == "midnight"
+        local hasTWWNode = cap ~= nil and cap.tww
+        local hasMNNode  = cap ~= nil and cap.midnight
         local twwStr     = coloredLabel(L["CAP_SOURCE_TWW"], hasTWWNode, hasTWW)
         local mnStr      = coloredLabel(L["CAP_SOURCE_MIDNIGHT"], hasMNNode, hasMidnight)
         return label .. ": " .. twwStr .. " / " .. mnStr
     end
 
+    -- Update all Armor labels
     for _, slotID in ipairs(addonTable.ARMOR_SLOTS_ORDER) do
         local text = buildEntryText(L[addonTable.ID_TO_NAME[slotID]], armorCap[slotID])
         addonTable.settingsFrame.armorEntries[slotID]:SetText(text)
     end
 
+    -- Update all Weapon labels
     for _, cat in ipairs(addonTable.WEAPON_CATS_ORDER) do
         local text = buildEntryText(L[addonTable.CATEGORY_TO_NAME[cat]], weaponCap[cat])
         addonTable.settingsFrame.weaponEntries[cat]:SetText(text)

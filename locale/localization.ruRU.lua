@@ -4,7 +4,6 @@ local _, L = ...
 
 if GetLocale() == "ruRU" then
     --- Main
-    L["FORMAT_MONEY"] = "%s золота, %d серебра, %d меди"
     L["MAIN_FRAME_TITLE"] = "EMH: Earthen Master's Hammer"
     L["SUB_TITLE"] = "Благодаря ремонту вашего снаряжения с помощью EMH, вы сэкономили:"
     L["MAIN_TO_SETTINGS_BUTTON"] = "Перейти к настройкам"
@@ -69,6 +68,8 @@ if GetLocale() == "ruRU" then
     -- L["CAP_IN_BAGS"]               = "In bags"
     -- L["CAP_NOT_IN_BAGS"]           = "Not in bags"
     -- L["CAP_COMMAND_TITLE"]         = "=== EMH: Detected capabilities ==="
+    -- L["CAP_main_hand"]             = "Main Hand"
+    -- L["CAP_off_hand"]              = "Off Hand"
 
     -- Errors and warning
     -- L["CANT_OPEN_IN_COMBAT"] =

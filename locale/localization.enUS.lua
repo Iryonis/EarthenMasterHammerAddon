@@ -9,7 +9,6 @@ end
 setmetatable(L, { __index = defaultFunc })
 
 --- Main
-L["FORMAT_MONEY"]              = "%s gold, %d silver, %d copper"
 L["MAIN_FRAME_TITLE"]          = "EMH: Earthen Master's Hammer"
 L["SUB_TITLE"]                 = "By repairing your gear with EMH, you have saved:"
 L["MAIN_TO_SETTINGS_BUTTON"]   = "Switch to settings"
@@ -69,6 +68,8 @@ L["CAP_SOURCE_TWW"]            = "TWW"
 L["CAP_IN_BAGS"]               = "In bags"
 L["CAP_NOT_IN_BAGS"]           = "Not in bags"
 L["CAP_COMMAND_TITLE"]         = "=== EMH: Detected capabilities ==="
+L["CAP_main_hand"]             = "Main Hand"
+L["CAP_off_hand"]              = "Off Hand"
 
 -- Errors and warning
 L["CANT_OPEN_IN_COMBAT"]       = "You can't open the EMH frame while in combat."

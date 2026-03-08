@@ -15,6 +15,7 @@ The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/e
 #### Changed
 
 - The Interface version number to ensure compatibility with new expansion.
+- The main frame now use money icons instead of text to display the amount saved.
 
 #### Removed
 

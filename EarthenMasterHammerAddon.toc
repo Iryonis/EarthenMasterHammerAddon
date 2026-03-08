@@ -5,7 +5,7 @@
 ## Notes--ruRU: Аддон для WoW: TWW, упрощающий использование кузнечного инструмента 'Молоток земельника-мастера'.
 ## Notes--zhCN: WoW：TWW 插件可简化锻造工具“土灵大师之锤”的使用。
 ## Author: Iryon
-## Version: 1.0.3
+## Version: 1.1.0
 ## X-Curse-Project-ID: 1202156
 ## SavedVariablesPerCharacter: EMHDB
 ## IconTexture: Interface\AddOns\EarthenMasterHammerAddon\Images\logo.png

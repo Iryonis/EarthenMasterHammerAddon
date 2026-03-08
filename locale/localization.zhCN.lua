@@ -4,7 +4,6 @@ local _, L = ...
 
 if GetLocale() == "zhCN" then
     --- Main
-    L["FORMAT_MONEY"] = "%s 金，%d 银，%d 铜"
     L["MAIN_FRAME_TITLE"] = "EMH：土灵大师之锤"
     L["SUB_TITLE"] = "通过使用EMH修理装备，您已节省："
     L["MAIN_TO_SETTINGS_BUTTON"] = "打开设置"
@@ -63,6 +62,9 @@ if GetLocale() == "zhCN" then
     -- L["CAP_IN_BAGS"]               = "In bags"
     -- L["CAP_NOT_IN_BAGS"]           = "Not in bags"
     -- L["CAP_COMMAND_TITLE"]         = "=== EMH: Detected capabilities ==="
+    -- L["CAP_main_hand"]             = "Main Hand"
+    -- L["CAP_off_hand"]              = "Off Hand"
+
 
     -- Errors and warning
     -- L["CANT_OPEN_IN_COMBAT"] =
