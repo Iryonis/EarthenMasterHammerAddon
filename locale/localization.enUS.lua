@@ -17,7 +17,7 @@ L["NO_EMH"]                    =
 "Warning: No Master's Hammer found in your bags. Make sure you have one before using the addon."
 L["NO_BLACKSMITHING"]          = "TMH: No Blacksmithing profession detected. Addon disabled."
 L["NO_REPAIR_NODES"]           =
-"TMH: No repair specialization nodes unlocked. Addon disabled. Use /emhcap to inspect detected capabilities."
+"TMH: No repair specialization nodes unlocked. Addon disabled. Use /tmhcap to inspect detected capabilities."
 L["NO_REPAIR"]                 = "No repair needed"
 L["SAVED_MONEY_PRINT"]         = "You just saved %s using TMH."
 L["REPAIR_BUTTON"]             = "Repair %s (%d/%d): %d%%"

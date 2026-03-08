@@ -12,7 +12,7 @@ if GetLocale() == "frFR" then
     "Attention : Aucun Marteau de maître n'a été trouvé dans vos sacs. Assurez-vous d'en avoir un avant d'utiliser l'addon."
     L["NO_BLACKSMITHING"]          = "TMH : Aucun métier de Forge détecté. Addon désactivé."
     L["NO_REPAIR_NODES"]           =
-    "TMH : Aucun noeud de spécialisation de réparation débloqué. Addon désactivé. Utilisez /emhcap pour inspecter les capacités détectées."
+    "TMH : Aucun noeud de spécialisation de réparation débloqué. Addon désactivé. Utilisez /tmhcap pour inspecter les capacités détectées."
     L["NO_REPAIR"]                 = "Aucune réparation nécessaire"
     L["SAVED_MONEY_PRINT"]         = "Vous venez d'économiser %s grâce à TMH."
     L["REPAIR_BUTTON"]             = "Réparer %s (%d/%d) : %d%%"

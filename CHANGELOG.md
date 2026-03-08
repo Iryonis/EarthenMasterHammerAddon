@@ -10,12 +10,15 @@ The format is freely inspired by [Keep a Changelog](https://keepachangelog.com/e
 
 - Auto detection of Blacksmithing specializations for both The War Within and Midnight expansions.
 - Auto detection of Master Hammer presence for both expansions.
-- New command: `/emhcap` will print the detected capabilities of the addon, including which specializations are detected and whether a Master Hammer is detected.
+- Improved weapon detection logic to determine which items can be repaired with the hammer, based on detected specializations and expansion.
+- New command: `/tmhcap` will print the detected capabilities of the addon, including which specializations are detected, and for which expansion, and whether a Master Hammer is detected.
 
 #### Changed
 
 - The Interface version number to ensure compatibility with new expansion.
 - The main frame now use money icons instead of text to display the amount saved.
+- Changed the name of the addon to "Thalassian Master Hammer" to fit the new expansion -> I also changed all mentions of "EMH" to "TMH" in translations and commands (commands are now /tmh, /tmhcheck and /tmhcap).
+- Automatically translated missing lines in Chinese and Russian translations, it may need review by native speakers.
 
 #### Removed
 
