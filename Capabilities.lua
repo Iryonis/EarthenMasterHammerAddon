@@ -18,6 +18,7 @@ local BLACKSMITHING_ID            = 164
 -- Hammer item IDs (highest tier only; lower tiers may be added later)
 addonTable.HAMMER_ID_TWW          = 225660
 addonTable.HAMMER_ID_MIDNIGHT     = 238020
+addonTable.HAMMER_ID_REFULGENT    = 238209   -- <-- NUEVO: Re fulgent Repair Hammer
 
 -- Skill line IDs per expansion
 local SKILLLINE_TWW               = 2872
@@ -360,31 +361,39 @@ function EMH_CanRepairSlot(slotID)
         cap = armorCapabilities[slotID]
     end
 
-    if not cap then return false, nil end
+    -- === PRIMERO: martillo especializado (no consume) ===
+    if cap then
+        local hammerID
+        if cap.midnight then
+            hammerID = addonTable.HAMMER_ID_MIDNIGHT
+        else
+            hammerID = addonTable.HAMMER_ID_TWW
+        end
 
-    -- Determine hammer based on capability source (prefer Midnight if both available)
-    local hammerID
-    if cap.midnight then
-        hammerID = addonTable.HAMMER_ID_MIDNIGHT
-    else
-        hammerID = addonTable.HAMMER_ID_TWW
-    end
-
-    -- Check hammer is in bags
-    if not hasHammerInBags(hammerID) then return false, nil end
-
-    -- TWW hammer cannot repair items from expansions beyond TWW
-    if not cap.midnight and cap.tww then
-        local itemID = GetInventoryItemID("player", slotID)
-        if itemID then
-            local _, _, _, _, _, _, _, _, _, _, _, _, _, _, expansionID = C_Item.GetItemInfo(itemID)
-            if expansionID and expansionID > TWW_MAX_EXPANSION then
-                return false, nil
+        if hasHammerInBags(hammerID) then
+            -- Check expansión TWW
+            if not cap.midnight and cap.tww then
+                local itemID = GetInventoryItemID("player", slotID)
+                if itemID then
+                    local _, _, _, _, _, _, _, _, _, _, _, _, _, _, expansionID = C_Item.GetItemInfo(itemID)
+                    if expansionID and expansionID > TWW_MAX_EXPANSION then
+                        -- no repair con TWW hammer → pasamos a Re fulgent
+                    else
+                        return true, hammerID
+                    end
+                end
+            else
+                return true, hammerID
             end
         end
     end
 
-    return true, hammerID
+    -- === RESPALDO: Re fulgent Repair Hammer (consumible, repara TODO) ===
+    if hasHammerInBags(addonTable.HAMMER_ID_REFULGENT) then
+        return true, addonTable.HAMMER_ID_REFULGENT
+    end
+
+    return false, nil
 end
 
 --- Get the current capability tables (for display purposes).
